@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-EtlSandbox.Worker-b66f375e-bf33-46e7-bd5d-5971b3dfea03</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EtlSandbox.Domain\EtlSandbox.Domain.csproj" />
+    <ProjectReference Include="..\EtlSandbox.Infrastructure\EtlSandbox.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
