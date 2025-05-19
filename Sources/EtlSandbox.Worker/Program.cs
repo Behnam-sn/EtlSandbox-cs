@@ -9,9 +9,17 @@ var builder = Host.CreateDefaultBuilder(args)
         var mysqlConnection = config.GetConnectionString("MySql")!;
         var sqlServerConnection = config.GetConnectionString("SqlServer")!;
 
+        services.AddLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Information);
+        });
+
         services.AddSingleton<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddSingleton<IExtractor<CustomerOrderFlat>>(new SqlExtractor(mysqlConnection));
-        services.AddSingleton<ILoader<CustomerOrderFlat>>(new SqlServerLoader(sqlServerConnection));
+        services.AddSingleton<IExtractor<CustomerOrderFlat>>(sp => new SqlExtractor(mysqlConnection, sp.GetRequiredService<ILogger<SqlExtractor>>()));
+        services.AddSingleton<ILoader<CustomerOrderFlat>>(sp => new SqlServerLoader(sqlServerConnection, sp.GetRequiredService<ILogger<SqlServerLoader>>()));
+
         services.AddHostedService<EtlWorker>();
     });
 

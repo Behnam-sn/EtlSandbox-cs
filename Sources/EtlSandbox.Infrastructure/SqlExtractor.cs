@@ -1,22 +1,29 @@
 ﻿using Dapper;
+
 using EtlSandbox.Domain;
+
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+
 using MySql.Data.MySqlClient;
 
 namespace EtlSandbox.Infrastructure;
 
 public sealed class SqlExtractor : IExtractor<CustomerOrderFlat>
 {
-    private readonly string _connectionString;
     private const int BatchSize = 100;
+    private readonly string _connectionString;
+    private readonly ILogger<SqlExtractor> _logger;
 
-    public SqlExtractor(string connectionString)
+    public SqlExtractor(string connectionString, ILogger<SqlExtractor> logger)
     {
         _connectionString = connectionString;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(DateTime since, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Extracting data since {Since}", since);
         using var connection = new MySqlConnection(_connectionString);
         var sql = @"
             SELECT r.rental_id AS RentalId,
@@ -37,6 +44,7 @@ public sealed class SqlExtractor : IExtractor<CustomerOrderFlat>
         ";
 
         var result = await connection.QueryAsync<CustomerOrderFlat>(sql, new { Since = since, BatchSize });
+        _logger.LogInformation("Extracted {Count} rows", result.Count());
         return result.ToList();
     }
 
@@ -53,5 +61,6 @@ public sealed class SqlExtractor : IExtractor<CustomerOrderFlat>
     {
         using var connection = new SqlConnection(_connectionString);
         await connection.ExecuteAsync("INSERT INTO EtlState (LastProcessedAt) VALUES (@Timestamp)", new { Timestamp = timestamp });
+        _logger.LogInformation("Updated last processed timestamp to {Timestamp}", timestamp);
     }
 }
