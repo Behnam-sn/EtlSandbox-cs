@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.Persistence;
 
-public class ApplicationContext : DbContext
+public class EtlDbContext : DbContext
 {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+    public EtlDbContext(DbContextOptions<EtlDbContext> options) : base(options)
     {
     }
 
     public DbSet<CustomerOrderFlat> CustomerOrders => Set<CustomerOrderFlat>();
+    public DbSet<EtlState> EtlStates => Set<EtlState>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

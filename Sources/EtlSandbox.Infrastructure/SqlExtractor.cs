@@ -1,9 +1,12 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain;
+using EtlSandbox.Domain.Configurations;
 
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 using MySql.Data.MySqlClient;
 
@@ -11,20 +14,21 @@ namespace EtlSandbox.Infrastructure;
 
 public sealed class SqlExtractor : IExtractor<CustomerOrderFlat>
 {
-    private const int BatchSize = 100;
-    private readonly string _connectionString;
+    private const int BatchSize = 100_000;
     private readonly ILogger<SqlExtractor> _logger;
-
-    public SqlExtractor(string connectionString, ILogger<SqlExtractor> logger)
+    private readonly string _sourceConnectionString;
+    private readonly string _destinationConnectionString;
+    public SqlExtractor(ILogger<SqlExtractor> logger, IOptions<ConnectionStrings> options)
     {
-        _connectionString = connectionString;
         _logger = logger;
+        _sourceConnectionString = options.Value.MySql;
+        _destinationConnectionString = options.Value.SqlServer;
     }
 
     public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(DateTime since, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Extracting data since {Since}", since);
-        using var connection = new MySqlConnection(_connectionString);
+        using var connection = new MySqlConnection(_sourceConnectionString);
         var sql = @"
             SELECT r.rental_id AS RentalId,
                    CONCAT(c.first_name, ' ', c.last_name) AS CustomerName,
@@ -50,17 +54,18 @@ public sealed class SqlExtractor : IExtractor<CustomerOrderFlat>
 
     public async Task<DateTime> GetLastProcessedTimestampAsync()
     {
-        using var connection = new SqlConnection(_connectionString);
+        using var connection = new SqlConnection(_destinationConnectionString);
         var result = await connection.ExecuteScalarAsync<DateTime?>(
-            "SELECT MAX(LastProcessedAt) FROM EtlState"
+            "SELECT MAX(LastProcessedAt) FROM EtlStates"
         );
         return result ?? DateTime.MinValue;
     }
 
     public async Task UpdateLastProcessedTimestampAsync(DateTime timestamp)
     {
-        using var connection = new SqlConnection(_connectionString);
-        await connection.ExecuteAsync("INSERT INTO EtlState (LastProcessedAt) VALUES (@Timestamp)", new { Timestamp = timestamp });
+        using var connection = new SqlConnection(_destinationConnectionString);
+        await connection.ExecuteAsync("INSERT INTO EtlStates (LastProcessedAt) VALUES (@Timestamp)", new { Timestamp = timestamp });
+
         _logger.LogInformation("Updated last processed timestamp to {Timestamp}", timestamp);
     }
 }

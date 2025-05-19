@@ -4,21 +4,21 @@ namespace EtlSandbox.Worker;
 
 public class EtlWorker : BackgroundService
 {
-    private readonly IExtractor<CustomerOrderFlat> _extractor;
-    private readonly ILoader<CustomerOrderFlat> _loader;
-    private readonly ITransformer<CustomerOrderFlat> _transformer;
     private readonly ILogger<EtlWorker> _logger;
+    private readonly IExtractor<CustomerOrderFlat> _extractor;
+    private readonly ITransformer<CustomerOrderFlat> _transformer;
+    private readonly ILoader<CustomerOrderFlat> _loader;
 
     public EtlWorker(
+        ILogger<EtlWorker> logger,
         IExtractor<CustomerOrderFlat> extractor,
-        ILoader<CustomerOrderFlat> loader,
         ITransformer<CustomerOrderFlat> transformer,
-        ILogger<EtlWorker> logger)
+        ILoader<CustomerOrderFlat> loader)
     {
-        _extractor = extractor;
-        _loader = loader;
-        _transformer = transformer;
         _logger = logger;
+        _extractor = extractor;
+        _transformer = transformer;
+        _loader = loader;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

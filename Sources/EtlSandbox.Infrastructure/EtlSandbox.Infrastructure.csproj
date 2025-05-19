@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EtlSandbox.Domain\EtlSandbox.Domain.csproj" />
+    <ProjectReference Include="..\EtlSandbox.Persistence\EtlSandbox.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

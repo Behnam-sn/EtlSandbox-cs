@@ -1,13 +1,21 @@
 using EtlSandbox.Domain;
+using EtlSandbox.Domain.Configurations;
 using EtlSandbox.Infrastructure;
 using EtlSandbox.Worker;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        var config = hostContext.Configuration;
-        var mysqlConnection = config.GetConnectionString("MySql")!;
-        var sqlServerConnection = config.GetConnectionString("SqlServer")!;
+        // var config = hostContext.Configuration;
+        // var sqlServerConnection = config.GetConnectionString("SqlServer")!;
+
+        // services.AddDbContext<EtlDbContext>(options =>
+        //     options.UseSqlServer(sqlServerConnection)
+        // );
+
+        services.Configure<ConnectionStrings>(
+            hostContext.Configuration.GetSection("ConnectionStrings")
+        );
 
         services.AddLogging(logging =>
         {
@@ -17,16 +25,10 @@ var builder = Host.CreateDefaultBuilder(args)
         });
 
         services.AddSingleton<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddSingleton<IExtractor<CustomerOrderFlat>>(sp => new SqlExtractor(mysqlConnection, sp.GetRequiredService<ILogger<SqlExtractor>>()));
-        services.AddSingleton<ILoader<CustomerOrderFlat>>(sp => new SqlServerLoader(sqlServerConnection, sp.GetRequiredService<ILogger<SqlServerLoader>>()));
+        services.AddSingleton<IExtractor<CustomerOrderFlat>, SqlExtractor>();
+        services.AddSingleton<ILoader<CustomerOrderFlat>, SqlServerLoader>();
 
         services.AddHostedService<EtlWorker>();
     });
 
 await builder.RunConsoleAsync();
-
-// var builder = Host.CreateApplicationBuilder(args);
-// builder.Services.AddHostedService<Worker>();
-
-// var host = builder.Build();
-// host.Run();

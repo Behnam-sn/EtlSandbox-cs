@@ -1,20 +1,22 @@
 using System.Data;
 
 using EtlSandbox.Domain;
+using EtlSandbox.Domain.Configurations;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure;
 
 public class SqlServerLoader : ILoader<CustomerOrderFlat>
 {
-    private readonly string _connectionString;
+    private readonly string _destinationConnectionString;
     private readonly ILogger<SqlServerLoader> _logger;
 
-    public SqlServerLoader(string connectionString, ILogger<SqlServerLoader> logger)
+    public SqlServerLoader(IOptions<ConnectionStrings> options, ILogger<SqlServerLoader> logger)
     {
-        _connectionString = connectionString;
+        _destinationConnectionString = options.Value.SqlServer;
         _logger = logger;
     }
 
@@ -31,9 +33,9 @@ public class SqlServerLoader : ILoader<CustomerOrderFlat>
             table.Rows.Add(item.RentalId, item.CustomerName, item.Amount, item.RentalDate);
         }
 
-        using var bulkCopy = new SqlBulkCopy(_connectionString)
+        using var bulkCopy = new SqlBulkCopy(_destinationConnectionString)
         {
-            DestinationTableName = "CustomerOrderFlat"
+            DestinationTableName = "CustomerOrders"
         };
 
         _logger.LogInformation("Loading {Count} rows into SQL Server", data.Count());
