@@ -2,12 +2,6 @@ using EtlSandbox.Domain;
 using EtlSandbox.Infrastructure;
 using EtlSandbox.Worker;
 
-// var builder = Host.CreateApplicationBuilder(args);
-// builder.Services.AddHostedService<Worker>();
-
-// var host = builder.Build();
-// host.Run();
-
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
@@ -22,3 +16,9 @@ var builder = Host.CreateDefaultBuilder(args)
     });
 
 await builder.RunConsoleAsync();
+
+// var builder = Host.CreateApplicationBuilder(args);
+// builder.Services.AddHostedService<Worker>();
+
+// var host = builder.Build();
+// host.Run();
