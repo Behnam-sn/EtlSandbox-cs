@@ -1,36 +1,37 @@
-﻿using Dapper;
 
-using EtlSandbox.Application;
+using System.Net.Http.Json;
+
+using Dapper;
+
 using EtlSandbox.Domain;
 using EtlSandbox.Domain.Configurations;
 
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure;
 
-public sealed class SqlExtractor : IExtractor<CustomerOrderFlat>
+public sealed class RestExtractor : IExtractor<CustomerOrderFlat>
 {
-    private const int BatchSize = 100_000;
-    private readonly ILogger<SqlExtractor> _logger;
-    private readonly CustomerOrderFlatService _customerOrderFlatService;
+    private readonly ILogger<RestExtractor> _logger;
+    private readonly HttpClient _httpClient;
     private readonly string _destinationConnectionString;
 
-    public SqlExtractor(ILogger<SqlExtractor> logger, CustomerOrderFlatService customerOrderFlatService, IOptions<ConnectionStrings> options)
+    public RestExtractor(ILogger<RestExtractor> logger, IHttpClientFactory httpClientFactory, IOptions<ConnectionStrings> options)
     {
         _logger = logger;
-        _customerOrderFlatService = customerOrderFlatService;
+        _httpClient = httpClientFactory.CreateClient();
         _destinationConnectionString = options.Value.SqlServer;
     }
 
     public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(DateTime since, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Extracting data since {Since}", since);
-        var result = await _customerOrderFlatService.GetCustomerOrderFlatsAsync(since);
-        _logger.LogInformation("Extracted {Count} rows", result.Count);
-        return result.ToList();
+        var url = "http://localhost:5050/api/customers";
+        url += $"?since={since:o}";
+
+        var customers = await _httpClient.GetFromJsonAsync<List<CustomerOrderFlat>>(url);
+        return customers ?? [];
     }
 
     public async Task<DateTime> GetLastProcessedTimestampAsync()

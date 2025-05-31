@@ -13,6 +13,8 @@ var builder = Host.CreateDefaultBuilder(args)
         //     options.UseSqlServer(sqlServerConnection)
         // );
 
+        services.AddHttpClient();
+
         services.Configure<ConnectionStrings>(
             hostContext.Configuration.GetSection("ConnectionStrings")
         );
@@ -25,7 +27,7 @@ var builder = Host.CreateDefaultBuilder(args)
         });
 
         services.AddSingleton<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddSingleton<IExtractor<CustomerOrderFlat>, SqlExtractor>();
+        services.AddSingleton<IExtractor<CustomerOrderFlat>, RestExtractor>();
         services.AddSingleton<ILoader<CustomerOrderFlat>, SqlServerLoader>();
 
         services.AddHostedService<EtlWorker>();

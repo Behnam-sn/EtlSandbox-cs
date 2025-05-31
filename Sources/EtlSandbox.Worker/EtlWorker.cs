@@ -2,7 +2,7 @@ using EtlSandbox.Domain;
 
 namespace EtlSandbox.Worker;
 
-public class EtlWorker : BackgroundService
+public sealed class EtlWorker : BackgroundService
 {
     private readonly ILogger<EtlWorker> _logger;
     private readonly IExtractor<CustomerOrderFlat> _extractor;
