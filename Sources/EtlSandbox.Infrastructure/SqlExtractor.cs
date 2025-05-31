@@ -1,8 +1,7 @@
 ﻿using Dapper;
 
-using EtlSandbox.Application;
 using EtlSandbox.Domain;
-using EtlSandbox.Domain.Configurations;
+using EtlSandbox.Shared.Configurations;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

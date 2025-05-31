@@ -1,14 +1,14 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain;
-using EtlSandbox.Domain.Configurations;
+using EtlSandbox.Shared.Configurations;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using MySql.Data.MySqlClient;
 
-namespace EtlSandbox.Application;
+namespace EtlSandbox.Infrastructure;
 
 public sealed class CustomerOrderFlatService
 {

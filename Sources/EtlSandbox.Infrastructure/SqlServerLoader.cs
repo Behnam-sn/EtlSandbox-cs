@@ -1,7 +1,7 @@
 using System.Data;
 
 using EtlSandbox.Domain;
-using EtlSandbox.Domain.Configurations;
+using EtlSandbox.Shared.Configurations;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;

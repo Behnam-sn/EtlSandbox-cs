@@ -1,6 +1,6 @@
 using EtlSandbox.Domain;
-using EtlSandbox.Domain.Configurations;
 using EtlSandbox.Infrastructure;
+using EtlSandbox.Shared.Configurations;
 using EtlSandbox.Worker;
 
 var builder = Host.CreateDefaultBuilder(args)
@@ -15,9 +15,7 @@ var builder = Host.CreateDefaultBuilder(args)
 
         services.AddHttpClient();
 
-        services.Configure<ConnectionStrings>(
-            hostContext.Configuration.GetSection("ConnectionStrings")
-        );
+        services.ConfigureOptions<ConnectionStringsSetup>();
 
         services.AddLogging(logging =>
         {
@@ -26,9 +24,11 @@ var builder = Host.CreateDefaultBuilder(args)
             logging.SetMinimumLevel(LogLevel.Information);
         });
 
-        services.AddSingleton<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddSingleton<IExtractor<CustomerOrderFlat>, RestExtractor>();
-        services.AddSingleton<ILoader<CustomerOrderFlat>, SqlServerLoader>();
+        services.AddScoped<CustomerOrderFlatService>();
+        services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>, SqlExtractor>();
+        // services.AddScoped<IExtractor<CustomerOrderFlat>, RestExtractor>();
+        services.AddScoped<ILoader<CustomerOrderFlat>, SqlServerLoader>();
 
         services.AddHostedService<EtlWorker>();
     });

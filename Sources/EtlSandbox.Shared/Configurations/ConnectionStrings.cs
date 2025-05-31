@@ -1,4 +1,4 @@
-namespace EtlSandbox.WebApi.Configurations;
+namespace EtlSandbox.Shared.Configurations;
 
 public sealed class ConnectionStrings
 {

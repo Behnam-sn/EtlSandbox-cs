@@ -1,5 +1,5 @@
-using EtlSandbox.WebApi.Configurations;
-using EtlSandbox.WebApi.Controllers;
+using EtlSandbox.Infrastructure;
+using EtlSandbox.Shared.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.ConfigureOptions<ConnectionStringsSetup>();
-builder.Services.AddScoped<CustomersService>();
+builder.Services.AddScoped<CustomerOrderFlatService>();
 
 
 var app = builder.Build();

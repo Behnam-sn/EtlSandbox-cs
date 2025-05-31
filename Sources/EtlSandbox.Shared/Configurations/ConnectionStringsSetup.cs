@@ -1,6 +1,7 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace EtlSandbox.WebApi.Configurations;
+namespace EtlSandbox.Shared.Configurations;
 
 public sealed class ConnectionStringsSetup : IConfigureOptions<ConnectionStrings>
 {

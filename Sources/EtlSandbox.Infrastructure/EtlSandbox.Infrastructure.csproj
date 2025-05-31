@@ -10,6 +10,7 @@
     <ProjectReference Include="..\EtlSandbox.Application\EtlSandbox.Application.csproj" />
     <ProjectReference Include="..\EtlSandbox.Domain\EtlSandbox.Domain.csproj" />
     <ProjectReference Include="..\EtlSandbox.Persistence\EtlSandbox.Persistence.csproj" />
+    <ProjectReference Include="..\EtlSandbox.Shared\EtlSandbox.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
