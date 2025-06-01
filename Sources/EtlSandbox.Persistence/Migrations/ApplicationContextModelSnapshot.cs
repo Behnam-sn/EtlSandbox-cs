@@ -57,8 +57,8 @@ namespace EtlSandbox.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("LastProcessedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("LastProcessedId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

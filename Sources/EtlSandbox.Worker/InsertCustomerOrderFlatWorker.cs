@@ -2,25 +2,15 @@ using EtlSandbox.Domain;
 
 namespace EtlSandbox.Worker;
 
-public sealed class EtlWorker : BackgroundService
+public sealed class InsertCustomerOrderFlatWorker : BackgroundService
 {
-    private readonly ILogger<EtlWorker> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    // private readonly IExtractor<CustomerOrderFlat> _extractor;
-    // private readonly ITransformer<CustomerOrderFlat> _transformer;
-    // private readonly ILoader<CustomerOrderFlat> _loader;
+    private readonly ILogger<InsertCustomerOrderFlatWorker> _logger;
 
-    public EtlWorker(
-        ILogger<EtlWorker> logger,
-        // IExtractor<CustomerOrderFlat> extractor,
-        // ITransformer<CustomerOrderFlat> transformer,
-        // ILoader<CustomerOrderFlat> loader,
-        IServiceProvider serviceProvider)
+    private readonly IServiceProvider _serviceProvider;
+
+    public InsertCustomerOrderFlatWorker(ILogger<InsertCustomerOrderFlatWorker> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        // _extractor = extractor;
-        // _transformer = transformer;
-        // _loader = loader;
         _serviceProvider = serviceProvider;
     }
 
@@ -29,6 +19,8 @@ public sealed class EtlWorker : BackgroundService
         _logger.LogInformation("ETL Worker started");
 
         using var scope = _serviceProvider.CreateScope();
+
+        var etlStateCommandRepository = scope.ServiceProvider.GetRequiredService<IEtlStateCommandRepository>();
         var extractor = scope.ServiceProvider.GetRequiredService<IExtractor<CustomerOrderFlat>>();
         var transformer = scope.ServiceProvider.GetRequiredService<ITransformer<CustomerOrderFlat>>();
         var loader = scope.ServiceProvider.GetRequiredService<ILoader<CustomerOrderFlat>>();
@@ -37,14 +29,14 @@ public sealed class EtlWorker : BackgroundService
         {
             try
             {
-                var since = await extractor.GetLastProcessedTimestampAsync();
-                var data = await extractor.ExtractAsync(since, stoppingToken);
+                var lastProcessedId = await etlStateCommandRepository.GetLastProcessedIdAsync();
+                var data = await extractor.ExtractAsync(lastProcessedId, stoppingToken);
 
                 if (data.Any())
                 {
                     var transformed = data.Select(transformer.Transform).ToList();
                     await loader.LoadAsync(transformed, stoppingToken);
-                    await extractor.UpdateLastProcessedTimestampAsync(data.Max(x => x.RentalDate));
+                    await etlStateCommandRepository.UpdateLastProcessedIdAsync(data.Max(x => x.RentalId));
                 }
                 else
                 {
@@ -59,7 +51,6 @@ public sealed class EtlWorker : BackgroundService
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
         }
-
 
         _logger.LogInformation("ETL Worker stopped");
     }

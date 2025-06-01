@@ -1,36 +1,31 @@
 using EtlSandbox.Domain;
 using EtlSandbox.Infrastructure;
+using EtlSandbox.Shared;
 using EtlSandbox.Shared.Configurations;
 using EtlSandbox.Worker;
 
-var builder = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((hostContext, services) =>
-    {
-        // var config = hostContext.Configuration;
-        // var sqlServerConnection = config.GetConnectionString("SqlServer")!;
+var builder = Host.CreateApplicationBuilder(args);
 
-        // services.AddDbContext<EtlDbContext>(options =>
-        //     options.UseSqlServer(sqlServerConnection)
-        // );
+builder.Configuration.AddSharedConfiguration();
 
-        services.AddHttpClient();
+builder.Services.AddHttpClient();
 
-        services.ConfigureOptions<ConnectionStringsSetup>();
+builder.Services.ConfigureOptions<ConnectionStringsSetup>();
 
-        services.AddLogging(logging =>
-        {
-            logging.ClearProviders();
-            logging.AddConsole();
-            logging.SetMinimumLevel(LogLevel.Information);
-        });
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+    logging.SetMinimumLevel(LogLevel.Information);
+});
 
-        services.AddScoped<CustomerOrderFlatService>();
-        services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddScoped<IExtractor<CustomerOrderFlat>, SqlExtractor>();
-        // services.AddScoped<IExtractor<CustomerOrderFlat>, RestExtractor>();
-        services.AddScoped<ILoader<CustomerOrderFlat>, SqlServerLoader>();
+builder.Services.AddScoped<IEtlStateCommandRepository, EtlStateCommandRepository>();
+builder.Services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
+// builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatDbExtractor>();
+builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
+builder.Services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlServerLoader>();
 
-        services.AddHostedService<EtlWorker>();
-    });
+builder.Services.AddHostedService<InsertCustomerOrderFlatWorker>();
 
-await builder.RunConsoleAsync();
+var host = builder.Build();
+await host.RunAsync();

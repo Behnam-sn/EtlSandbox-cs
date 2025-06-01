@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EtlSandbox.Infrastructure;
 
-public class CustomerOrderFlatTransformer : ITransformer<CustomerOrderFlat>
+public sealed class CustomerOrderFlatTransformer : ITransformer<CustomerOrderFlat>
 {
     private readonly ILogger<CustomerOrderFlatTransformer> _logger;
 

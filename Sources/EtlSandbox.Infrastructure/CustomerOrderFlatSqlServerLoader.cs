@@ -9,12 +9,12 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure;
 
-public class SqlServerLoader : ILoader<CustomerOrderFlat>
+public class CustomerOrderFlatSqlServerLoader : ILoader<CustomerOrderFlat>
 {
     private readonly string _destinationConnectionString;
-    private readonly ILogger<SqlServerLoader> _logger;
+    private readonly ILogger<CustomerOrderFlatSqlServerLoader> _logger;
 
-    public SqlServerLoader(IOptions<ConnectionStrings> options, ILogger<SqlServerLoader> logger)
+    public CustomerOrderFlatSqlServerLoader(IOptions<ConnectionStrings> options, ILogger<CustomerOrderFlatSqlServerLoader> logger)
     {
         _destinationConnectionString = options.Value.SqlServer;
         _logger = logger;

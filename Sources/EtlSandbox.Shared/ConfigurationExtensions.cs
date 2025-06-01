@@ -4,13 +4,13 @@ namespace EtlSandbox.Shared;
 
 public static class ConfigurationExtensions
 {
-    public static IConfiguration AddSharedConfiguration()
+    public static void AddSharedConfiguration(this IConfigurationBuilder config)
     {
-        return new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false)
-            .AddJsonFile("../Shared/appsettings.Shared.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
+        // config
+        // .SetBasePath(Directory.GetCurrentDirectory())
+        // .AddJsonFile("appsettings.json", optional: false)
+        // .AddJsonFile("appsettings.Shared.json", optional: true);
+        // .AddEnvironmentVariables()
+        // .Build();
     }
 }

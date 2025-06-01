@@ -1,15 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace EtlSandbox.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCustomerOrderFlatNullablity : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "LastProcessedAt",
+                table: "EtlStates");
+
+            migrationBuilder.AddColumn<int>(
+                name: "LastProcessedId",
+                table: "EtlStates",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AlterColumn<string>(
                 name: "CustomerName",
                 table: "CustomerOrders",
@@ -34,6 +46,17 @@ namespace EtlSandbox.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "LastProcessedId",
+                table: "EtlStates");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "LastProcessedAt",
+                table: "EtlStates",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.AlterColumn<string>(
                 name: "CustomerName",
                 table: "CustomerOrders",

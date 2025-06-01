@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.Persistence.Migrations
 {
     [DbContext(typeof(EtlDbContext))]
-    [Migration("20250519133552_AddCustomerOrderFlatNullablity")]
-    partial class AddCustomerOrderFlatNullablity
+    [Migration("20250601090055_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,8 +60,8 @@ namespace EtlSandbox.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("LastProcessedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("LastProcessedId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

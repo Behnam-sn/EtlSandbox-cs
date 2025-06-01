@@ -10,22 +10,23 @@ using MySql.Data.MySqlClient;
 
 namespace EtlSandbox.Infrastructure;
 
-public sealed class CustomerOrderFlatService
+public sealed class CustomerOrderFlatDbExtractor : IExtractor<CustomerOrderFlat>
 {
     private const int BatchSize = 100_000;
 
-    private readonly ILogger<CustomerOrderFlatService> _logger;
+    private readonly ILogger<CustomerOrderFlatDbExtractor> _logger;
+
     private readonly string _sourceConnectionString;
 
-    public CustomerOrderFlatService(ILogger<CustomerOrderFlatService> logger, IOptions<ConnectionStrings> options)
+    public CustomerOrderFlatDbExtractor(ILogger<CustomerOrderFlatDbExtractor> logger, IOptions<ConnectionStrings> options)
     {
         _logger = logger;
         _sourceConnectionString = options.Value.MySql;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderFlat>> GetCustomerOrderFlatsAsync(DateTime since)
+    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, CancellationToken cancellationToken)
     {
-        using var connection = new MySqlConnection(_sourceConnectionString);
+        await using var connection = new MySqlConnection(_sourceConnectionString);
         var sql = @"
             SELECT r.rental_id AS RentalId,
                    CONCAT(c.first_name, ' ', c.last_name) AS CustomerName,
@@ -39,12 +40,16 @@ public sealed class CustomerOrderFlatService
             INNER JOIN film f ON f.film_id = i.film_id
             INNER JOIN film_category fc ON fc.film_id = f.film_id
             INNER JOIN category cat ON cat.category_id = fc.category_id
-            WHERE r.rental_date > @Since AND p.amount > 2.00
+            WHERE r.rental_id > @LastProcessedId
             ORDER BY r.rental_date
             LIMIT @BatchSize
         ";
 
-        var result = await connection.QueryAsync<CustomerOrderFlat>(sql, new { Since = since, BatchSize });
+        var result = await connection.QueryAsync<CustomerOrderFlat>(sql, new
+        {
+            LastProcessedId = lastProcessedId,
+            BatchSize
+        });
         return result.ToList();
     }
 }

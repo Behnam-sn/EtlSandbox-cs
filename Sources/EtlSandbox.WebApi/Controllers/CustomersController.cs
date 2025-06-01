@@ -1,5 +1,4 @@
 using EtlSandbox.Domain;
-using EtlSandbox.Infrastructure;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,17 +7,20 @@ namespace EtlSandbox.WebApi.Controllers;
 [Route("api/customers")]
 public sealed class CustomersController : ControllerBase
 {
-    private readonly CustomerOrderFlatService _customerOrderFlatService;
+    private readonly ILogger<CustomersController> _logger;
 
-    public CustomersController(CustomerOrderFlatService customerOrderFlatService)
+    private readonly IExtractor<CustomerOrderFlat> _extractor;
+
+    public CustomersController(ILogger<CustomersController> logger, IExtractor<CustomerOrderFlat> extractor)
     {
-        _customerOrderFlatService = customerOrderFlatService;
+        _logger = logger;
+        _extractor = extractor;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CustomerOrderFlat>>> GetAsync(DateTime since, CancellationToken cancellationToken)
+    public async Task<ActionResult<List<CustomerOrderFlat>>> GetAsync(int lastProcessedId, CancellationToken cancellationToken)
     {
-        var items = await _customerOrderFlatService.GetCustomerOrderFlatsAsync(since);
+        var items = await _extractor.ExtractAsync(lastProcessedId, cancellationToken);
         return Ok(items);
     }
 }
