@@ -6,6 +6,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
+using EtlSandbox.Infrastructure.Shared.ApiClient;
 using EtlSandbox.Persistence;
 using EtlSandbox.Shared;
 using EtlSandbox.Shared.Configurations;
@@ -35,6 +36,8 @@ builder.Services.AddLogging(logging =>
     logging.AddConsole();
     logging.SetMinimumLevel(LogLevel.Information);
 });
+
+builder.Services.AddScoped<IApiClient, FlurlApiClient>();
 
 builder.Services.AddScoped<IEtlStateCommandRepository, EtlStateCommandRepository>();
 builder.Services.AddScoped<ICommandRepository<CustomerOrderFlat>, CustomerOrderFlatEfCommandRepository>();
