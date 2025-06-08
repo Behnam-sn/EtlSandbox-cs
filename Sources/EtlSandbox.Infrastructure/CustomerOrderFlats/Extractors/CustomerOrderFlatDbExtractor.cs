@@ -1,6 +1,7 @@
 ﻿using Dapper;
 
-using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Shared.Configurations;
 
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 using MySql.Data.MySqlClient;
 
-namespace EtlSandbox.Infrastructure;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
 public sealed class CustomerOrderFlatDbExtractor : IExtractor<CustomerOrderFlat>
 {

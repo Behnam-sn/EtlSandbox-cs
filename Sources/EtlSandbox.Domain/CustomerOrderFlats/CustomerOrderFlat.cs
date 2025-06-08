@@ -1,4 +1,4 @@
-﻿namespace EtlSandbox.Domain;
+﻿namespace EtlSandbox.Domain.CustomerOrderFlats;
 
 public sealed class CustomerOrderFlat
 {

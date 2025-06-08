@@ -1,9 +1,15 @@
 using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Persistence;
 using EtlSandbox.Shared;
 using EtlSandbox.Shared.Configurations;
-using EtlSandbox.Worker.Workers;
+using EtlSandbox.Worker.CustomerOrderFlats.Workers;
 
 using Microsoft.EntityFrameworkCore;
 

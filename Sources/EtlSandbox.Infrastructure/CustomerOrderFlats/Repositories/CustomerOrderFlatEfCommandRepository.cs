@@ -1,9 +1,10 @@
-﻿using EtlSandbox.Domain;
+﻿using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Persistence;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Infrastructure;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 
 public sealed class CustomerOrderFlatEfCommandRepository : ICommandRepository<CustomerOrderFlat>
 {

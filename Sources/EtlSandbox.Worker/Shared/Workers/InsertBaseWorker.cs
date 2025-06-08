@@ -1,6 +1,6 @@
-﻿using EtlSandbox.Domain;
+﻿using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.Worker.Workers;
+namespace EtlSandbox.Worker.Shared.Workers;
 
 public abstract class InsertBaseWorker<T> : BackgroundService
 {

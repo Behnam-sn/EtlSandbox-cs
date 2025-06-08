@@ -1,5 +1,8 @@
 using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Shared;
 using EtlSandbox.Shared.Configurations;
 

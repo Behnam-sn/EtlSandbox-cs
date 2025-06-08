@@ -1,13 +1,14 @@
 using System.Data;
 
-using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Shared.Configurations;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace EtlSandbox.Infrastructure;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
 public class CustomerOrderFlatSqlServerLoader : ILoader<CustomerOrderFlat>
 {

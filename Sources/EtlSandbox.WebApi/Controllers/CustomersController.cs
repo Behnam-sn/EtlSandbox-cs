@@ -1,4 +1,6 @@
 using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,8 +1,9 @@
-using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 
 using Microsoft.Extensions.Logging;
 
-namespace EtlSandbox.Infrastructure;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 
 public sealed class CustomerOrderFlatTransformer : ITransformer<CustomerOrderFlat>
 {

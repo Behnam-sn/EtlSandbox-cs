@@ -1,4 +1,4 @@
-﻿namespace EtlSandbox.Domain;
+﻿namespace EtlSandbox.Domain.Shared;
 
 public interface IEtlStateCommandRepository
 {

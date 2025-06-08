@@ -1,10 +1,11 @@
 ﻿using System.Net.Http.Json;
 
-using EtlSandbox.Domain;
+using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.Shared;
 
 using Microsoft.Extensions.Logging;
 
-namespace EtlSandbox.Infrastructure;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
 public sealed class CustomerOrderFlatRestApiExtractor : IExtractor<CustomerOrderFlat>
 {
