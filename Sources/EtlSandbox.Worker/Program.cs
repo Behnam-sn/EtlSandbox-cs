@@ -7,6 +7,7 @@ builder.Configuration.AddSharedConfiguration();
 
 builder.Services.AddConfigureOptions();
 builder.Services.AddLogs();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPresentation();
 

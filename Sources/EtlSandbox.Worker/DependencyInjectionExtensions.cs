@@ -30,6 +30,14 @@ internal static class DependencyInjectionExtensions
             logging.SetMinimumLevel(LogLevel.Information);
         });
     }
+    
+    public static void AddApplication(this IServiceCollection services)
+    {
+        // MediatR
+        services.AddMediatR(
+            config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly)
+        );
+    }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
