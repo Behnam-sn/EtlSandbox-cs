@@ -1,6 +1,5 @@
 ﻿using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.Shared.ApiClient;
 
 using Microsoft.Extensions.Logging;
 
@@ -10,21 +9,25 @@ public sealed class CustomerOrderFlatRestApiExtractor : IExtractor<CustomerOrder
 {
     private readonly ILogger<CustomerOrderFlatRestApiExtractor> _logger;
 
-    private readonly IApiClient _apiClient;
-    private readonly string _baseUrl;
-    private readonly string _path = "/api/customers";
+    private readonly IRestApiClient _restApiClient;
 
-    public CustomerOrderFlatRestApiExtractor(ILogger<CustomerOrderFlatRestApiExtractor> logger, IApiClient apiClient)
+    private readonly string _baseUrl;
+
+    public CustomerOrderFlatRestApiExtractor(ILogger<CustomerOrderFlatRestApiExtractor> logger, IRestApiClient restApiClient)
     {
         _logger = logger;
-        _apiClient = apiClient;
-        _baseUrl = "http://localhost:5050"; // Optionally inject this
+        _restApiClient = restApiClient;
+        _baseUrl = "http://localhost:5050/api"; // Optionally inject this
     }
 
     public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
     {
-        var queryParams = new { lastProcessedId, batchSize };
-        var customers = await _apiClient.GetAsync<List<CustomerOrderFlat>>(_baseUrl, _path, queryParams, cancellationToken);
-        return customers ?? [];
+        var items = await _restApiClient.GetAsync<List<CustomerOrderFlat>>(
+            baseUrl: _baseUrl,
+            path: "customers",
+            queryParams: new { lastProcessedId, batchSize },
+            cancellationToken: cancellationToken
+        );
+        return items ?? [];
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Dapper;
 
-using EtlSandbox.Domain;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Shared.Configurations;
 

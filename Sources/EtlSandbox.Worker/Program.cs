@@ -1,4 +1,3 @@
-using EtlSandbox.Domain;
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure;
@@ -37,7 +36,7 @@ builder.Services.AddLogging(logging =>
     logging.SetMinimumLevel(LogLevel.Information);
 });
 
-builder.Services.AddScoped<IApiClient, FlurlApiClient>();
+builder.Services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
 builder.Services.AddScoped<IEtlStateCommandRepository, EtlStateCommandRepository>();
 builder.Services.AddScoped<ICommandRepository<CustomerOrderFlat>, CustomerOrderFlatEfCommandRepository>();

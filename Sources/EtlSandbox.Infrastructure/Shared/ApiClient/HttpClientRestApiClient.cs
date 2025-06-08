@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+
+using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Infrastructure.Shared.ApiClient;
 
-public class HttpClientApiClient : IApiClient
+public class HttpClientRestApiClient : IRestApiClient
 {
     private readonly HttpClient _httpClient;
 
-    public HttpClientApiClient(HttpClient httpClient)
+    public HttpClientRestApiClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
