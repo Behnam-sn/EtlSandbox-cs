@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.ConfigureOptions<ConnectionStringsSetup>();
-builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatDbExtractor>();
+builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatDapperExtractor>();
 
 
 var app = builder.Build();

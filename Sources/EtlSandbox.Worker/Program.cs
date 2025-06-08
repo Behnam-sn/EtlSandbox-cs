@@ -41,7 +41,7 @@ builder.Services.AddScoped<ICommandRepository<CustomerOrderFlat>, CustomerOrderF
 builder.Services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
 // builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatDbExtractor>();
 builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
-builder.Services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlServerLoader>();
+builder.Services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlBulkCopyLoader>();
 
 builder.Services.AddHostedService<InsertCustomerOrderFlatWorker>();
 

@@ -10,12 +10,12 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public class CustomerOrderFlatSqlServerLoader : ILoader<CustomerOrderFlat>
+public class CustomerOrderFlatSqlBulkCopyLoader : ILoader<CustomerOrderFlat>
 {
     private readonly string _destinationConnectionString;
-    private readonly ILogger<CustomerOrderFlatSqlServerLoader> _logger;
+    private readonly ILogger<CustomerOrderFlatSqlBulkCopyLoader> _logger;
 
-    public CustomerOrderFlatSqlServerLoader(IOptions<ConnectionStrings> options, ILogger<CustomerOrderFlatSqlServerLoader> logger)
+    public CustomerOrderFlatSqlBulkCopyLoader(IOptions<ConnectionStrings> options, ILogger<CustomerOrderFlatSqlBulkCopyLoader> logger)
     {
         _destinationConnectionString = options.Value.SqlServer;
         _logger = logger;

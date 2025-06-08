@@ -11,13 +11,13 @@ using MySql.Data.MySqlClient;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
-public sealed class CustomerOrderFlatDbExtractor : IExtractor<CustomerOrderFlat>
+public sealed class CustomerOrderFlatDapperExtractor : IExtractor<CustomerOrderFlat>
 {
-    private readonly ILogger<CustomerOrderFlatDbExtractor> _logger;
+    private readonly ILogger<CustomerOrderFlatDapperExtractor> _logger;
 
     private readonly string _sourceConnectionString;
 
-    public CustomerOrderFlatDbExtractor(ILogger<CustomerOrderFlatDbExtractor> logger, IOptions<ConnectionStrings> options)
+    public CustomerOrderFlatDapperExtractor(ILogger<CustomerOrderFlatDapperExtractor> logger, IOptions<ConnectionStrings> options)
     {
         _logger = logger;
         _sourceConnectionString = options.Value.MySql;
