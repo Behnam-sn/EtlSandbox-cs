@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: sakila
     ports:
-      - "3495:3306"
+      - "5001:3306"
     volumes:
       - ./mysql-data:/var/lib/mysql
       - ./sakila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
@@ -21,6 +21,6 @@ services:
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
     ports:
-      - "3496:1433"
+      - "5002:1433"
     # volumes:
     #   - ./sqlserver-init:/var/opt/mssql/scripts

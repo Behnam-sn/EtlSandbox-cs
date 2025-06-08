@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EtlSandbox.Persistence.Migrations
 {
-    [DbContext(typeof(EtlDbContext))]
-    [Migration("20250601090055_Initial")]
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20250608153722_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

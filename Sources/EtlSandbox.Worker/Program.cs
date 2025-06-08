@@ -1,9 +1,11 @@
 using EtlSandbox.Domain;
 using EtlSandbox.Infrastructure;
+using EtlSandbox.Persistence;
 using EtlSandbox.Shared;
 using EtlSandbox.Shared.Configurations;
-using EtlSandbox.Worker;
 using EtlSandbox.Worker.Workers;
+
+using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -13,6 +15,14 @@ builder.Services.AddHttpClient();
 
 builder.Services.ConfigureOptions<ConnectionStringsSetup>();
 
+var connectionString = builder.Configuration.GetConnectionString("SqlServer") ??
+    throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+    connectionString,
+    bb => { bb.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); })
+);
+
 builder.Services.AddLogging(logging =>
 {
     logging.ClearProviders();
@@ -21,6 +31,7 @@ builder.Services.AddLogging(logging =>
 });
 
 builder.Services.AddScoped<IEtlStateCommandRepository, EtlStateCommandRepository>();
+builder.Services.AddScoped<ICommandRepository<CustomerOrderFlat>, CustomerOrderFlatEfCommandRepository>();
 builder.Services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
 // builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatDbExtractor>();
 builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();

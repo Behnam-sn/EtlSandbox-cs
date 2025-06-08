@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EtlSandbox.Persistence.Migrations
 {
-    [DbContext(typeof(EtlDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250519100644_AddEtlStates")]
     partial class AddEtlStates
     {

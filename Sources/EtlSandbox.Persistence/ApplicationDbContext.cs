@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.Persistence;
 
-public class EtlDbContext : DbContext
+public class ApplicationDbContext : DbContext
 {
-    public EtlDbContext(DbContextOptions<EtlDbContext> options) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
