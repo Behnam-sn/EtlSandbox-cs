@@ -17,9 +17,9 @@ public sealed class CustomerOrderFlatRestApiExtractor : IExtractor<CustomerOrder
         _httpClient = httpClientFactory.CreateClient();
     }
 
-    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId,int batchSize, CancellationToken cancellationToken)
     {
-        var url = $"http://localhost:5050/api/customers?lastProcessedId={lastProcessedId}";
+        var url = $"http://localhost:5050/api/customers?lastProcessedId={lastProcessedId}&batchSize={batchSize}";
         var customers = await _httpClient.GetFromJsonAsync<List<CustomerOrderFlat>>(url, cancellationToken);
         return customers ?? [];
     }

@@ -12,8 +12,6 @@ namespace EtlSandbox.Infrastructure;
 
 public sealed class CustomerOrderFlatDbExtractor : IExtractor<CustomerOrderFlat>
 {
-    private const int BatchSize = 100_000;
-
     private readonly ILogger<CustomerOrderFlatDbExtractor> _logger;
 
     private readonly string _sourceConnectionString;
@@ -24,7 +22,7 @@ public sealed class CustomerOrderFlatDbExtractor : IExtractor<CustomerOrderFlat>
         _sourceConnectionString = options.Value.MySql;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
     {
         await using var connection = new MySqlConnection(_sourceConnectionString);
         var sql = @"
@@ -48,7 +46,7 @@ public sealed class CustomerOrderFlatDbExtractor : IExtractor<CustomerOrderFlat>
         var result = await connection.QueryAsync<CustomerOrderFlat>(sql, new
         {
             LastProcessedId = lastProcessedId,
-            BatchSize
+            BatchSize = batchSize
         });
         return result.ToList();
     }

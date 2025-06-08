@@ -4,6 +4,8 @@ namespace EtlSandbox.Worker.Workers;
 
 public abstract class InsertBaseWorker<T> : BackgroundService
 {
+    private const int BatchSize = 100_000;
+    
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
@@ -31,6 +33,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
 
                 var data = await extractor.ExtractAsync(
                     lastProcessedId,
+                    BatchSize,
                     stoppingToken
                 );
 
