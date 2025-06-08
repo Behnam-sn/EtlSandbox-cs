@@ -2,7 +2,7 @@ using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Shared;
-using EtlSandbox.Shared.Configurations;
+using EtlSandbox.Shared.ConfigureOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 

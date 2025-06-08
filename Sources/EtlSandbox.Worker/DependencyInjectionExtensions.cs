@@ -7,7 +7,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.Shared.ApiClient;
 using EtlSandbox.Persistence;
-using EtlSandbox.Shared.Configurations;
+using EtlSandbox.Shared.ConfigureOptions;
 using EtlSandbox.Worker.CustomerOrderFlats.Workers;
 
 using Microsoft.EntityFrameworkCore;

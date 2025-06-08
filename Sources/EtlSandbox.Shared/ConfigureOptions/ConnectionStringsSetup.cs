@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace EtlSandbox.Shared.Configurations;
+namespace EtlSandbox.Shared.ConfigureOptions;
 
 public sealed class ConnectionStringsSetup : IConfigureOptions<ConnectionStrings>
 {
