@@ -3,6 +3,7 @@ using EtlSandbox.Infrastructure;
 using EtlSandbox.Shared;
 using EtlSandbox.Shared.Configurations;
 using EtlSandbox.Worker;
+using EtlSandbox.Worker.Workers;
 
 var builder = Host.CreateApplicationBuilder(args);
 

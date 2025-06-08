@@ -1,6 +1,6 @@
 using EtlSandbox.Domain;
 
-namespace EtlSandbox.Worker;
+namespace EtlSandbox.Worker.Workers;
 
 public sealed class InsertCustomerOrderFlatWorker : BackgroundService
 {
