@@ -2,7 +2,7 @@ using System.Data;
 
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Shared.ConfigureOptions;
+using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
