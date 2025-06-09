@@ -5,7 +5,7 @@ using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Infrastructure.Shared.ApiClient;
 
-public class HttpClientRestApiClient : IRestApiClient
+public sealed class HttpClientRestApiClient : IRestApiClient
 {
     private readonly HttpClient _httpClient;
 
@@ -43,5 +43,4 @@ public class HttpClientRestApiClient : IRestApiClient
         }
         return uriBuilder.ToString();
     }
-    // You can implement PostAsync, PutAsync, etc. here as needed
 }

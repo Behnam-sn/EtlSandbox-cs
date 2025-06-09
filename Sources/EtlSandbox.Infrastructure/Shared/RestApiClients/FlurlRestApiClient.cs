@@ -5,7 +5,7 @@ using Flurl.Http;
 
 namespace EtlSandbox.Infrastructure.Shared.ApiClient;
 
-public class FlurlRestApiClient : IRestApiClient
+public sealed class FlurlRestApiClient : IRestApiClient
 {
     public async Task<T?> GetAsync<T>(string baseUrl, string path, object? queryParams = null, CancellationToken cancellationToken = default)
     {
