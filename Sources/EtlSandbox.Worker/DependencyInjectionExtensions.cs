@@ -19,6 +19,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<DatabaseConnectionsSetup>();
+        services.ConfigureOptions<RestApiConnectionsSetup>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -30,20 +31,18 @@ internal static class DependencyInjectionExtensions
             logging.SetMinimumLevel(LogLevel.Information);
         });
     }
-    
+
     public static void AddApplication(this IServiceCollection services)
     {
         // MediatR
-        services.AddMediatR(
-            config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly)
-        );
+        services.AddMediatR(config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly));
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Entity Framework
         var connectionString = configuration.GetSection("DatabaseConnections")["SqlServer"] ??
-                               throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
+            throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
             connectionString,

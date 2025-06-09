@@ -1,7 +1,9 @@
 ﻿using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
@@ -13,11 +15,11 @@ public sealed class CustomerOrderFlatRestApiExtractor : IExtractor<CustomerOrder
 
     private readonly string _baseUrl;
 
-    public CustomerOrderFlatRestApiExtractor(ILogger<CustomerOrderFlatRestApiExtractor> logger, IRestApiClient restApiClient)
+    public CustomerOrderFlatRestApiExtractor(ILogger<CustomerOrderFlatRestApiExtractor> logger, IRestApiClient restApiClient, IOptions<RestApiConnections> options)
     {
         _logger = logger;
         _restApiClient = restApiClient;
-        _baseUrl = "http://localhost:5050/api"; // Optionally inject this
+        _baseUrl = options.Value.WebApi;
     }
 
     public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
@@ -25,7 +27,11 @@ public sealed class CustomerOrderFlatRestApiExtractor : IExtractor<CustomerOrder
         var items = await _restApiClient.GetAsync<List<CustomerOrderFlat>>(
             baseUrl: _baseUrl,
             path: "customers",
-            queryParams: new { lastProcessedId, batchSize },
+            queryParams: new
+            {
+                lastProcessedId,
+                batchSize
+            },
             cancellationToken: cancellationToken
         );
         return items ?? [];

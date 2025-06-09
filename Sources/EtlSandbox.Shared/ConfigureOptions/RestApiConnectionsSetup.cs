@@ -1,22 +1,22 @@
-using EtlSandbox.Domain.Shared.Options;
+﻿using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Shared.ConfigureOptions;
 
-public sealed class DatabaseConnectionsSetup : IConfigureOptions<DatabaseConnections>
+public sealed class RestApiConnectionsSetup : IConfigureOptions<RestApiConnections>
 {
-    private const string SectionName = "DatabaseConnections";
+    private const string SectionName = "RestApiConnections";
 
     private readonly IConfiguration _configuration;
 
-    public DatabaseConnectionsSetup(IConfiguration configuration)
+    public RestApiConnectionsSetup(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public void Configure(DatabaseConnections options)
+    public void Configure(RestApiConnections options)
     {
         _configuration
             .GetSection(SectionName)
