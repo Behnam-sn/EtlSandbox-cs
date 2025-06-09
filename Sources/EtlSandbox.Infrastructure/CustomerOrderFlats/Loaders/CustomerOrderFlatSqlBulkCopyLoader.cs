@@ -15,7 +15,7 @@ public class CustomerOrderFlatSqlBulkCopyLoader : ILoader<CustomerOrderFlat>
     private readonly string _destinationConnectionString;
     private readonly ILogger<CustomerOrderFlatSqlBulkCopyLoader> _logger;
 
-    public CustomerOrderFlatSqlBulkCopyLoader(IOptions<ConnectionStrings> options, ILogger<CustomerOrderFlatSqlBulkCopyLoader> logger)
+    public CustomerOrderFlatSqlBulkCopyLoader(IOptions<DatabaseConnections> options, ILogger<CustomerOrderFlatSqlBulkCopyLoader> logger)
     {
         _destinationConnectionString = options.Value.SqlServer;
         _logger = logger;

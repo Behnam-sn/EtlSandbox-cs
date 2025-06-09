@@ -5,17 +5,17 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Shared.ConfigureOptions;
 
-public sealed class ConnectionStringsSetup : IConfigureOptions<ConnectionStrings>
+public sealed class DatabaseConnectionsSetup : IConfigureOptions<DatabaseConnections>
 {
-    private const string SectionName = "ConnectionStrings";
+    private const string SectionName = "DatabaseConnections";
     private readonly IConfiguration _configuration;
 
-    public ConnectionStringsSetup(IConfiguration configuration)
+    public DatabaseConnectionsSetup(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public void Configure(ConnectionStrings options)
+    public void Configure(DatabaseConnections options)
     {
         _configuration
             .GetSection(SectionName)

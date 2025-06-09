@@ -15,7 +15,7 @@ public sealed class EtlStateCommandRepository : IEtlStateCommandRepository
 
     private readonly string _destinationConnectionString;
 
-    public EtlStateCommandRepository(ILogger<EtlStateCommandRepository> logger, IOptions<ConnectionStrings> options)
+    public EtlStateCommandRepository(ILogger<EtlStateCommandRepository> logger, IOptions<DatabaseConnections> options)
     {
         _logger = logger;
         _destinationConnectionString = options.Value.SqlServer;

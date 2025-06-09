@@ -18,7 +18,7 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
-        services.ConfigureOptions<ConnectionStringsSetup>();
+        services.ConfigureOptions<DatabaseConnectionsSetup>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -42,7 +42,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Entity Framework
-        var connectionString = configuration.GetConnectionString("SqlServer") ??
+        var connectionString = configuration.GetSection("DatabaseConnections")["SqlServer"] ??
                                throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(

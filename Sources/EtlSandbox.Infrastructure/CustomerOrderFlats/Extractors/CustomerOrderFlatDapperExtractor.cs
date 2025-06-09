@@ -17,7 +17,7 @@ public sealed class CustomerOrderFlatDapperExtractor : IExtractor<CustomerOrderF
 
     private readonly string _sourceConnectionString;
 
-    public CustomerOrderFlatDapperExtractor(ILogger<CustomerOrderFlatDapperExtractor> logger, IOptions<ConnectionStrings> options)
+    public CustomerOrderFlatDapperExtractor(ILogger<CustomerOrderFlatDapperExtractor> logger, IOptions<DatabaseConnections> options)
     {
         _logger = logger;
         _sourceConnectionString = options.Value.MySql;
