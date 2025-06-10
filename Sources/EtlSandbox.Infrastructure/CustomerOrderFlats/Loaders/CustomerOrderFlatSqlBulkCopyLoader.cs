@@ -21,7 +21,7 @@ public class CustomerOrderFlatSqlBulkCopyLoader : ILoader<CustomerOrderFlat>
         _logger = logger;
     }
 
-    public async Task LoadAsync(IEnumerable<CustomerOrderFlat> data, CancellationToken cancellationToken)
+    public async Task LoadAsync(List<CustomerOrderFlat> data, CancellationToken cancellationToken)
     {
         var table = new DataTable();
         table.Columns.Add("RentalId", typeof(int));
@@ -34,12 +34,10 @@ public class CustomerOrderFlatSqlBulkCopyLoader : ILoader<CustomerOrderFlat>
             table.Rows.Add(item.RentalId, item.CustomerName, item.Amount, item.RentalDate);
         }
 
-        using var bulkCopy = new SqlBulkCopy(_destinationConnectionString)
-        {
-            DestinationTableName = "CustomerOrders"
-        };
+        using var bulkCopy = new SqlBulkCopy(_destinationConnectionString);
+        bulkCopy.DestinationTableName = "CustomerOrders";
 
-        _logger.LogInformation("Loading {Count} rows into SQL Server", data.Count());
+        _logger.LogInformation("Loading {Count} rows into SQL Server", data.Count);
         await bulkCopy.WriteToServerAsync(table, cancellationToken);
         _logger.LogInformation("Load completed");
     }
