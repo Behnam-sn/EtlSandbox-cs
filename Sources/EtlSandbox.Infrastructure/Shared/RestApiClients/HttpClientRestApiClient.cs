@@ -3,7 +3,7 @@ using System.Reflection;
 
 using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.Infrastructure.Shared.ApiClient;
+namespace EtlSandbox.Infrastructure.Shared.RestApiClients;
 
 public sealed class HttpClientRestApiClient : IRestApiClient
 {

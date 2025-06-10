@@ -3,7 +3,7 @@ using EtlSandbox.Domain.Shared;
 using Flurl;
 using Flurl.Http;
 
-namespace EtlSandbox.Infrastructure.Shared.ApiClient;
+namespace EtlSandbox.Infrastructure.Shared.RestApiClients;
 
 public sealed class FlurlRestApiClient : IRestApiClient
 {

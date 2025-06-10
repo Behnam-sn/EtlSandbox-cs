@@ -5,8 +5,8 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
-using EtlSandbox.Infrastructure.Shared.ApiClient;
-using EtlSandbox.Persistence;
+using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Shared.ConfigureOptions;
 using EtlSandbox.Worker.CustomerOrderFlats.Workers;
 
@@ -46,7 +46,11 @@ internal static class DependencyInjectionExtensions
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
             connectionString,
-            bb => { bb.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); })
+            providerOptions =>
+            {
+                providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
+            })
         );
 
         // Rest Api Client
