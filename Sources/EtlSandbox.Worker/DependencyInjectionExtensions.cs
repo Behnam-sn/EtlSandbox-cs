@@ -1,6 +1,8 @@
+using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure;
+using EtlSandbox.Infrastructure.ApplicationStates;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
@@ -57,7 +59,7 @@ internal static class DependencyInjectionExtensions
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
-        services.AddScoped<IEtlStateCommandRepository, EtlStateCommandRepository>();
+        services.AddScoped<IApplicationStateCommandRepository, ApplicationStateDapperCommandRepository>();
         services.AddScoped<ICommandRepository<CustomerOrderFlat>, CustomerOrderFlatEfCommandRepository>();
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();

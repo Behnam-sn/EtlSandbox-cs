@@ -1,0 +1,44 @@
+﻿// using Dapper;
+//
+// using EtlSandbox.Domain.ApplicationStates;
+// using EtlSandbox.Domain.Shared;
+// using EtlSandbox.Domain.Shared.Options;
+//
+// using Microsoft.Data.SqlClient;
+// using Microsoft.Extensions.Logging;
+// using Microsoft.Extensions.Options;
+//
+// namespace EtlSandbox.Infrastructure;
+//
+// public sealed class ApplicationStateCommandRepository : IApplicationStateCommandRepository
+// {
+//     private readonly ILogger<ApplicationStateCommandRepository> _logger;
+//
+//     private readonly string _destinationConnectionString;
+//
+//     public ApplicationStateCommandRepository(ILogger<ApplicationStateCommandRepository> logger, IOptions<DatabaseConnections> options)
+//     {
+//         _logger = logger;
+//         _destinationConnectionString = options.Value.SqlServer;
+//     }
+//
+//     public async Task<int> GetLastProcessedIdAsync()
+//     {
+//         await using var connection = new SqlConnection(_destinationConnectionString);
+//         var result = await connection.ExecuteScalarAsync<int?>(
+//             "SELECT MAX(LastProcessedId) FROM EtlStates"
+//         );
+//         return result ?? int.MinValue;
+//     }
+//
+//     public async Task UpdateLastProcessedIdAsync(int lastProcessedId)
+//     {
+//         await using var connection = new SqlConnection(_destinationConnectionString);
+//         await connection.ExecuteAsync(
+//             "INSERT INTO EtlStates (LastProcessedId) VALUES (@LastProcessedId)", 
+//             new { LastProcessedId = lastProcessedId }
+//         );
+//
+//         _logger.LogInformation("Updated last processed id to {LastProcessedId}", lastProcessedId);
+//     }
+// }

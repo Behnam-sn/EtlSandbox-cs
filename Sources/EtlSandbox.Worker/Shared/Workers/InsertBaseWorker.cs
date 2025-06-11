@@ -1,11 +1,13 @@
-﻿using EtlSandbox.Domain.Shared;
+﻿using EtlSandbox.Domain.ApplicationStates;
+using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Worker.Shared.Workers;
 
 public abstract class InsertBaseWorker<T> : BackgroundService
+    where T : IEntity
 {
     private const int BatchSize = 100_000;
-    
+
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
@@ -20,7 +22,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var commandRepository = scope.ServiceProvider.GetRequiredService<ICommandRepository<T>>();
+        var applicationStateCommandRepository = scope.ServiceProvider.GetRequiredService<IApplicationStateCommandRepository>();
         var extractor = scope.ServiceProvider.GetRequiredService<IExtractor<T>>();
         var transformer = scope.ServiceProvider.GetRequiredService<ITransformer<T>>();
         var loader = scope.ServiceProvider.GetRequiredService<ILoader<T>>();
@@ -29,7 +31,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         {
             try
             {
-                var lastProcessedId = await commandRepository.GetLastIdAsync();
+                var lastProcessedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ActionType.Insert);
 
                 var data = await extractor.ExtractAsync(
                     lastProcessedId,
@@ -40,7 +42,12 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                 if (data.Any())
                 {
                     var transformed = data.Select(transformer.Transform).ToList();
+                    
                     await loader.LoadAsync(transformed, stoppingToken);
+                    await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
+                        actionType: ActionType.Insert,
+                        lastProcessedId: transformed.Max(item => item.Id)
+                    );
                 }
                 else
                 {

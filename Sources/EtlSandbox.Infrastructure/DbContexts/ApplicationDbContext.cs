@@ -1,4 +1,5 @@
 ﻿using EtlSandbox.Domain;
+using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Domain.CustomerOrderFlats;
 
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<CustomerOrderFlat> CustomerOrders => Set<CustomerOrderFlat>();
 
-    public DbSet<EtlState> EtlStates => Set<EtlState>();
+    public DbSet<ApplicationState> ApplicationStates => Set<ApplicationState>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

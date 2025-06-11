@@ -1,10 +1,18 @@
-﻿namespace EtlSandbox.Domain.CustomerOrderFlats;
+﻿using EtlSandbox.Domain.Shared;
 
-public sealed class CustomerOrderFlat
+namespace EtlSandbox.Domain.CustomerOrderFlats;
+
+public sealed class CustomerOrderFlat : IEntity
 {
+    public int Id => RentalId;
+
     public int RentalId { get; set; }
+
     public string? CustomerName { get; set; }
+
     public decimal Amount { get; set; }
+
     public DateTime RentalDate { get; set; }
+
     public string? Category { get; set; }
 }

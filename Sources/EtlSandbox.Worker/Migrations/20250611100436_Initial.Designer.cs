@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.Worker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250610092212_Initial")]
+    [Migration("20250611100436_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,29 @@ namespace EtlSandbox.Worker.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EtlSandbox.Domain.ApplicationStates.ApplicationState", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LastProcessedId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationStates");
+                });
 
             modelBuilder.Entity("EtlSandbox.Domain.CustomerOrderFlats.CustomerOrderFlat", b =>
                 {
@@ -47,22 +70,6 @@ namespace EtlSandbox.Worker.Migrations
                     b.HasKey("RentalId");
 
                     b.ToTable("CustomerOrders");
-                });
-
-            modelBuilder.Entity("EtlSandbox.Domain.EtlState", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("LastProcessedId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EtlStates");
                 });
 #pragma warning restore 612, 618
         }
