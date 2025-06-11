@@ -26,6 +26,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         var extractor = scope.ServiceProvider.GetRequiredService<IExtractor<T>>();
         var transformer = scope.ServiceProvider.GetRequiredService<ITransformer<T>>();
         var loader = scope.ServiceProvider.GetRequiredService<ILoader<T>>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -42,12 +43,24 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                 if (data.Any())
                 {
                     var transformed = data.Select(transformer.Transform).ToList();
-                    
-                    await loader.LoadAsync(transformed, stoppingToken);
-                    await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
-                        actionType: ActionType.Insert,
-                        lastProcessedId: transformed.Max(item => item.Id)
-                    );
+
+                    await unitOfWork.OpenConnectionAsync(stoppingToken);
+                    unitOfWork.BeginTransaction();
+                    try
+                    {
+                        await loader.LoadAsync(transformed, stoppingToken, unitOfWork.Transaction);
+                        await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
+                            actionType: ActionType.Insert,
+                            lastProcessedId: transformed.Max(item => item.Id),
+                            transaction: unitOfWork.Transaction
+                        );
+                        unitOfWork.Commit();
+                    }
+                    catch
+                    {
+                        unitOfWork.Rollback();
+                        throw;
+                    }
                 }
                 else
                 {

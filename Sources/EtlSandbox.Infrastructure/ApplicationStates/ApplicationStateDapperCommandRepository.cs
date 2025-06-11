@@ -1,3 +1,5 @@
+using System.Data;
+
 using Dapper;
 
 using EtlSandbox.Domain.ApplicationStates;
@@ -29,36 +31,45 @@ public sealed class ApplicationStateDapperCommandRepository : IApplicationStateC
         return result ?? 0;
     }
 
-    public async Task UpdateLastProcessedIdAsync<T>(ActionType actionType, int lastProcessedId)
+    public async Task UpdateLastProcessedIdAsync<T>(ActionType actionType, int lastProcessedId, IDbTransaction? transaction = null)
     {
-        await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
         var entityType = typeof(T).Name;
         const string selectSql = "SELECT COUNT(1) FROM ApplicationStates WHERE EntityType = @EntityType AND ActionType = @ActionType";
-        var exists = await connection.ExecuteScalarAsync<int>(selectSql, new
+        const string insertSql = "INSERT INTO ApplicationStates (EntityType, ActionType, LastProcessedId) VALUES (@EntityType, @ActionType, @LastProcessedId)";
+        const string updateSql = "UPDATE ApplicationStates SET LastProcessedId = @LastProcessedId WHERE EntityType = @EntityType AND ActionType = @ActionType";
+
+        var parameters = new
         {
             EntityType = entityType,
-            ActionType = actionType
-        });
+            ActionType = actionType,
+            LastProcessedId = lastProcessedId
+        };
 
-        if (exists == 0)
+        if (transaction is null)
         {
-            const string insertSql = "INSERT INTO ApplicationStates (EntityType, ActionType, LastProcessedId) VALUES (@EntityType, @ActionType, @LastProcessedId)";
-            await connection.ExecuteAsync(insertSql, new
+            await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
+            var exists = await connection.ExecuteScalarAsync<int>(selectSql, parameters);
+            if (exists == 0)
             {
-                EntityType = entityType,
-                ActionType = actionType,
-                LastProcessedId = lastProcessedId
-            });
+                await connection.ExecuteAsync(insertSql, parameters);
+            }
+            else
+            {
+                await connection.ExecuteAsync(updateSql, parameters);
+            }
         }
         else
         {
-            const string updateSql = "UPDATE ApplicationStates SET LastProcessedId = @LastProcessedId WHERE EntityType = @EntityType AND ActionType = @ActionType";
-            await connection.ExecuteAsync(updateSql, new
+            var connection = transaction.Connection ?? throw new ArgumentNullException(nameof(transaction), "Transaction must have a valid connection.");
+            var exists = await connection.ExecuteScalarAsync<int>(selectSql, parameters, transaction);
+            if (exists == 0)
             {
-                EntityType = entityType,
-                ActionType = actionType,
-                LastProcessedId = lastProcessedId
-            });
+                await connection.ExecuteAsync(insertSql, parameters, transaction);
+            }
+            else
+            {
+                await connection.ExecuteAsync(updateSql, parameters, transaction);
+            }
         }
     }
 }

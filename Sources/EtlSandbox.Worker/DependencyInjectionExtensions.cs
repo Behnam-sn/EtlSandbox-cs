@@ -1,13 +1,13 @@
 using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure;
 using EtlSandbox.Infrastructure.ApplicationStates;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Infrastructure.Shared;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Shared.ConfigureOptions;
 using EtlSandbox.Worker.CustomerOrderFlats.Workers;
@@ -64,6 +64,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
         services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlBulkCopyLoader>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     internal static void AddPresentation(this IServiceCollection services)

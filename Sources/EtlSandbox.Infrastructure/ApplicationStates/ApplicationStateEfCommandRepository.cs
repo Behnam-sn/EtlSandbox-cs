@@ -1,4 +1,6 @@
-﻿using EtlSandbox.Domain.ApplicationStates;
+﻿using System.Data;
+
+using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Infrastructure.DbContexts;
 
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +25,13 @@ public sealed class ApplicationStateEfCommandRepository : IApplicationStateComma
             .MaxAsync(item => (int?)item.LastProcessedId) ?? 0;
     }
 
-    public async Task UpdateLastProcessedIdAsync<T>(ActionType actionType, int lastProcessedId)
+    public async Task UpdateLastProcessedIdAsync<T>(ActionType actionType, int lastProcessedId, IDbTransaction? transaction = null)
     {
+        if (transaction is not null)
+        {
+            throw new NotSupportedException("Transactional update is not supported for EF-based repository.");
+        }
+
         var entityType = typeof(T).Name;
         var item = await _applicationDbContext
             .ApplicationStates
