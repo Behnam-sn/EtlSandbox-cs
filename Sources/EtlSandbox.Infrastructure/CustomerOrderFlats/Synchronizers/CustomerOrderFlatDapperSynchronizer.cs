@@ -20,7 +20,7 @@ public sealed class CustomerOrderFlatDapperSynchronizer : ISynchronizer<Customer
         _destinationDatabaseConnectionString = options.Value.SqlServer;
     }
 
-    public async Task SoftDeleteObsoleteRowsAsync(int fromId,int toId, IDbTransaction? transaction = null)
+    public async Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null)
     {
         const string updateSql = @"
                 UPDATE T
