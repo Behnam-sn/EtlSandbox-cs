@@ -48,6 +48,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                     unitOfWork.BeginTransaction();
                     try
                     {
+                        _logger.LogInformation("Loading {Count} rows", data.Count);
                         await loader.LoadAsync(transformed, stoppingToken, unitOfWork.Transaction);
                         await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
                             actionType: ActionType.Insert,
@@ -55,6 +56,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                             transaction: unitOfWork.Transaction
                         );
                         unitOfWork.Commit();
+                        _logger.LogInformation("Load completed");
                     }
                     catch
                     {
@@ -71,7 +73,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "ETL failed: {Message}", e.Message);
+                _logger.LogError(e, "Insert failed: {Message}", e.Message);
             }
         }
     }

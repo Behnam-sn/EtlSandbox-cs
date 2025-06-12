@@ -3,5 +3,5 @@
 public enum ActionType
 {
     Insert,
-    
+    Delete,
 }

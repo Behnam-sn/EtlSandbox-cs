@@ -2,5 +2,5 @@
 
 public interface ICommandRepository<T>
 {
-    Task<int> GetLastIdAsync();
+    Task<List<int>> GetIdsAsync(int from, int to);
 }

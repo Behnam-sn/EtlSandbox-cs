@@ -22,7 +22,9 @@ public sealed class CustomerOrderFlatTransformer : ITransformer<CustomerOrderFla
             CustomerName = input.CustomerName.ToUpperInvariant(),
             Amount = input.Amount,
             RentalDate = input.RentalDate,
-            Category = input.Category.ToLowerInvariant()
+            Category = input.Category.ToLowerInvariant(),
+            UniqId = 0,
+            IsDeleted = false,
         };
 
         _logger.LogDebug("Transformed RentalId {RentalId}: {Original} => {Transformed}", input.RentalId, input, transformed);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.Worker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250611100436_Initial")]
+    [Migration("20250611153559_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -64,8 +64,14 @@ namespace EtlSandbox.Worker.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("RentalDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("UniqId")
+                        .HasColumnType("int");
 
                     b.HasKey("RentalId");
 

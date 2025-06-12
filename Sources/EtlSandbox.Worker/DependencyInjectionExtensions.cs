@@ -5,6 +5,7 @@ using EtlSandbox.Infrastructure.ApplicationStates;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared;
@@ -60,15 +61,16 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
         services.AddScoped<IApplicationStateCommandRepository, ApplicationStateDapperCommandRepository>();
-        services.AddScoped<ICommandRepository<CustomerOrderFlat>, CustomerOrderFlatEfCommandRepository>();
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
         services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlBulkCopyLoader>();
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatDapperSynchronizer>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     internal static void AddPresentation(this IServiceCollection services)
     {
         services.AddHostedService<InsertCustomerOrderFlatWorker>();
+        services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
     }
 }

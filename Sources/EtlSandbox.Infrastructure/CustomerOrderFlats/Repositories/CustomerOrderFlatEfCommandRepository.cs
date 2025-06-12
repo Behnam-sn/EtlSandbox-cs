@@ -15,10 +15,12 @@ public sealed class CustomerOrderFlatEfCommandRepository : ICommandRepository<Cu
         _context = context;
     }
 
-    public async Task<int> GetLastIdAsync()
+    public async Task<List<int>> GetIdsAsync(int from, int to)
     {
         return await _context
             .CustomerOrders
-            .MaxAsync(i => (int?)i.RentalId) ?? 0;
+            .Where(item => item.RentalId > from && item.RentalId <= to)
+            .Select(item => item.RentalId)
+            .ToListAsync();
     }
 }

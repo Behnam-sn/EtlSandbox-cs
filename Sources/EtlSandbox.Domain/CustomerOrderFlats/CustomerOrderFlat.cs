@@ -15,4 +15,8 @@ public sealed class CustomerOrderFlat : IEntity
     public DateTime RentalDate { get; set; }
 
     public string? Category { get; set; }
+
+    public int UniqId { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

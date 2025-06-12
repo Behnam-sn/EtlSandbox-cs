@@ -61,8 +61,14 @@ namespace EtlSandbox.Worker.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("RentalDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("UniqId")
+                        .HasColumnType("int");
 
                     b.HasKey("RentalId");
 
