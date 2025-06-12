@@ -3,6 +3,8 @@ using System.Data;
 using Dapper;
 
 using EtlSandbox.Domain.ApplicationStates;
+using EtlSandbox.Domain.ApplicationStates.Enums;
+using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Data.SqlClient;

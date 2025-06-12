@@ -1,4 +1,5 @@
-﻿using EtlSandbox.Domain.ApplicationStates;
+﻿using EtlSandbox.Domain.ApplicationStates.Enums;
+using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Worker.Shared.Workers;

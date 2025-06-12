@@ -1,4 +1,5 @@
 ﻿using EtlSandbox.Domain.ApplicationStates;
+using EtlSandbox.Domain.ApplicationStates.Entities;
 using EtlSandbox.Domain.CustomerOrderFlats;
 
 using Microsoft.EntityFrameworkCore;

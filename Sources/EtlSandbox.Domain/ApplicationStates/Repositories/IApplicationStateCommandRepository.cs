@@ -1,6 +1,8 @@
 ﻿using System.Data;
 
-namespace EtlSandbox.Domain.ApplicationStates;
+using EtlSandbox.Domain.ApplicationStates.Enums;
+
+namespace EtlSandbox.Domain.ApplicationStates.Repositories;
 
 public interface IApplicationStateCommandRepository
 {

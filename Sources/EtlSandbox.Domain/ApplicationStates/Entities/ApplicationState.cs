@@ -1,4 +1,6 @@
-namespace EtlSandbox.Domain.ApplicationStates;
+using EtlSandbox.Domain.ApplicationStates.Enums;
+
+namespace EtlSandbox.Domain.ApplicationStates.Entities;
 
 public class ApplicationState
 {

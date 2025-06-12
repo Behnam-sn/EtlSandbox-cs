@@ -1,4 +1,4 @@
-﻿namespace EtlSandbox.Domain.ApplicationStates;
+﻿namespace EtlSandbox.Domain.ApplicationStates.Enums;
 
 public enum ActionType
 {
