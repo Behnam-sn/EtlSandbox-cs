@@ -28,8 +28,8 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
         {
             try
             {
-                var lastDeletedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ActionType.Delete);
-                var lastInsertedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ActionType.Insert);
+                var lastDeletedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Delete);
+                var lastInsertedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
                 var count = lastInsertedId - lastDeletedId;
 
                 if (count > 0)
@@ -46,7 +46,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
                             transaction: unitOfWork.Transaction
                         );
                         await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
-                            actionType: ActionType.Delete,
+                            processType: ProcessType.Delete,
                             lastProcessedId: lastInsertedId,
                             transaction: unitOfWork.Transaction
                         );

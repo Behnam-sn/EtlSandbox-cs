@@ -8,7 +8,7 @@ public class ApplicationState
 
     public string EntityType { get; set; }
 
-    public ActionType ActionType { get; set; }
+    public ProcessType ProcessType { get; set; }
 
     public int LastProcessedId { get; set; }
 }

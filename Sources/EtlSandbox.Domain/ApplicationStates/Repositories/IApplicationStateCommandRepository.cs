@@ -6,7 +6,7 @@ namespace EtlSandbox.Domain.ApplicationStates.Repositories;
 
 public interface IApplicationStateCommandRepository
 {
-    Task<int> GetLastProcessedIdAsync<T>(ActionType actionType);
+    Task<int> GetLastProcessedIdAsync<T>(ProcessType processType);
 
-    Task UpdateLastProcessedIdAsync<T>(ActionType actionType, int lastProcessedId, IDbTransaction? transaction = null);
+    Task UpdateLastProcessedIdAsync<T>(ProcessType processType, int lastProcessedId, IDbTransaction? transaction = null);
 }

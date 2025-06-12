@@ -1,6 +1,6 @@
 ﻿namespace EtlSandbox.Domain.ApplicationStates.Enums;
 
-public enum ActionType
+public enum ProcessType
 {
     Insert,
     Delete,

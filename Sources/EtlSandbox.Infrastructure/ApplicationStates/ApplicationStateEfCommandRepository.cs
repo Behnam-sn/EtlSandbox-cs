@@ -18,16 +18,16 @@ public sealed class ApplicationStateEfCommandRepository : IApplicationStateComma
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<int> GetLastProcessedIdAsync<T>(ActionType actionType)
+    public async Task<int> GetLastProcessedIdAsync<T>(ProcessType processType)
     {
         return await _applicationDbContext
             .ApplicationStates
             .AsNoTracking()
-            .Where(item => item.EntityType == typeof(T).Name && item.ActionType == actionType)
+            .Where(item => item.EntityType == typeof(T).Name && item.ProcessType == processType)
             .MaxAsync(item => (int?)item.LastProcessedId) ?? 0;
     }
 
-    public async Task UpdateLastProcessedIdAsync<T>(ActionType actionType, int lastProcessedId, IDbTransaction? transaction = null)
+    public async Task UpdateLastProcessedIdAsync<T>(ProcessType processType, int lastProcessedId, IDbTransaction? transaction = null)
     {
         if (transaction is not null)
         {
@@ -37,14 +37,14 @@ public sealed class ApplicationStateEfCommandRepository : IApplicationStateComma
         var entityType = typeof(T).Name;
         var item = await _applicationDbContext
             .ApplicationStates
-            .SingleOrDefaultAsync(item => item.EntityType == entityType && item.ActionType == actionType);
+            .SingleOrDefaultAsync(item => item.EntityType == entityType && item.ProcessType == processType);
 
         if (item is null)
         {
             item = new()
             {
                 EntityType = entityType,
-                ActionType = actionType,
+                ProcessType = processType,
                 LastProcessedId = lastProcessedId
             };
             _applicationDbContext.Add(item);

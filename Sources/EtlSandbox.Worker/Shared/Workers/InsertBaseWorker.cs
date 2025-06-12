@@ -34,7 +34,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         {
             try
             {
-                var lastProcessedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ActionType.Insert);
+                var lastProcessedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
 
                 var data = await extractor.ExtractAsync(
                     lastProcessedId,
@@ -53,7 +53,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                         _logger.LogInformation("Loading {Count} rows", data.Count);
                         await loader.LoadAsync(transformed, stoppingToken, unitOfWork.Transaction);
                         await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
-                            actionType: ActionType.Insert,
+                            processType: ProcessType.Insert,
                             lastProcessedId: transformed.Max(item => item.Id),
                             transaction: unitOfWork.Transaction
                         );

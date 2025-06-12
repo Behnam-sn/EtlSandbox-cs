@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.Worker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250611153559_Initial")]
+    [Migration("20250612124739_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace EtlSandbox.Worker.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EtlSandbox.Domain.ApplicationStates.ApplicationState", b =>
+            modelBuilder.Entity("EtlSandbox.Domain.ApplicationStates.Entities.ApplicationState", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,14 +33,14 @@ namespace EtlSandbox.Worker.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActionType")
-                        .HasColumnType("int");
-
                     b.Property<string>("EntityType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LastProcessedId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProcessType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
