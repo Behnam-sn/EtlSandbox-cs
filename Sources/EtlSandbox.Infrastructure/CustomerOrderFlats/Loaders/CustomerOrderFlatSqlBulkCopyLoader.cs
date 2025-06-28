@@ -12,13 +12,13 @@ namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
 public class CustomerOrderFlatSqlBulkCopyLoader : ILoader<CustomerOrderFlat>
 {
-    private readonly string _destinationConnectionString;
+    private readonly string _destinationDatabaseConnectionString;
 
     private readonly ILogger<CustomerOrderFlatSqlBulkCopyLoader> _logger;
 
     public CustomerOrderFlatSqlBulkCopyLoader(IOptions<DatabaseConnections> options, ILogger<CustomerOrderFlatSqlBulkCopyLoader> logger)
     {
-        _destinationConnectionString = options.Value.SqlServer;
+        _destinationDatabaseConnectionString = options.Value.SqlServer;
         _logger = logger;
     }
 
@@ -53,7 +53,7 @@ public class CustomerOrderFlatSqlBulkCopyLoader : ILoader<CustomerOrderFlat>
         }
         else
         {
-            bulkCopy = new(_destinationConnectionString);
+            bulkCopy = new(_destinationDatabaseConnectionString);
         }
 
         using (bulkCopy)
