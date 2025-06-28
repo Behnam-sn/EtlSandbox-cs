@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
@@ -6,15 +6,17 @@ using EtlSandbox.Domain.Shared.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 
+using Npgsql;
+
 namespace EtlSandbox.Infrastructure.Shared;
 
-public sealed class UnitOfWork : IUnitOfWork
+public sealed class PostgreSQLUnitOfWork : IUnitOfWork
 {
     private readonly string _connectionString;
 
-    private SqlConnection? _connection;
+    private NpgsqlConnection? _connection;
 
-    private SqlTransaction? _transaction;
+    private NpgsqlTransaction? _transaction;
 
     private bool _disposed;
 
@@ -22,7 +24,7 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public IDbTransaction? Transaction => _transaction;
 
-    public UnitOfWork(IOptions<DatabaseConnections> options)
+    public PostgreSQLUnitOfWork(IOptions<DatabaseConnections> options)
     {
         _connectionString = options.Value.SqlServer;
     }
@@ -31,7 +33,7 @@ public sealed class UnitOfWork : IUnitOfWork
     {
         if (_connection == null)
         {
-            _connection = new SqlConnection(_connectionString);
+            _connection = new NpgsqlConnection(_connectionString);
         }
 
         if (_connection.State != ConnectionState.Open)

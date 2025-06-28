@@ -22,5 +22,14 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "5002:1433"
-    # volumes:
-    #   - ./sqlserver-init:/var/opt/mssql/scripts
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Your_password123"
+      POSTGRES_DB: postgres
+    ports:
+      - "5003:5432"

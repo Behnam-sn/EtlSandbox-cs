@@ -14,7 +14,7 @@ using EtlSandbox.Shared.ConfigureOptions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.AlphaWorker;
+namespace EtlSandbox.BetaWorker;
 
 internal static class DependencyInjectionExtensions
 {
@@ -46,7 +46,7 @@ internal static class DependencyInjectionExtensions
         var connectionString = configuration.GetSection("DatabaseConnections")["SqlServer"] ??
             throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
 
-        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<ApplicationDbContext>(b => b.UseNpgsql(
             connectionString,
             providerOptions =>
             {
@@ -59,12 +59,12 @@ internal static class DependencyInjectionExtensions
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
-        services.AddScoped<IApplicationStateCommandRepository, ApplicationStateSqlServerDapperCommandRepository>();
+        services.AddScoped<IApplicationStateCommandRepository, ApplicationStatePostgreSqlDapperCommandRepository>();
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlBulkCopyLoader>();
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
-        services.AddScoped<IUnitOfWork, SqlServerUnitOfWork>();
+        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatDapperLoader>();
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
+        services.AddScoped<IUnitOfWork, PostgreSQLUnitOfWork>();
     }
 
     internal static void AddPresentation(this IServiceCollection services)

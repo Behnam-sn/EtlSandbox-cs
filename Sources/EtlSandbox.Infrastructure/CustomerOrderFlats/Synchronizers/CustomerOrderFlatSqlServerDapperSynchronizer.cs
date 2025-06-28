@@ -11,11 +11,11 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatDapperSynchronizer : ISynchronizer<CustomerOrderFlat>
+public sealed class CustomerOrderFlatSqlServerDapperSynchronizer : ISynchronizer<CustomerOrderFlat>
 {
     private readonly string _destinationDatabaseConnectionString;
 
-    public CustomerOrderFlatDapperSynchronizer(IOptions<DatabaseConnections> options)
+    public CustomerOrderFlatSqlServerDapperSynchronizer(IOptions<DatabaseConnections> options)
     {
         _destinationDatabaseConnectionString = options.Value.SqlServer;
     }

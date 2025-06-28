@@ -1,30 +1,30 @@
-using System.Data;
+﻿using System.Data;
 
 using Dapper;
 
-using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared.Options;
 
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+
+using Npgsql;
 
 namespace EtlSandbox.Infrastructure.ApplicationStates;
 
-public sealed class ApplicationStateDapperCommandRepository : IApplicationStateCommandRepository
+public sealed class ApplicationStatePostgreSqlDapperCommandRepository : IApplicationStateCommandRepository
 {
     private readonly string _destinationDatabaseConnectionString;
 
-    public ApplicationStateDapperCommandRepository(IOptions<DatabaseConnections> options)
+    public ApplicationStatePostgreSqlDapperCommandRepository(IOptions<DatabaseConnections> options)
     {
         _destinationDatabaseConnectionString = options.Value.SqlServer;
     }
 
     public async Task<int> GetLastProcessedIdAsync<T>(ProcessType processType)
     {
-        await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
-        const string sql = "SELECT MAX(LastProcessedId) FROM ApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
+        await using var connection = new NpgsqlConnection(_destinationDatabaseConnectionString);
+        const string sql = "SELECT MAX(\"LastProcessedId\") FROM \"ApplicationStates\" WHERE \"EntityType\" = @EntityType AND \"ProcessType\" = @ProcessType";
         var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new
         {
             EntityType = typeof(T).Name,
@@ -36,9 +36,9 @@ public sealed class ApplicationStateDapperCommandRepository : IApplicationStateC
     public async Task UpdateLastProcessedIdAsync<T>(ProcessType processType, int lastProcessedId, IDbTransaction? transaction = null)
     {
         var entityType = typeof(T).Name;
-        const string selectSql = "SELECT COUNT(1) FROM ApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
-        const string insertSql = "INSERT INTO ApplicationStates (EntityType, ProcessType, LastProcessedId) VALUES (@EntityType, @ProcessType, @LastProcessedId)";
-        const string updateSql = "UPDATE ApplicationStates SET LastProcessedId = @LastProcessedId WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
+        const string selectSql = "SELECT COUNT(1) FROM \"ApplicationStates\" WHERE \"EntityType\" = @EntityType AND \"ProcessType\" = @ProcessType";
+        const string insertSql = "INSERT INTO \"ApplicationStates\" (\"EntityType\", \"ProcessType\", \"LastProcessedId\") VALUES (@EntityType, @ProcessType, @LastProcessedId)";
+        const string updateSql = "UPDATE \"ApplicationStates\" SET \"LastProcessedId\" = @LastProcessedId WHERE \"EntityType\" = @EntityType AND \"ProcessType\" = @ProcessType";
 
         var parameters = new
         {
@@ -49,7 +49,7 @@ public sealed class ApplicationStateDapperCommandRepository : IApplicationStateC
 
         if (transaction is null)
         {
-            await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
+            await using var connection = new NpgsqlConnection(_destinationDatabaseConnectionString);
             var exists = await connection.ExecuteScalarAsync<int>(selectSql, parameters);
             if (exists == 0)
             {
