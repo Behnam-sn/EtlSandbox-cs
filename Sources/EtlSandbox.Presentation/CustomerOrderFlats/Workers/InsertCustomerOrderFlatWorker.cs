@@ -1,7 +1,9 @@
-using EtlSandbox.AlphaWorker.Shared.Workers;
 using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Presentation.Shared.Workers;
 
-namespace EtlSandbox.AlphaWorker.CustomerOrderFlats.Workers;
+using Microsoft.Extensions.Logging;
+
+namespace EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 public sealed class InsertCustomerOrderFlatWorker(ILogger<InsertCustomerOrderFlatWorker> logger, IServiceProvider serviceProvider) 
     : InsertBaseWorker<CustomerOrderFlat>(logger, serviceProvider);

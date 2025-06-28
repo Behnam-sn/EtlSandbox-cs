@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace EtlSandbox.AlphaWorker.Migrations
+namespace EtlSandbox.Worker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250612124739_Initial")]
+    [Migration("20250628072234_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

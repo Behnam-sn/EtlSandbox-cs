@@ -2,7 +2,11 @@
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.AlphaWorker.Shared.Workers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace EtlSandbox.Presentation.Shared.Workers;
 
 public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 {
