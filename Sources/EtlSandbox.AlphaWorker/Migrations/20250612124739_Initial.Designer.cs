@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace EtlSandbox.Worker.Migrations
+namespace EtlSandbox.AlphaWorker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250612124739_Initial")]

@@ -1,5 +1,5 @@
 using EtlSandbox.Shared;
-using EtlSandbox.Worker;
+using EtlSandbox.AlphaWorker;
 
 var builder = Host.CreateApplicationBuilder(args);
 

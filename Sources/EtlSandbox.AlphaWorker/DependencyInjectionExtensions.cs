@@ -1,4 +1,4 @@
-using EtlSandbox.Domain.ApplicationStates;
+using EtlSandbox.AlphaWorker.CustomerOrderFlats.Workers;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
@@ -11,11 +11,10 @@ using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Shared.ConfigureOptions;
-using EtlSandbox.Worker.CustomerOrderFlats.Workers;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Worker;
+namespace EtlSandbox.AlphaWorker;
 
 internal static class DependencyInjectionExtensions
 {
