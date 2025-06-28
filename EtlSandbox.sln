@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Domain", "Source
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure", "Sources\EtlSandbox.Infrastructure\EtlSandbox.Infrastructure.csproj", "{526C9A97-A399-428D-A99F-75E9677C3B8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Worker", "Sources\EtlSandbox.Worker\EtlSandbox.Worker.csproj", "{98C68DC9-82AA-4E84-883C-C0A54179DE78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.AlphaWorker", "Sources\EtlSandbox.AlphaWorker\EtlSandbox.AlphaWorker.csproj", "{98C68DC9-82AA-4E84-883C-C0A54179DE78}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.WebApi", "Sources\EtlSandbox.WebApi\EtlSandbox.WebApi.csproj", "{C476D99C-0361-4047-95D7-61B44DD0E6BB}"
 EndProject
