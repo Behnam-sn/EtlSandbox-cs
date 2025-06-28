@@ -1,28 +1,18 @@
-using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.ApplicationStates;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
-using EtlSandbox.Infrastructure.Shared;
-using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
-using EtlSandbox.Infrastructure.Shared.RestApiClients;
-using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 using EtlSandbox.Shared.ConfigureOptions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.AlphaWorker;
+namespace EtlSandbox.WebApi;
 
 internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<DatabaseConnectionsSetup>();
-        services.ConfigureOptions<RestApiConnectionsSetup>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -56,22 +46,12 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Rest Api Client
-        services.AddHttpClient();
-        services.AddScoped<IRestApiClient, FlurlRestApiClient>();
-
-        services.AddScoped<IApplicationStateCommandRepository, ApplicationStateSqlServerDapperCommandRepository>();
-        services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatMySqlDapperExtractor>();
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlServerBulkCopyLoader>();
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
-        services.AddScoped<IDbConnectionFactory, SqlConnectionFactory>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
     }
 
     internal static void AddPresentation(this IServiceCollection services)
     {
-        services.AddHostedService<InsertCustomerOrderFlatWorker>();
-        services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
+        services.AddControllers();
+        services.AddOpenApi();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Data;
 
-using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Infrastructure.DbContexts;

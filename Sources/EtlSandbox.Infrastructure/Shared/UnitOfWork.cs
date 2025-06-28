@@ -1,10 +1,6 @@
 using System.Data;
 
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
-
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared;
 

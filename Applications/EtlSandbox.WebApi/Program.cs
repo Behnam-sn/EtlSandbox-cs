@@ -1,21 +1,15 @@
-using EtlSandbox.Domain.CustomerOrderFlats;
-using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Shared;
-using EtlSandbox.Shared.ConfigureOptions;
+using EtlSandbox.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddSharedConfiguration();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-
-builder.Services.ConfigureOptions<DatabaseConnectionsSetup>();
-builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatMySqlDapperExtractor>();
-
+builder.Services.AddConfigureOptions();
+builder.Services.AddLogs();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddPresentation();
 
 var app = builder.Build();
 

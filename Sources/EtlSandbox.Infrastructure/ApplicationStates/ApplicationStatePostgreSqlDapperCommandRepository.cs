@@ -5,11 +5,6 @@ using Dapper;
 using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
-
-using Microsoft.Extensions.Options;
-
-using Npgsql;
 
 namespace EtlSandbox.Infrastructure.ApplicationStates;
 

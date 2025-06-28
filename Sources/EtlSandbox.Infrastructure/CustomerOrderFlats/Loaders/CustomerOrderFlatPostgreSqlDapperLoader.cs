@@ -4,12 +4,8 @@ using Dapper;
 
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-using Npgsql;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
