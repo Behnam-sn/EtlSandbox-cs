@@ -13,11 +13,11 @@ namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
 public sealed class CustomerOrderFlatSqlServerDapperSynchronizer : ISynchronizer<CustomerOrderFlat>
 {
-    private readonly string _destinationDatabaseConnectionString;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CustomerOrderFlatSqlServerDapperSynchronizer(IOptions<DatabaseConnections> options)
+    public CustomerOrderFlatSqlServerDapperSynchronizer(IUnitOfWork unitOfWork)
     {
-        _destinationDatabaseConnectionString = options.Value.SqlServer;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null)
@@ -43,7 +43,7 @@ public sealed class CustomerOrderFlatSqlServerDapperSynchronizer : ISynchronizer
 
         if (transaction is null)
         {
-            await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
+            var connection = _unitOfWork.Connection;
             await connection.ExecuteAsync(updateSql, parameters);
         }
         else

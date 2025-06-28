@@ -38,7 +38,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 
                 if (count > 0)
                 {
-                    await unitOfWork.OpenConnectionAsync(stoppingToken);
+                    unitOfWork.Connection.Open();
                     unitOfWork.BeginTransaction();
 
                     try

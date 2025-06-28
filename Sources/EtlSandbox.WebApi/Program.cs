@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.ConfigureOptions<DatabaseConnectionsSetup>();
-builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatDapperExtractor>();
+builder.Services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatMySqlDapperExtractor>();
 
 
 var app = builder.Build();

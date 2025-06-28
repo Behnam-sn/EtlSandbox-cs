@@ -4,27 +4,21 @@ using Dapper;
 
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
-
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
-
-using Npgsql;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
 public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer : ISynchronizer<CustomerOrderFlat>
 {
-    private readonly string _destinationDatabaseConnectionString;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CustomerOrderFlatPostgreSqlDapperSynchronizer(IOptions<DatabaseConnections> options)
+    public CustomerOrderFlatPostgreSqlDapperSynchronizer(IUnitOfWork unitOfWork)
     {
-        _destinationDatabaseConnectionString = options.Value.SqlServer;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null)
     {
-        const string updateSql = """
+        const string sql = """
                 UPDATE "CustomerOrders" T
                 SET "IsDeleted" = '1'
                 FROM (
@@ -46,13 +40,13 @@ public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer : ISynchronize
 
         if (transaction is null)
         {
-            await using var connection = new NpgsqlConnection(_destinationDatabaseConnectionString);
-            await connection.ExecuteAsync(updateSql, parameters);
+            var connection = _unitOfWork.Connection;
+            await connection.ExecuteAsync(sql, parameters);
         }
         else
         {
             var connection = transaction.Connection ?? throw new ArgumentNullException(nameof(transaction), "Transaction must have a valid connection.");
-            await connection.ExecuteAsync(updateSql, parameters, transaction);
+            await connection.ExecuteAsync(sql, parameters, transaction);
         }
     }
 }

@@ -49,7 +49,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                 {
                     var transformed = data.Select(transformer.Transform).ToList();
 
-                    await unitOfWork.OpenConnectionAsync(stoppingToken);
+                    unitOfWork.Connection.Open();
                     unitOfWork.BeginTransaction();
                     try
                     {

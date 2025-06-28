@@ -8,8 +8,6 @@ public interface IUnitOfWork : IDisposable
 
     IDbTransaction? Transaction { get; }
 
-    Task OpenConnectionAsync(CancellationToken cancellationToken = default);
-
     void BeginTransaction();
 
     void Commit();

@@ -6,7 +6,6 @@ using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
 
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,16 +13,16 @@ using Npgsql;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public sealed class CustomerOrderFlatDapperLoader : ILoader<CustomerOrderFlat>
+public sealed class CustomerOrderFlatPostgreSqlDapperLoader : ILoader<CustomerOrderFlat>
 {
-    private readonly string _destinationDatabaseConnectionString;
+    private readonly ILogger<CustomerOrderFlatPostgreSqlDapperLoader> _logger;
 
-    private readonly ILogger<CustomerOrderFlatDapperLoader> _logger;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CustomerOrderFlatDapperLoader(IOptions<DatabaseConnections> options, ILogger<CustomerOrderFlatDapperLoader> logger)
+    public CustomerOrderFlatPostgreSqlDapperLoader(ILogger<CustomerOrderFlatPostgreSqlDapperLoader> logger, IUnitOfWork unitOfWork)
     {
-        _destinationDatabaseConnectionString = options.Value.SqlServer;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task LoadAsync(List<CustomerOrderFlat> data, CancellationToken cancellationToken, IDbTransaction? transaction = null)
@@ -35,15 +34,15 @@ public sealed class CustomerOrderFlatDapperLoader : ILoader<CustomerOrderFlat>
         }
 
         const string sql = """
-            INSERT INTO "CustomerOrders" 
-                ("RentalId", "CustomerName", "Amount", "RentalDate", "Category", "UniqId", "IsDeleted") 
-            VALUES 
-                (@RentalId, @CustomerName, @Amount, @RentalDate, @Category, @UniqId, @IsDeleted)
-            """;
+                           INSERT INTO "CustomerOrders" 
+                               ("RentalId", "CustomerName", "Amount", "RentalDate", "Category", "UniqId", "IsDeleted") 
+                           VALUES 
+                               (@RentalId, @CustomerName, @Amount, @RentalDate, @Category, @UniqId, @IsDeleted)
+                           """;
 
         if (transaction is null)
         {
-            await using var connection = new NpgsqlConnection(_destinationDatabaseConnectionString);
+            var connection = _unitOfWork.Connection;
             await connection.ExecuteAsync(sql, data);
         }
         else

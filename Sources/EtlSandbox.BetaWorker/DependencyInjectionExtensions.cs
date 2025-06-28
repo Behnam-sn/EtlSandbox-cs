@@ -8,6 +8,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared;
+using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 using EtlSandbox.Shared.ConfigureOptions;
@@ -62,9 +63,10 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IApplicationStateCommandRepository, ApplicationStatePostgreSqlDapperCommandRepository>();
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatDapperLoader>();
+        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperLoader>();
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
-        services.AddScoped<IUnitOfWork, PostgreSQLUnitOfWork>();
+        services.AddScoped<IDbConnectionFactory, NpgsqlConnectionFactory>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     internal static void AddPresentation(this IServiceCollection services)

@@ -5,6 +5,7 @@ using Dapper;
 using EtlSandbox.Domain.ApplicationStates;
 using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Data.SqlClient;
@@ -14,16 +15,16 @@ namespace EtlSandbox.Infrastructure.ApplicationStates;
 
 public sealed class ApplicationStateSqlServerDapperCommandRepository : IApplicationStateCommandRepository
 {
-    private readonly string _destinationDatabaseConnectionString;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ApplicationStateSqlServerDapperCommandRepository(IOptions<DatabaseConnections> options)
+    public ApplicationStateSqlServerDapperCommandRepository(IUnitOfWork unitOfWork)
     {
-        _destinationDatabaseConnectionString = options.Value.SqlServer;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<int> GetLastProcessedIdAsync<T>(ProcessType processType)
     {
-        await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
+        var connection = _unitOfWork.Connection;
         const string sql = "SELECT MAX(LastProcessedId) FROM ApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
         var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new
         {
@@ -49,7 +50,7 @@ public sealed class ApplicationStateSqlServerDapperCommandRepository : IApplicat
 
         if (transaction is null)
         {
-            await using var connection = new SqlConnection(_destinationDatabaseConnectionString);
+            var connection = _unitOfWork.Connection;
             var exists = await connection.ExecuteScalarAsync<int>(selectSql, parameters);
             if (exists == 0)
             {
