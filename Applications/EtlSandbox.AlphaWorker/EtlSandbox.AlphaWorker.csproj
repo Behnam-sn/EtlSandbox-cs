@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EtlSandbox.Presentation\EtlSandbox.Presentation.csproj" />
-    <ProjectReference Include="..\EtlSandbox.Shared\EtlSandbox.Shared.csproj" />
+    <ProjectReference Include="..\..\Sources\EtlSandbox.Presentation\EtlSandbox.Presentation.csproj" />
+    <ProjectReference Include="..\..\Sources\EtlSandbox.Shared\EtlSandbox.Shared.csproj" />
   </ItemGroup>
 </Project>
