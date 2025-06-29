@@ -20,7 +20,9 @@ public sealed class ApplicationStatePostgreSqlDapperCommandRepository : IApplica
     public async Task<int> GetLastProcessedIdAsync<T>(ProcessType processType)
     {
         var connection = _unitOfWork.Connection;
-        const string sql = "SELECT MAX(\"LastProcessedId\") FROM \"ApplicationStates\" WHERE \"EntityType\" = @EntityType AND \"ProcessType\" = @ProcessType";
+        const string sql = """
+                           SELECT MAX("LastProcessedId") FROM "ApplicationStates" WHERE "EntityType" = @EntityType AND "ProcessType" = @ProcessType;
+                           """;
         var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new
         {
             EntityType = typeof(T).Name,
@@ -32,9 +34,15 @@ public sealed class ApplicationStatePostgreSqlDapperCommandRepository : IApplica
     public async Task UpdateLastProcessedIdAsync<T>(ProcessType processType, int lastProcessedId, IDbTransaction? transaction = null)
     {
         var entityType = typeof(T).Name;
-        const string selectSql = "SELECT COUNT(1) FROM \"ApplicationStates\" WHERE \"EntityType\" = @EntityType AND \"ProcessType\" = @ProcessType";
-        const string insertSql = "INSERT INTO \"ApplicationStates\" (\"EntityType\", \"ProcessType\", \"LastProcessedId\") VALUES (@EntityType, @ProcessType, @LastProcessedId)";
-        const string updateSql = "UPDATE \"ApplicationStates\" SET \"LastProcessedId\" = @LastProcessedId WHERE \"EntityType\" = @EntityType AND \"ProcessType\" = @ProcessType";
+        const string selectSql = """
+                                 SELECT COUNT(1) FROM "ApplicationStates" WHERE "EntityType" = @EntityType AND "ProcessType" = @ProcessType;
+                                 """;
+        const string insertSql = """
+                                 INSERT INTO "ApplicationStates" ("EntityType", "ProcessType", "LastProcessedId") VALUES (@EntityType, @ProcessType, @LastProcessedId);
+                                 """;
+        const string updateSql = """
+                                 UPDATE "ApplicationStates" SET "LastProcessedId" = @LastProcessedId WHERE "EntityType" = @EntityType AND "ProcessType" = @ProcessType;
+                                 """;
 
         var parameters = new
         {
