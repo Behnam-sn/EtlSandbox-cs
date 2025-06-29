@@ -1,24 +1,13 @@
-﻿using System.Data;
-
-using Dapper;
-
-using EtlSandbox.Domain.CustomerOrderFlats;
+﻿using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Infrastructure.Shared.Synchronizers;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatSqlServerDapperSynchronizer : ISynchronizer<CustomerOrderFlat>
+public sealed class CustomerOrderFlatSqlServerDapperSynchronizer(IUnitOfWork unitOfWork)
+    : BaseDapperSynchronizer<CustomerOrderFlat>(unitOfWork, Sql)
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CustomerOrderFlatSqlServerDapperSynchronizer(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
-    public async Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null)
-    {
-        const string updateSql = @"
+    private const string Sql = @"
                 UPDATE T
                 SET IsDeleted = 1
                 FROM CustomerOrders T
@@ -30,22 +19,4 @@ public sealed class CustomerOrderFlatSqlServerDapperSynchronizer : ISynchronizer
                 ) Latest ON T.UniqId = Latest.UniqId
                 WHERE T.RentalId < Latest.MaxRentalId
                 AND T.IsDeleted = 0";
-
-        var parameters = new
-        {
-            FromId = fromId,
-            ToId = toId,
-        };
-
-        if (transaction is null)
-        {
-            var connection = _unitOfWork.Connection;
-            await connection.ExecuteAsync(updateSql, parameters);
-        }
-        else
-        {
-            var connection = transaction.Connection ?? throw new ArgumentNullException(nameof(transaction), "Transaction must have a valid connection.");
-            await connection.ExecuteAsync(updateSql, parameters, transaction);
-        }
-    }
 }
