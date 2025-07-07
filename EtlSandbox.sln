@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.BetaWorker", "Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.WebApi", "Applications\EtlSandbox.WebApi\EtlSandbox.WebApi.csproj", "{7AD7A654-1BD3-4D44-A890-77BBF2E70FE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.GammaWorker", "Applications\EtlSandbox.GammaWorker\EtlSandbox.GammaWorker.csproj", "{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,18 @@ Global
 		{7AD7A654-1BD3-4D44-A890-77BBF2E70FE2}.Release|x64.Build.0 = Release|Any CPU
 		{7AD7A654-1BD3-4D44-A890-77BBF2E70FE2}.Release|x86.ActiveCfg = Release|Any CPU
 		{7AD7A654-1BD3-4D44-A890-77BBF2E70FE2}.Release|x86.Build.0 = Release|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Debug|x64.Build.0 = Debug|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Debug|x86.Build.0 = Debug|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Release|x64.ActiveCfg = Release|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Release|x64.Build.0 = Release|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Release|x86.ActiveCfg = Release|Any CPU
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,5 +163,6 @@ Global
 		{26F47E74-DB28-45E9-B6C2-793A2152F80F} = {A10A91C2-6485-6656-963B-F6FCBC812542}
 		{B8FC8758-B87F-463F-9C8F-5703BAD9EC62} = {A10A91C2-6485-6656-963B-F6FCBC812542}
 		{7AD7A654-1BD3-4D44-A890-77BBF2E70FE2} = {A10A91C2-6485-6656-963B-F6FCBC812542}
+		{DCBE0FFB-C45B-41CD-8387-8109C5707E4C} = {A10A91C2-6485-6656-963B-F6FCBC812542}
 	EndGlobalSection
 EndGlobal
