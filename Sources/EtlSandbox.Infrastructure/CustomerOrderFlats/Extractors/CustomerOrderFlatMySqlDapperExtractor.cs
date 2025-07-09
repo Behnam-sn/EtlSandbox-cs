@@ -23,7 +23,7 @@ public sealed class CustomerOrderFlatMySqlDapperExtractor : IExtractor<CustomerO
         _sourceConnectionString = options.Value.MySql;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<List<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
     {
         await using var connection = new MySqlConnection(_sourceConnectionString);
         var sql = @"
@@ -49,6 +49,11 @@ public sealed class CustomerOrderFlatMySqlDapperExtractor : IExtractor<CustomerO
             LastProcessedId = lastProcessedId,
             BatchSize = batchSize
         });
-        return result.ToList();
+
+        var items = result.ToList();
+
+        _logger.LogInformation("Extracted {Count} rows", items.Count);
+
+        return items;
     }
 }

@@ -22,7 +22,7 @@ public sealed class CustomerOrderFlatRestApiExtractor : IExtractor<CustomerOrder
         _baseUrl = options.Value.WebApi;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<List<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
     {
         var items = await _restApiClient.GetAsync<List<CustomerOrderFlat>>(
             baseUrl: _baseUrl,

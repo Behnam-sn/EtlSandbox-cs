@@ -15,7 +15,7 @@ public sealed class CustomerOrderFlatEfExtractor : IExtractor<CustomerOrderFlat>
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<List<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)
     {
         return await _applicationDbContext
             .CustomerOrders
