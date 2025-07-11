@@ -33,7 +33,6 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         var loader = scope.ServiceProvider.GetRequiredService<ILoader<T>>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        unitOfWork.Connection.Open();
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -51,6 +50,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                 {
                     var transformed = data.Select(transformer.Transform).ToList();
 
+                    unitOfWork.Connection.Open();
                     unitOfWork.BeginTransaction();
                     try
                     {
@@ -69,18 +69,23 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                         unitOfWork.Rollback();
                         throw;
                     }
+                    finally
+                    {
+                        unitOfWork.Connection.Close();
+                    }
                 }
                 else
                 {
                     _logger.LogInformation("No new data to process");
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Insert failed: {Message}", e.Message);
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
         }
     }
 }

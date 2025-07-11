@@ -29,8 +29,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
         var applicationStateCommandRepository = scope.ServiceProvider.GetRequiredService<IApplicationStateCommandRepository>();
         var synchronizer = scope.ServiceProvider.GetRequiredService<ISynchronizer<T>>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        
-        unitOfWork.Connection.Open();
+
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -42,6 +41,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 
                 if (count > 0)
                 {
+                    unitOfWork.Connection.Open();
                     unitOfWork.BeginTransaction();
 
                     try
@@ -71,18 +71,23 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
                         unitOfWork.Rollback();
                         throw;
                     }
+                    finally
+                    {
+                        unitOfWork.Connection.Close();
+                    }
                 }
                 else
                 {
                     _logger.LogInformation("No new data to process");
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Soft delete failed: {Message}", e.Message);
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
         }
     }
 }
