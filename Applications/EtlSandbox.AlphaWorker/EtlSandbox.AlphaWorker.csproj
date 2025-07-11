@@ -4,8 +4,6 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-EtlSandbox.Worker-b66f375e-bf33-46e7-bd5d-5971b3dfea03</UserSecretsId>
-    <RootNamespace>EtlSandbox.Worker</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
