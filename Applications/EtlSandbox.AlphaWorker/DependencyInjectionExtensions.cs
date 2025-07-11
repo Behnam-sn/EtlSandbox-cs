@@ -21,6 +21,7 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
+        services.ConfigureOptions<ApplicationSettingsSetup>();
         services.ConfigureOptions<DatabaseConnectionsSetup>();
         services.ConfigureOptions<RestApiConnectionsSetup>();
     }

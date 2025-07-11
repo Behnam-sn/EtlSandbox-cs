@@ -1,17 +1,17 @@
 ﻿using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Shared.Workers;
 
 public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 {
-    private const int BatchSize = 100_000;
-
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
@@ -22,14 +22,21 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
+    protected int? BatchSize { get; set; }
+
+    protected int? DelayInSeconds { get; set; }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
 
+        var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
         var applicationStateCommandRepository = scope.ServiceProvider.GetRequiredService<IApplicationStateCommandRepository>();
         var synchronizer = scope.ServiceProvider.GetRequiredService<ISynchronizer<T>>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
+        var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
+        var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -46,7 +53,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 
                     try
                     {
-                        var toId = count > BatchSize ? lastDeletedId + BatchSize : lastInsertedId;
+                        var toId = count > batchSize ? lastDeletedId + batchSize : lastInsertedId;
 
                         _logger.LogInformation("Deleting from {FromId} to {ToId}", lastDeletedId, toId);
 
@@ -87,7 +94,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
                 _logger.LogError(e, "Soft delete failed: {Message}", e.Message);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), stoppingToken);
         }
     }
 }

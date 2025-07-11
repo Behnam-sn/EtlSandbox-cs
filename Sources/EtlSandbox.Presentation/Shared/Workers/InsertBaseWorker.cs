@@ -1,18 +1,18 @@
 ﻿using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Options;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Shared.Workers;
 
 public abstract class InsertBaseWorker<T> : BackgroundService
     where T : IEntity
 {
-    private const int BatchSize = 1_000;
-
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
@@ -23,16 +23,23 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
+    protected int? BatchSize { get; set; }
+
+    protected int? DelayInSeconds { get; set; }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
 
+        var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
         var applicationStateCommandRepository = scope.ServiceProvider.GetRequiredService<IApplicationStateCommandRepository>();
         var extractor = scope.ServiceProvider.GetRequiredService<IExtractor<T>>();
         var transformer = scope.ServiceProvider.GetRequiredService<ITransformer<T>>();
         var loader = scope.ServiceProvider.GetRequiredService<ILoader<T>>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
+        var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
+        var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -42,7 +49,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
 
                 var data = await extractor.ExtractAsync(
                     lastProcessedId,
-                    BatchSize,
+                    batchSize,
                     stoppingToken
                 );
 
@@ -85,7 +92,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                 _logger.LogError(e, "Insert failed: {Message}", e.Message);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), stoppingToken);
         }
     }
 }
