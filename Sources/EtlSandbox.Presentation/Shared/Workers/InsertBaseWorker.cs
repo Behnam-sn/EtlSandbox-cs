@@ -11,7 +11,7 @@ namespace EtlSandbox.Presentation.Shared.Workers;
 public abstract class InsertBaseWorker<T> : BackgroundService
     where T : IEntity
 {
-    private const int BatchSize = 100_000;
+    private const int BatchSize = 1_000;
 
     private readonly ILogger _logger;
 
@@ -33,6 +33,8 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         var loader = scope.ServiceProvider.GetRequiredService<ILoader<T>>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
+        unitOfWork.Connection.Open();
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -45,11 +47,10 @@ public abstract class InsertBaseWorker<T> : BackgroundService
                     stoppingToken
                 );
 
-                if (data.Any())
+                if (data.Count != 0)
                 {
                     var transformed = data.Select(transformer.Transform).ToList();
 
-                    unitOfWork.Connection.Open();
                     unitOfWork.BeginTransaction();
                     try
                     {

@@ -29,6 +29,8 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
         var applicationStateCommandRepository = scope.ServiceProvider.GetRequiredService<IApplicationStateCommandRepository>();
         var synchronizer = scope.ServiceProvider.GetRequiredService<ISynchronizer<T>>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        
+        unitOfWork.Connection.Open();
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -40,7 +42,6 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 
                 if (count > 0)
                 {
-                    unitOfWork.Connection.Open();
                     unitOfWork.BeginTransaction();
 
                     try
