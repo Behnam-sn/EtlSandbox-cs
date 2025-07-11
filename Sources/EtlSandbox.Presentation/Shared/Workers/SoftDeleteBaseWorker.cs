@@ -10,6 +10,8 @@ namespace EtlSandbox.Presentation.Shared.Workers;
 
 public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 {
+    private const int BatchSize = 100_000;
+
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
@@ -43,18 +45,24 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 
                     try
                     {
-                        _logger.LogInformation("Deleting from {FromId} to {ToId}", lastDeletedId, lastInsertedId);
+                        var toId = count > BatchSize ? lastDeletedId + BatchSize : lastInsertedId;
+
+                        _logger.LogInformation("Deleting from {FromId} to {ToId}", lastDeletedId, toId);
+
                         await synchronizer.SoftDeleteObsoleteRowsAsync(
                             fromId: lastDeletedId,
-                            toId: lastInsertedId,
+                            toId: toId,
                             transaction: unitOfWork.Transaction
                         );
+
                         await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
                             processType: ProcessType.Delete,
-                            lastProcessedId: lastInsertedId,
+                            lastProcessedId: toId,
                             transaction: unitOfWork.Transaction
                         );
+
                         unitOfWork.Commit();
+
                         _logger.LogInformation("Delete completed");
                     }
                     catch
