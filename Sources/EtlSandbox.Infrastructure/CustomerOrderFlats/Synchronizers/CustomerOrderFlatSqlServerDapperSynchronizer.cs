@@ -2,10 +2,12 @@
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 
+using Microsoft.Extensions.Logging;
+
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatSqlServerDapperSynchronizer(IUnitOfWork unitOfWork)
-    : BaseDapperSynchronizer<CustomerOrderFlat>(unitOfWork, Sql)
+public sealed class CustomerOrderFlatSqlServerDapperSynchronizer(ILogger<CustomerOrderFlatSqlServerDapperSynchronizer> logger, IUnitOfWork unitOfWork)
+    : BaseDapperSynchronizer<CustomerOrderFlat>(logger, unitOfWork, Sql)
 {
     private const string Sql = @"
                 UPDATE T

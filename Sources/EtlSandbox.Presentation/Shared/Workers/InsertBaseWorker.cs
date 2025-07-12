@@ -1,6 +1,4 @@
 ﻿using EtlSandbox.Application.Shared.Commands;
-using EtlSandbox.Domain.ApplicationStates.Enums;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
 

@@ -1,7 +1,8 @@
-﻿using EtlSandbox.Domain.ApplicationStates.Enums;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
+﻿using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
+
+using MediatR;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Options;
 namespace EtlSandbox.Presentation.Shared.Workers;
 
 public abstract class SoftDeleteBaseWorker<T> : BackgroundService
+    where T : IEntity
 {
     private readonly ILogger _logger;
 
@@ -28,66 +30,22 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-
-        var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
-        var applicationStateCommandRepository = scope.ServiceProvider.GetRequiredService<IApplicationStateCommandRepository>();
-        var synchronizer = scope.ServiceProvider.GetRequiredService<ISynchronizer<T>>();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-        var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
-        var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
-
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var scope = _serviceProvider.CreateScope();
+
+            var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
+            var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
+
             try
             {
-                var lastDeletedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Delete);
-                var lastInsertedId = await applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
-                var count = lastInsertedId - lastDeletedId;
-
-                if (count > 0)
-                {
-                    unitOfWork.Connection.Open();
-                    unitOfWork.BeginTransaction();
-
-                    try
-                    {
-                        var toId = count > batchSize ? lastDeletedId + batchSize : lastInsertedId;
-
-                        _logger.LogInformation("Deleting from {FromId} to {ToId}", lastDeletedId, toId);
-
-                        await synchronizer.SoftDeleteObsoleteRowsAsync(
-                            fromId: lastDeletedId,
-                            toId: toId,
-                            transaction: unitOfWork.Transaction
-                        );
-
-                        await applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
-                            processType: ProcessType.Delete,
-                            lastProcessedId: toId,
-                            transaction: unitOfWork.Transaction
-                        );
-
-                        unitOfWork.Commit();
-
-                        _logger.LogInformation("Delete completed");
-                    }
-                    catch
-                    {
-                        unitOfWork.Rollback();
-                        throw;
-                    }
-                    finally
-                    {
-                        unitOfWork.Connection.Close();
-                    }
-                }
-                else
-                {
-                    _logger.LogInformation("No new data to process");
-                }
-
+                var command = new SoftDeleteCommand<T>(
+                    BatchSize: batchSize
+                );
+                await mediator.Send(command, stoppingToken);
             }
             catch (Exception e)
             {

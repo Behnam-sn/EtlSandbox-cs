@@ -42,6 +42,7 @@ internal static class DependencyInjectionExtensions
         // MediatR
         services.AddMediatR(config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly));
         services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
+        services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

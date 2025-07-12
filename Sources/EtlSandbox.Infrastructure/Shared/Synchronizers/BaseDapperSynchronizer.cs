@@ -4,22 +4,29 @@ using Dapper;
 
 using EtlSandbox.Domain.Shared;
 
+using Microsoft.Extensions.Logging;
+
 namespace EtlSandbox.Infrastructure.Shared.Synchronizers;
 
 public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
 {
+    private readonly ILogger<BaseDapperSynchronizer<T>> _logger;
+
     private readonly IUnitOfWork _unitOfWork;
 
     private readonly string _sql;
 
-    protected BaseDapperSynchronizer(IUnitOfWork unitOfWork, string sql)
+    protected BaseDapperSynchronizer(ILogger<BaseDapperSynchronizer<T>> logger, IUnitOfWork unitOfWork, string sql)
     {
+        _logger = logger;
         _unitOfWork = unitOfWork;
         _sql = sql;
     }
 
     public async Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null)
     {
+        _logger.LogInformation("Deleting from {FromId} to {ToId}", fromId, toId);
+        
         var parameters = new
         {
             FromId = fromId,
