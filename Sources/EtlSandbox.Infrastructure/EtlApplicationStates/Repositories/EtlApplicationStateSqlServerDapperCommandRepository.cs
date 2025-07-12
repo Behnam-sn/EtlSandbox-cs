@@ -2,17 +2,17 @@ using System.Data;
 
 using Dapper;
 
-using EtlSandbox.Domain.ApplicationStates.Enums;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
+using EtlSandbox.Domain.EtlApplicationStates.Enums;
+using EtlSandbox.Domain.EtlApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.Infrastructure.ApplicationStates;
+namespace EtlSandbox.Infrastructure.EtlApplicationStates.Repositories;
 
-public sealed class ApplicationStateSqlServerDapperCommandRepository : IApplicationStateCommandRepository
+public sealed class EtlApplicationStateSqlServerDapperCommandRepository : IEtlApplicationStateCommandRepository
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public ApplicationStateSqlServerDapperCommandRepository(IUnitOfWork unitOfWork)
+    public EtlApplicationStateSqlServerDapperCommandRepository(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
@@ -20,7 +20,7 @@ public sealed class ApplicationStateSqlServerDapperCommandRepository : IApplicat
     public async Task<int> GetLastProcessedIdAsync<T>(ProcessType processType)
     {
         var connection = _unitOfWork.Connection;
-        const string sql = "SELECT MAX(LastProcessedId) FROM ApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
+        const string sql = "SELECT MAX(LastProcessedId) FROM EtlApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
         var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new
         {
             EntityType = typeof(T).Name,
@@ -32,9 +32,9 @@ public sealed class ApplicationStateSqlServerDapperCommandRepository : IApplicat
     public async Task UpdateLastProcessedIdAsync<T>(ProcessType processType, int lastProcessedId, IDbTransaction? transaction = null)
     {
         var entityType = typeof(T).Name;
-        const string selectSql = "SELECT COUNT(1) FROM ApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
-        const string insertSql = "INSERT INTO ApplicationStates (EntityType, ProcessType, LastProcessedId) VALUES (@EntityType, @ProcessType, @LastProcessedId)";
-        const string updateSql = "UPDATE ApplicationStates SET LastProcessedId = @LastProcessedId WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
+        const string selectSql = "SELECT COUNT(1) FROM EtlApplicationStates WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
+        const string insertSql = "INSERT INTO EtlApplicationStates (EntityType, ProcessType, LastProcessedId) VALUES (@EntityType, @ProcessType, @LastProcessedId)";
+        const string updateSql = "UPDATE EtlApplicationStates SET LastProcessedId = @LastProcessedId WHERE EntityType = @EntityType AND ProcessType = @ProcessType";
 
         var parameters = new
         {

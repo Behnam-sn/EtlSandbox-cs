@@ -15,7 +15,7 @@ public class NpgsqlConnectionFactory : IDbConnectionFactory
     
     public NpgsqlConnectionFactory(IOptions<DatabaseConnections> options)
     {
-        _connectionString = options.Value.SqlServer;
+        _connectionString = options.Value.Destination;
     }
     
     public IDbConnection CreateConnection() => new NpgsqlConnection(_connectionString);

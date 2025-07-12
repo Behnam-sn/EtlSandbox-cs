@@ -1,10 +1,10 @@
 ﻿using System.Data;
 
-using EtlSandbox.Domain.ApplicationStates.Enums;
+using EtlSandbox.Domain.EtlApplicationStates.Enums;
 
-namespace EtlSandbox.Domain.ApplicationStates.Repositories;
+namespace EtlSandbox.Domain.EtlApplicationStates.Repositories;
 
-public interface IApplicationStateCommandRepository
+public interface IEtlApplicationStateCommandRepository
 {
     Task<int> GetLastProcessedIdAsync<T>(ProcessType processType);
 

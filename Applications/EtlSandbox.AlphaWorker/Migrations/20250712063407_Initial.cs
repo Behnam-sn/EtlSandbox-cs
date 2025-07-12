@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EtlSandbox.Worker.Migrations
+namespace EtlSandbox.AlphaWorker.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -11,21 +11,6 @@ namespace EtlSandbox.Worker.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "ApplicationStates",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EntityType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProcessType = table.Column<int>(type: "int", nullable: false),
-                    LastProcessedId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationStates", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "CustomerOrders",
                 columns: table => new
@@ -42,16 +27,31 @@ namespace EtlSandbox.Worker.Migrations
                 {
                     table.PrimaryKey("PK_CustomerOrders", x => x.RentalId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "EtlApplicationStates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EntityType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProcessType = table.Column<int>(type: "int", nullable: false),
+                    LastProcessedId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EtlApplicationStates", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicationStates");
+                name: "CustomerOrders");
 
             migrationBuilder.DropTable(
-                name: "CustomerOrders");
+                name: "EtlApplicationStates");
         }
     }
 }

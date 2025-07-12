@@ -1,19 +1,22 @@
 using EtlSandbox.Application.Shared.Commands;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.EtlApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.ApplicationStates;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Infrastructure.EtlApplicationStates;
+using EtlSandbox.Infrastructure.EtlApplicationStates.Repositories;
 using EtlSandbox.Infrastructure.Shared;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 using EtlSandbox.Shared.ConfigureOptions;
+
 using MediatR;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.AlphaWorker;
@@ -48,8 +51,8 @@ internal static class DependencyInjectionExtensions
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["SqlServer"] ??
-            throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
+        var connectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
+            throw new InvalidOperationException("Connection string 'Destination'" + " not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
             connectionString,
@@ -64,12 +67,12 @@ internal static class DependencyInjectionExtensions
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
-        services.AddScoped<IApplicationStateCommandRepository, ApplicationStateSqlServerDapperCommandRepository>();
+        services.AddScoped<IEtlApplicationStateCommandRepository, EtlApplicationStateSqlServerDapperCommandRepository>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatMySqlDapperExtractor>();
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlServerBulkCopyLoader>();
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
-        services.AddScoped<IDbConnectionFactory, SqlConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 

@@ -8,13 +8,13 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 
-public class SqlConnectionFactory : IDbConnectionFactory
+public class SqlServerConnectionFactory : IDbConnectionFactory
 {
     private readonly string _connectionString;
     
-    public SqlConnectionFactory(IOptions<DatabaseConnections> options)
+    public SqlServerConnectionFactory(IOptions<DatabaseConnections> options)
     {
-        _connectionString = options.Value.SqlServer;
+        _connectionString = options.Value.Destination;
     }
     
     public IDbConnection CreateConnection() => new SqlConnection(_connectionString);

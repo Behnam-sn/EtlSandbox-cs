@@ -20,7 +20,7 @@ public sealed class CustomerOrderFlatMySqlDapperExtractor : IExtractor<CustomerO
     public CustomerOrderFlatMySqlDapperExtractor(ILogger<CustomerOrderFlatMySqlDapperExtractor> logger, IOptions<DatabaseConnections> options)
     {
         _logger = logger;
-        _sourceConnectionString = options.Value.MySql;
+        _sourceConnectionString = options.Value.Source;
     }
 
     public async Task<List<CustomerOrderFlat>> ExtractAsync(int lastProcessedId, int batchSize, CancellationToken cancellationToken)

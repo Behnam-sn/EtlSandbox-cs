@@ -1,13 +1,14 @@
 using EtlSandbox.Application.Shared.Commands;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.EtlApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.ApplicationStates;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Infrastructure.EtlApplicationStates;
+using EtlSandbox.Infrastructure.EtlApplicationStates.Repositories;
 using EtlSandbox.Infrastructure.Shared;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
@@ -44,13 +45,14 @@ internal static class DependencyInjectionExtensions
         // MediatR
         services.AddMediatR(config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly));
         services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
+        services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["SqlServer"] ??
-            throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
+        var connectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
+            throw new InvalidOperationException("Connection string 'Destination'" + " not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseNpgsql(
             connectionString,
@@ -65,7 +67,7 @@ internal static class DependencyInjectionExtensions
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
-        services.AddScoped<IApplicationStateCommandRepository, ApplicationStatePostgreSqlDapperCommandRepository>();
+        services.AddScoped<IEtlApplicationStateCommandRepository, EtlApplicationStatePostgreSqlDapperCommandRepository>();
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
         services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperLoader>();

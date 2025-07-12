@@ -1,6 +1,6 @@
 using EtlSandbox.Application.Shared.Abstractions.Messaging;
-using EtlSandbox.Domain.ApplicationStates.Enums;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
+using EtlSandbox.Domain.EtlApplicationStates.Enums;
+using EtlSandbox.Domain.EtlApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Application.Shared.Commands;
@@ -8,21 +8,21 @@ namespace EtlSandbox.Application.Shared.Commands;
 public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
     where T : IEntity
 {
-    private readonly IApplicationStateCommandRepository _applicationStateCommandRepository;
+    private readonly IEtlApplicationStateCommandRepository _etlApplicationStateCommandRepository;
     private readonly IExtractor<T> _extractor;
     private readonly ITransformer<T> _transformer;
     private readonly ILoader<T> _loader;
     private readonly IUnitOfWork _unitOfWork;
 
     public InsertCommandHandler(
-        IApplicationStateCommandRepository applicationStateCommandRepository,
+        IEtlApplicationStateCommandRepository etlApplicationStateCommandRepository,
         IExtractor<T> extractor,
         ITransformer<T> transformer,
         ILoader<T> loader,
         IUnitOfWork unitOfWork
     )
     {
-        _applicationStateCommandRepository = applicationStateCommandRepository;
+        _etlApplicationStateCommandRepository = etlApplicationStateCommandRepository;
         _extractor = extractor;
         _transformer = transformer;
         _loader = loader;
@@ -31,7 +31,7 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 
     public async Task Handle(InsertCommand<T> request, CancellationToken cancellationToken)
     {
-        var lastProcessedId = await _applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
+        var lastProcessedId = await _etlApplicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
 
         var data = await _extractor.ExtractAsync(
             lastProcessedId,
@@ -49,7 +49,7 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
             try
             {
                 await _loader.LoadAsync(transformed, cancellationToken, _unitOfWork.Transaction);
-                await _applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
+                await _etlApplicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
                     processType: ProcessType.Insert,
                     lastProcessedId: transformed.Max(item => item.Id),
                     transaction: _unitOfWork.Transaction

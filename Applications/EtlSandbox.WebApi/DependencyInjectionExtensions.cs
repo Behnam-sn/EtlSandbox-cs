@@ -34,8 +34,8 @@ internal static class DependencyInjectionExtensions
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["SqlServer"] ??
-            throw new InvalidOperationException("Connection string 'SqlServer'" + " not found.");
+        var connectionString = configuration.GetSection("DatabaseConnections")["Source"] ??
+            throw new InvalidOperationException("Connection string 'Source'" + " not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
             connectionString,

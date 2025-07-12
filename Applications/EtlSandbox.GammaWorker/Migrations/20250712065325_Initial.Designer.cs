@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.GammaWorker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250707121754_Initial")]
+    [Migration("20250712065325_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,29 +24,6 @@ namespace EtlSandbox.GammaWorker.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("EtlSandbox.Domain.ApplicationStates.Entities.ApplicationState", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LastProcessedId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProcessType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationStates");
-                });
 
             modelBuilder.Entity("EtlSandbox.Domain.CustomerOrderFlats.CustomerOrderFlat", b =>
                 {
@@ -76,6 +53,29 @@ namespace EtlSandbox.GammaWorker.Migrations
                     b.HasKey("RentalId");
 
                     b.ToTable("CustomerOrders");
+                });
+
+            modelBuilder.Entity("EtlSandbox.Domain.EtlApplicationStates.Entities.EtlApplicationState", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LastProcessedId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProcessType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EtlApplicationStates");
                 });
 #pragma warning restore 612, 618
         }

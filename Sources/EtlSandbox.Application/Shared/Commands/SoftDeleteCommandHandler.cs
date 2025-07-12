@@ -1,6 +1,6 @@
 ﻿using EtlSandbox.Application.Shared.Abstractions.Messaging;
-using EtlSandbox.Domain.ApplicationStates.Enums;
-using EtlSandbox.Domain.ApplicationStates.Repositories;
+using EtlSandbox.Domain.EtlApplicationStates.Enums;
+using EtlSandbox.Domain.EtlApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Application.Shared.Commands;
@@ -8,23 +8,23 @@ namespace EtlSandbox.Application.Shared.Commands;
 public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteCommand<T>>
     where T : IEntity
 {
-    private readonly IApplicationStateCommandRepository _applicationStateCommandRepository;
+    private readonly IEtlApplicationStateCommandRepository _etlApplicationStateCommandRepository;
 
     private readonly IUnitOfWork _unitOfWork;
 
     private readonly ISynchronizer<T> _synchronizer;
 
-    public SoftDeleteCommandHandler(IApplicationStateCommandRepository applicationStateCommandRepository, IUnitOfWork unitOfWork, ISynchronizer<T> synchronizer)
+    public SoftDeleteCommandHandler(IEtlApplicationStateCommandRepository etlApplicationStateCommandRepository, IUnitOfWork unitOfWork, ISynchronizer<T> synchronizer)
     {
-        _applicationStateCommandRepository = applicationStateCommandRepository;
+        _etlApplicationStateCommandRepository = etlApplicationStateCommandRepository;
         _unitOfWork = unitOfWork;
         _synchronizer = synchronizer;
     }
 
     public async Task Handle(SoftDeleteCommand<T> request, CancellationToken cancellationToken)
     {
-        var lastDeletedId = await _applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Delete);
-        var lastInsertedId = await _applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
+        var lastDeletedId = await _etlApplicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Delete);
+        var lastInsertedId = await _etlApplicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
         var count = lastInsertedId - lastDeletedId;
 
         if (count > 0)
@@ -42,7 +42,7 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
                     transaction: _unitOfWork.Transaction
                 );
 
-                await _applicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
+                await _etlApplicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
                     processType: ProcessType.Delete,
                     lastProcessedId: toId,
                     transaction: _unitOfWork.Transaction

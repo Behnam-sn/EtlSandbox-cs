@@ -22,29 +22,6 @@ namespace EtlSandbox.BetaWorker.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EtlSandbox.Domain.ApplicationStates.Entities.ApplicationState", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("LastProcessedId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProcessType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationStates");
-                });
-
             modelBuilder.Entity("EtlSandbox.Domain.CustomerOrderFlats.CustomerOrderFlat", b =>
                 {
                     b.Property<int>("RentalId")
@@ -73,6 +50,29 @@ namespace EtlSandbox.BetaWorker.Migrations
                     b.HasKey("RentalId");
 
                     b.ToTable("CustomerOrders");
+                });
+
+            modelBuilder.Entity("EtlSandbox.Domain.EtlApplicationStates.Entities.EtlApplicationState", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LastProcessedId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProcessType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EtlApplicationStates");
                 });
 #pragma warning restore 612, 618
         }

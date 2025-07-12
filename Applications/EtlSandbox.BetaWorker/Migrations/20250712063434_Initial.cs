@@ -13,21 +13,6 @@ namespace EtlSandbox.BetaWorker.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ApplicationStates",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EntityType = table.Column<string>(type: "text", nullable: false),
-                    ProcessType = table.Column<int>(type: "integer", nullable: false),
-                    LastProcessedId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationStates", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CustomerOrders",
                 columns: table => new
                 {
@@ -43,16 +28,31 @@ namespace EtlSandbox.BetaWorker.Migrations
                 {
                     table.PrimaryKey("PK_CustomerOrders", x => x.RentalId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "EtlApplicationStates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EntityType = table.Column<string>(type: "text", nullable: false),
+                    ProcessType = table.Column<int>(type: "integer", nullable: false),
+                    LastProcessedId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EtlApplicationStates", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicationStates");
+                name: "CustomerOrders");
 
             migrationBuilder.DropTable(
-                name: "CustomerOrders");
+                name: "EtlApplicationStates");
         }
     }
 }
