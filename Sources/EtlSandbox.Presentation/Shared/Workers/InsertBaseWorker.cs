@@ -32,24 +32,22 @@ public abstract class InsertBaseWorker<T> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-
-        var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-        var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
-        var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
-
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var scope = _serviceProvider.CreateScope();
+
+            var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
+            var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
+
             try
             {
                 var command = new InsertCommand<T>(
                     BatchSize: batchSize
                 );
-
                 await mediator.Send(command, stoppingToken);
-
             }
             catch (Exception e)
             {
