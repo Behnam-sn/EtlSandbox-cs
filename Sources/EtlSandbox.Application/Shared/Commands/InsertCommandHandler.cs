@@ -3,9 +3,9 @@ using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.Application.ApplicationStates.Commands;
+namespace EtlSandbox.Application.Shared.Commands;
 
-public sealed class InsertCustomerOrderFlatCommandHandler<T> : ICommandHandler<InsertCustomerOrderFlatCommand<T>>
+public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
     where T : IEntity
 {
     private readonly IApplicationStateCommandRepository _applicationStateCommandRepository;
@@ -14,7 +14,7 @@ public sealed class InsertCustomerOrderFlatCommandHandler<T> : ICommandHandler<I
     private readonly ILoader<T> _loader;
     private readonly IUnitOfWork _unitOfWork;
 
-    public InsertCustomerOrderFlatCommandHandler(
+    public InsertCommandHandler(
         IApplicationStateCommandRepository applicationStateCommandRepository,
         IExtractor<T> extractor,
         ITransformer<T> transformer,
@@ -29,7 +29,7 @@ public sealed class InsertCustomerOrderFlatCommandHandler<T> : ICommandHandler<I
         _unitOfWork = unitOfWork;
     }
 
-    public async Task Handle(InsertCustomerOrderFlatCommand<T> request, CancellationToken cancellationToken)
+    public async Task Handle(InsertCommand<T> request, CancellationToken cancellationToken)
     {
         var lastProcessedId = await _applicationStateCommandRepository.GetLastProcessedIdAsync<T>(ProcessType.Insert);
 

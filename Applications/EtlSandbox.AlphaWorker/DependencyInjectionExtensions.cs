@@ -1,3 +1,4 @@
+using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats;
 using EtlSandbox.Domain.Shared;
@@ -12,7 +13,7 @@ using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 using EtlSandbox.Shared.ConfigureOptions;
-
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.AlphaWorker;
@@ -40,6 +41,7 @@ internal static class DependencyInjectionExtensions
     {
         // MediatR
         services.AddMediatR(config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly));
+        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

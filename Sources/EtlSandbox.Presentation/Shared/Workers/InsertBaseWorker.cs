@@ -1,4 +1,4 @@
-﻿using EtlSandbox.Application.ApplicationStates.Commands;
+﻿using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.ApplicationStates.Enums;
 using EtlSandbox.Domain.ApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
@@ -44,7 +44,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
         {
             try
             {
-                var command = new InsertCustomerOrderFlatCommand<T>(
+                var command = new InsertCommand<T>(
                     BatchSize: batchSize
                 );
 
