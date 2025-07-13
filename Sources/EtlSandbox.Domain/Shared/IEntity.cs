@@ -4,7 +4,7 @@ public interface IEntity
 {
     int Id { get; set; }
 
-    int UniqId { get; set; }
+    int ImportantId { get; }
 
     bool IsDeleted { get; set; }
 }

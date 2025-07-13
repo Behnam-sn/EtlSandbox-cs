@@ -31,7 +31,6 @@ public class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFla
         table.Columns.Add("Amount", typeof(decimal));
         table.Columns.Add("RentalDate", typeof(DateTime));
         table.Columns.Add("Category", typeof(string));
-        table.Columns.Add("UniqId", typeof(int));
         table.Columns.Add("IsDeleted", typeof(bool));
 
         foreach (var item in data)
@@ -43,7 +42,6 @@ public class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFla
                 item.Amount,
                 item.RentalDate,
                 item.Category,
-                item.UniqId,
                 item.IsDeleted
             );
         }

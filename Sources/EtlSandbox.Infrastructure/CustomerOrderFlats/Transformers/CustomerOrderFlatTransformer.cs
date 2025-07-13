@@ -16,19 +16,10 @@ public sealed class CustomerOrderFlatTransformer : ITransformer<CustomerOrderFla
 
     public CustomerOrderFlat Transform(CustomerOrderFlat input)
     {
-        var transformed = new CustomerOrderFlat
-        {
-            Id = input.Id,
-            RentalId = input.RentalId,
-            CustomerName = input.CustomerName.ToUpperInvariant(),
-            Amount = input.Amount,
-            RentalDate = input.RentalDate,
-            Category = input.Category.ToLowerInvariant(),
-            UniqId = 0,
-            IsDeleted = false,
-        };
+        input.CustomerName = input.CustomerName?.ToUpperInvariant();
+        input.Category = input.Category?.ToLowerInvariant();
 
-        _logger.LogDebug("Transformed RentalId {RentalId}: {Original} => {Transformed}", input.RentalId, input, transformed);
-        return transformed;
+        // _logger.LogDebug("Transformed RentalId {RentalId}: {Original} => {Transformed}", input.RentalId, input, transformed);
+        return input;
     }
 }

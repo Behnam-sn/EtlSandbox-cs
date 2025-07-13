@@ -16,7 +16,7 @@ public sealed class CustomerOrderFlat : IEntity
 
     public string? Category { get; set; }
 
-    public int UniqId { get; set; }
+    public int ImportantId => RentalId;
 
     public bool IsDeleted { get; set; }
 }

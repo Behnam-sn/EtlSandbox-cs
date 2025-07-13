@@ -51,59 +51,54 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
         );
         _logger.LogInformation("Extracted {Count} rows", extractedItems.Count);
 
-        if (extractedItems.Count != 0)
+        if (extractedItems.Count == 0)
         {
-            _logger.LogInformation("Transforming data");
-            // var transformedItems = new List<T>();
-            // foreach (var item in extractedItems)
-            // {
-            //     lastProcessedId++;
-            //     item.Id = lastProcessedId;
-            //     transformedItems.Add(_transformer.Transform(item));
-            // }
-            var transformedItems = extractedItems.Select(_transformer.Transform).ToList();
-            _logger.LogInformation("Transformed {Count} rows", transformedItems.Count);
+            return;
+        }
 
-            _logger.LogInformation("Opening connection");
-            _unitOfWork.Connection.Open();
-            _logger.LogInformation("Connection opened");
+        _logger.LogInformation("Transforming data");
+        var transformedItems = extractedItems.AsParallel().Select(_transformer.Transform).ToList();
+        _logger.LogInformation("Transformed {Count} rows", transformedItems.Count);
 
-            _logger.LogInformation("Beginning transaction");
-            _unitOfWork.BeginTransaction();
-            _logger.LogInformation("Transaction began");
+        _logger.LogInformation("Opening connection");
+        _unitOfWork.Connection.Open();
+        _logger.LogInformation("Connection opened");
 
-            try
-            {
-                _logger.LogInformation("Loading {Count} rows", extractedItems.Count);
-                await _loader.LoadAsync(transformedItems, cancellationToken, _unitOfWork.Transaction);
-                _logger.LogInformation("Load completed");
+        _logger.LogInformation("Beginning transaction");
+        _unitOfWork.BeginTransaction();
+        _logger.LogInformation("Transaction began");
 
-                _logger.LogInformation("Updating EtlApplicationState");
-                var newLastProcessedId = lastProcessedId + transformedItems.Count;
-                await _etlApplicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
-                    processType: ProcessType.Insert,
-                    lastProcessedId: newLastProcessedId,
-                    transaction: _unitOfWork.Transaction
-                );
-                _logger.LogInformation("Inserted Until {LastProcessedId}", newLastProcessedId);
+        try
+        {
+            _logger.LogInformation("Loading {Count} rows", extractedItems.Count);
+            await _loader.LoadAsync(transformedItems, cancellationToken, _unitOfWork.Transaction);
+            _logger.LogInformation("Load completed");
 
-                _logger.LogInformation("Commiting transaction");
-                _unitOfWork.Commit();
-                _logger.LogInformation("Transaction committed");
-            }
-            catch
-            {
-                _logger.LogInformation("Roll backing transaction");
-                _unitOfWork.Rollback();
-                _logger.LogInformation("Transaction rolled back");
-                throw;
-            }
-            finally
-            {
-                _logger.LogInformation("Closing connection");
-                _unitOfWork.Connection.Close();
-                _logger.LogInformation("Connection closed");
-            }
+            _logger.LogInformation("Updating EtlApplicationState");
+            var newLastProcessedId = transformedItems.Max(item => item.ImportantId);
+            await _etlApplicationStateCommandRepository.UpdateLastProcessedIdAsync<T>(
+                processType: ProcessType.Insert,
+                lastProcessedId: newLastProcessedId,
+                transaction: _unitOfWork.Transaction
+            );
+            _logger.LogInformation("Inserted Until {LastProcessedId}", newLastProcessedId);
+
+            _logger.LogInformation("Commiting transaction");
+            _unitOfWork.Commit();
+            _logger.LogInformation("Transaction committed");
+        }
+        catch
+        {
+            _logger.LogInformation("Roll backing transaction");
+            _unitOfWork.Rollback();
+            _logger.LogInformation("Transaction rolled back");
+            throw;
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection");
+            _unitOfWork.Connection.Close();
+            _logger.LogInformation("Connection closed");
         }
     }
 }

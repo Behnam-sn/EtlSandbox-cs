@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.AlphaWorker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250713074335_Initial")]
+    [Migration("20250713081732_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -51,9 +51,6 @@ namespace EtlSandbox.AlphaWorker.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("RentalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UniqId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

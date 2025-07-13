@@ -14,11 +14,11 @@ public sealed class CustomerOrderFlatSqlServerDapperSynchronizer(ILogger<Custome
                 SET IsDeleted = 1
                 FROM CustomerOrders T
                 INNER JOIN (
-                    SELECT UniqId, MAX(RentalId) AS MaxRentalId
+                    SELECT CustomerName, MAX(Id) AS MaxId
                     FROM CustomerOrders
-                    WHERE RentalId BETWEEN @FromId AND @ToId
-                    GROUP BY UniqId
-                ) Latest ON T.UniqId = Latest.UniqId
-                WHERE T.RentalId < Latest.MaxRentalId
+                    WHERE Id BETWEEN @FromId AND @ToId
+                    GROUP BY CustomerName
+                ) Latest ON T.CustomerName = Latest.CustomerName
+                WHERE T.Id < Latest.MaxId
                 AND T.IsDeleted = 0";
 }

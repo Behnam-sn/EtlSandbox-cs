@@ -50,9 +50,6 @@ namespace EtlSandbox.AlphaWorker.Migrations
                     b.Property<int>("RentalId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UniqId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("CustomerOrders");

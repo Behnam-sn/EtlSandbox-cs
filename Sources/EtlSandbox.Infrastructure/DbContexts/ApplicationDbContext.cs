@@ -20,7 +20,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<CustomerOrderFlat>(entity =>
         {
             entity.HasKey(e => e.Id);
-            // entity.Property(o => o.Id).ValueGeneratedNever();
             entity.Property(e => e.CustomerName).HasMaxLength(100);
             entity.Property(e => e.Category).HasMaxLength(50);
         });
