@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace EtlSandbox.Shared;
+namespace EtlSandbox.Infrastructure.Shared;
 
 public static class ConfigurationExtensions
 {

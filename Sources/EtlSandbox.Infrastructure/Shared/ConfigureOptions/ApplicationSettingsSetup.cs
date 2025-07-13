@@ -3,20 +3,20 @@ using EtlSandbox.Domain.Shared.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace EtlSandbox.Shared.ConfigureOptions;
+namespace EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 
-public sealed class DatabaseConnectionsSetup : IConfigureOptions<DatabaseConnections>
+public sealed class ApplicationSettingsSetup : IConfigureOptions<ApplicationSettings>
 {
-    private const string SectionName = "DatabaseConnections";
+    private const string SectionName = "ApplicationSettings";
 
     private readonly IConfiguration _configuration;
 
-    public DatabaseConnectionsSetup(IConfiguration configuration)
+    public ApplicationSettingsSetup(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public void Configure(DatabaseConnections options)
+    public void Configure(ApplicationSettings options)
     {
         _configuration
             .GetSection(SectionName)

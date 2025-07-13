@@ -1,6 +1,6 @@
 ﻿using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.Domain.CustomerOrderFlats;
+namespace EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
 public sealed class CustomerOrderFlat : IEntity
 {
@@ -19,4 +19,5 @@ public sealed class CustomerOrderFlat : IEntity
     public int UniqId { get; set; }
 
     public bool IsDeleted { get; set; }
+
 }

@@ -3,7 +3,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace EtlSandbox.Shared.ConfigureOptions;
+namespace EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 
 public sealed class RestApiConnectionsSetup : IConfigureOptions<RestApiConnections>
 {

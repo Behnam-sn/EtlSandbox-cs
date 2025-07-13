@@ -2,9 +2,9 @@ using System.Data;
 
 using EtlSandbox.Domain.Shared;
 
-namespace EtlSandbox.Infrastructure.Shared;
+namespace EtlSandbox.Infrastructure.Shared.UnitOfWorks;
 
-public sealed class UnitOfWork : IUnitOfWork
+public sealed class RawSqlUnitOfWork : IUnitOfWork
 {
     private readonly IDbConnectionFactory _connectionFactory;
 
@@ -14,7 +14,7 @@ public sealed class UnitOfWork : IUnitOfWork
 
     private bool _disposed;
 
-    public UnitOfWork(IDbConnectionFactory connectionFactory)
+    public RawSqlUnitOfWork(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }

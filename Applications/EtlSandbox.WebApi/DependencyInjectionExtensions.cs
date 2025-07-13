@@ -1,8 +1,8 @@
-using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.DbContexts;
-using EtlSandbox.Shared.ConfigureOptions;
+using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 
 using Microsoft.EntityFrameworkCore;
 

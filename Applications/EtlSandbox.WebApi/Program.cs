@@ -1,4 +1,4 @@
-using EtlSandbox.Shared;
+using EtlSandbox.Infrastructure.Shared;
 using EtlSandbox.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);

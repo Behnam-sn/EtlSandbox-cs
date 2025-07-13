@@ -1,6 +1,6 @@
 ﻿using Dapper;
 
-using EtlSandbox.Domain.CustomerOrderFlats;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
 
