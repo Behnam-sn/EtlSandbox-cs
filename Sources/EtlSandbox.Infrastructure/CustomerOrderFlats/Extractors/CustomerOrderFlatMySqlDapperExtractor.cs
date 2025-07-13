@@ -51,9 +51,6 @@ public sealed class CustomerOrderFlatMySqlDapperExtractor : IExtractor<CustomerO
         });
 
         var items = result.ToList();
-
-        _logger.LogInformation("Extracted {Count} rows", items.Count);
-
         return items;
     }
 }

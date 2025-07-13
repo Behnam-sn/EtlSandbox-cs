@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.AlphaWorker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250712063407_Initial")]
+    [Migration("20250713074335_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,10 +25,13 @@ namespace EtlSandbox.AlphaWorker.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EtlSandbox.Domain.CustomerOrderFlats.CustomerOrderFlat", b =>
+            modelBuilder.Entity("EtlSandbox.Domain.CustomerOrderFlats.Entities.CustomerOrderFlat", b =>
                 {
-                    b.Property<int>("RentalId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -47,10 +50,13 @@ namespace EtlSandbox.AlphaWorker.Migrations
                     b.Property<DateTime>("RentalDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UniqId")
                         .HasColumnType("int");
 
-                    b.HasKey("RentalId");
+                    b.HasKey("Id");
 
                     b.ToTable("CustomerOrders");
                 });

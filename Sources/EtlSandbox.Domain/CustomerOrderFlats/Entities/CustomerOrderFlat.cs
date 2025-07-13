@@ -4,7 +4,7 @@ namespace EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
 public sealed class CustomerOrderFlat : IEntity
 {
-    public int Id => RentalId;
+    public int Id { get; set; }
 
     public int RentalId { get; set; }
 
@@ -19,5 +19,4 @@ public sealed class CustomerOrderFlat : IEntity
     public int UniqId { get; set; }
 
     public bool IsDeleted { get; set; }
-
 }

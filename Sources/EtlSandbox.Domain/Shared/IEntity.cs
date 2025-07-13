@@ -2,7 +2,7 @@
 
 public interface IEntity
 {
-    int Id { get; }
+    int Id { get; set; }
 
     int UniqId { get; set; }
 

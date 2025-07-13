@@ -18,6 +18,7 @@ public sealed class CustomerOrderFlatTransformer : ITransformer<CustomerOrderFla
     {
         var transformed = new CustomerOrderFlat
         {
+            Id = input.Id,
             RentalId = input.RentalId,
             CustomerName = input.CustomerName.ToUpperInvariant(),
             Amount = input.Amount,

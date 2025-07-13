@@ -25,6 +25,7 @@ public class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFla
     public async Task LoadAsync(List<CustomerOrderFlat> data, CancellationToken cancellationToken, IDbTransaction? transaction = null)
     {
         var table = new DataTable();
+        table.Columns.Add("Id", typeof(int));
         table.Columns.Add("RentalId", typeof(int));
         table.Columns.Add("CustomerName", typeof(string));
         table.Columns.Add("Amount", typeof(decimal));
@@ -36,6 +37,7 @@ public class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFla
         foreach (var item in data)
         {
             table.Rows.Add(
+                item.Id,
                 item.RentalId,
                 item.CustomerName,
                 item.Amount,
