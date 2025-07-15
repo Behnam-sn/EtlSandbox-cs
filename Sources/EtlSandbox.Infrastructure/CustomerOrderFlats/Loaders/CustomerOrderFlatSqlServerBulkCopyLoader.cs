@@ -3,14 +3,14 @@ using System.Data;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
-
+using EtlSandbox.Infrastructure.Shared.Converters;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFlat>
+public sealed class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFlat>
 {
     private readonly string _destinationDatabaseConnectionString;
 
@@ -24,27 +24,7 @@ public class CustomerOrderFlatSqlServerBulkCopyLoader : ILoader<CustomerOrderFla
 
     public async Task LoadAsync(List<CustomerOrderFlat> data, CancellationToken cancellationToken, IDbTransaction? transaction = null)
     {
-        var table = new DataTable();
-        table.Columns.Add("Id", typeof(int));
-        table.Columns.Add("RentalId", typeof(int));
-        table.Columns.Add("CustomerName", typeof(string));
-        table.Columns.Add("Amount", typeof(decimal));
-        table.Columns.Add("RentalDate", typeof(DateTime));
-        table.Columns.Add("Category", typeof(string));
-        table.Columns.Add("IsDeleted", typeof(bool));
-
-        foreach (var item in data)
-        {
-            table.Rows.Add(
-                item.Id,
-                item.RentalId,
-                item.CustomerName,
-                item.Amount,
-                item.RentalDate,
-                item.Category,
-                item.IsDeleted
-            );
-        }
+        var table = DataTableConverter.ToDataTable(data);
 
         SqlBulkCopy bulkCopy;
         if (transaction?.Connection is SqlConnection sqlConnection)
