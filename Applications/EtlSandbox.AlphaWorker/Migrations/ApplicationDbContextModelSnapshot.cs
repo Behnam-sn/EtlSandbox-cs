@@ -24,13 +24,14 @@ namespace EtlSandbox.AlphaWorker.Migrations
 
             modelBuilder.Entity("EtlSandbox.Domain.CustomerOrderFlats.Entities.CustomerOrderFlat", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Category")
@@ -52,30 +53,7 @@ namespace EtlSandbox.AlphaWorker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomerOrders");
-                });
-
-            modelBuilder.Entity("EtlSandbox.Domain.EtlApplicationStates.Entities.EtlApplicationState", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LastProcessedId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProcessType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EtlApplicationStates");
+                    b.ToTable("CustomerOrderFlats");
                 });
 #pragma warning restore 612, 618
         }

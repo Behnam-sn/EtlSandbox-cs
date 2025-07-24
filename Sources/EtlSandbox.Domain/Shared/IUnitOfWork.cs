@@ -2,15 +2,7 @@ using System.Data;
 
 namespace EtlSandbox.Domain.Shared;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork : IDisposable, IAsyncDisposable
 {
     IDbConnection Connection { get; }
-
-    IDbTransaction? Transaction { get; }
-
-    void BeginTransaction();
-
-    void Commit();
-
-    void Rollback();
 }

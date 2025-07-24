@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 
-public class SqlServerConnectionFactory : IDbConnectionFactory
+public sealed class SqlServerConnectionFactory : IDbConnectionFactory
 {
     private readonly string _connectionString;
     

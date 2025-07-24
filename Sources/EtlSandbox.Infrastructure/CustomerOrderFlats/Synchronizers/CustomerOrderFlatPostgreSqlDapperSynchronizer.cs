@@ -2,24 +2,22 @@
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 
-using Microsoft.Extensions.Logging;
-
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer(ILogger<CustomerOrderFlatPostgreSqlDapperSynchronizer> logger, IUnitOfWork unitOfWork)
-    : BaseDapperSynchronizer<CustomerOrderFlat>(logger, unitOfWork, Sql)
+public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer(IUnitOfWork unitOfWork)
+    : BaseDapperSynchronizer<CustomerOrderFlat>(unitOfWork)
 {
-    private const string Sql = """
-                               UPDATE "CustomerOrders" T
-                               SET "IsDeleted" = '1'
-                               FROM (
-                                   SELECT "UniqId", MAX("RentalId") AS "MaxRentalId"
-                                   FROM "CustomerOrders"
-                                   WHERE "RentalId" BETWEEN @FromId AND @ToId
-                                   GROUP BY "UniqId"
-                               ) Latest
-                               WHERE T."UniqId" = Latest."UniqId"
-                               AND T."RentalId" < Latest."MaxRentalId"
-                               AND T."IsDeleted" = '0'
-                               """;
+    protected override string Sql => """
+                                     UPDATE "CustomerOrderFlats" T
+                                     SET "IsDeleted" = '1'
+                                     FROM (
+                                         SELECT "CustomerName", MAX("Id") AS "MaxId"
+                                         FROM "CustomerOrderFlats"
+                                         WHERE "Id" BETWEEN @FromId AND @ToId
+                                         GROUP BY "CustomerName"
+                                     ) Latest
+                                     WHERE T."CustomerName" = Latest."CustomerName"
+                                     AND T."Id" < Latest."MaxId"
+                                     AND T."IsDeleted" = '0'
+                                     """;
 }

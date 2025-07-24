@@ -1,8 +1,7 @@
-using System.Data;
-
 namespace EtlSandbox.Domain.Shared;
 
 public interface ILoader<T>
+    where T : class, IEntity
 {
-    Task LoadAsync(List<T> data, CancellationToken cancellationToken, IDbTransaction? transaction = null);
+    Task LoadAsync(List<T> items, CancellationToken cancellationToken);
 }

@@ -1,43 +1,29 @@
-﻿using System.Data;
-
-using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
+﻿using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Converters;
 
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared.Loaders;
 
 public abstract class BaseSqlBulkCopyLoader<T> : ILoader<T>
+    where T : class, IEntity
 {
-    private readonly string _connectionString;
-    private readonly string _tableName;
+    private readonly IUnitOfWork _unitOfWork;
 
-    protected BaseSqlBulkCopyLoader(IOptions<DatabaseConnections> databaseConnectionsOptions, string tableName)
+    protected BaseSqlBulkCopyLoader(IUnitOfWork unitOfWork)
     {
-        _connectionString = databaseConnectionsOptions.Value.Destination;
-        _tableName = tableName;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task LoadAsync(List<T> data, CancellationToken cancellationToken, IDbTransaction? transaction = null)
+    protected abstract string TableName { get; }
+
+    public async Task LoadAsync(List<T> items, CancellationToken cancellationToken)
     {
-        var table = DataTableConverter.ToDataTable(data);
+        var dataTable = DataTableConverter.ToDataTable(items);
 
-        SqlBulkCopy bulkCopy;
-        if (transaction?.Connection is SqlConnection sqlConnection)
-        {
-            bulkCopy = new(sqlConnection, SqlBulkCopyOptions.Default, (SqlTransaction)transaction);
-        }
-        else
-        {
-            bulkCopy = new(_connectionString);
-        }
+        using var bulkCopy = new SqlBulkCopy(_unitOfWork.Connection.ConnectionString);
+        bulkCopy.DestinationTableName = TableName;
 
-        using (bulkCopy)
-        {
-            bulkCopy.DestinationTableName = _tableName;
-            await bulkCopy.WriteToServerAsync(table, cancellationToken);
-        }
+        await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
     }
 }

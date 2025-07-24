@@ -1,4 +1,4 @@
-using EtlSandbox.Application.Shared.Abstractions.Messaging;
+﻿using EtlSandbox.Application.Shared.Abstractions.Messaging;
 using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Application.Shared.Commands;

@@ -2,17 +2,15 @@
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Loaders;
 
-using Microsoft.Extensions.Logging;
-
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public sealed class CustomerOrderFlatPostgreSqlDapperLoader(ILogger<CustomerOrderFlatPostgreSqlDapperLoader> logger, IUnitOfWork unitOfWork)
-    : BaseDapperLoader<CustomerOrderFlat>(logger, unitOfWork, Sql)
+public sealed class CustomerOrderFlatPostgreSqlDapperLoader(IUnitOfWork unitOfWork)
+    : BaseDapperLoader<CustomerOrderFlat>(unitOfWork)
 {
-    private const string Sql = """
-                               INSERT INTO "CustomerOrders" 
-                                   ("RentalId", "CustomerName", "Amount", "RentalDate", "Category", "UniqId", "IsDeleted") 
-                               VALUES 
-                                   (@RentalId, @CustomerName, @Amount, @RentalDate, @Category, @UniqId, @IsDeleted)
-                               """;
+    protected override string Sql => """
+                                     INSERT INTO "CustomerOrderFlats" 
+                                         ("Id", "RentalId", "CustomerName", "Amount", "RentalDate", "Category", "IsDeleted") 
+                                     VALUES 
+                                         (@Id, @RentalId, @CustomerName, @Amount, @RentalDate, @Category, @IsDeleted)
+                                     """;
 }

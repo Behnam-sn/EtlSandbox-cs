@@ -1,0 +1,6 @@
+@EtlSandbox.DeltaWebApi_HostAddress = http://localhost:5288
+
+GET {{EtlSandbox.DeltaWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

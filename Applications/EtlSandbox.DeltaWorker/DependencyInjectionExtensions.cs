@@ -1,0 +1,91 @@
+using EtlSandbox.Application.Shared.Commands;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+using EtlSandbox.Domain.Shared;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
+using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
+using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Shared.Synchronizers;
+using EtlSandbox.Infrastructure.Shared.Transformers;
+using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
+using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
+
+using MediatR;
+
+using Microsoft.EntityFrameworkCore;
+
+namespace EtlSandbox.DeltaWorker;
+
+internal static class DependencyInjectionExtensions
+{
+    internal static void AddConfigureOptions(this IServiceCollection services)
+    {
+        services.ConfigureOptions<ApplicationSettingsSetup>();
+        services.ConfigureOptions<DatabaseConnectionsSetup>();
+    }
+
+    internal static void AddLogs(this IServiceCollection services)
+    {
+        services.AddLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Information);
+        });
+    }
+
+    public static void AddApplication(this IServiceCollection services)
+    {
+        // MediatR
+        services.AddScoped<IMediator, Mediator>();
+        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
+        services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
+    }
+
+    internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Entity Framework
+        var connectionString = configuration.GetSection("DatabaseConnections")["Source"] ??
+            throw new InvalidOperationException("Connection string 'Source'" + " not found.");
+
+        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+            connectionString,
+            providerOptions =>
+            {
+                providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
+            })
+        );
+
+        // Unit of Work
+        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
+
+        // Db Connection Factory
+        services.AddScoped<IDbConnectionFactory, ClickHouseConnectionFactory>();
+
+        // Repositories
+        services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperRepository>();
+
+        // Extractors
+        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
+
+        // Transformers
+        services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
+
+        // Loaders
+        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatClickHouseBulkCopyLoader>();
+
+        // Synchronizers
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperSynchronizer>();
+        services.AddSingleton<ISynchronizerUtils<CustomerOrderFlat>, SynchronizerUtils<CustomerOrderFlat>>();
+    }
+
+    internal static void AddPresentation(this IServiceCollection services)
+    {
+        services.AddHostedService<InsertCustomerOrderFlatWorker>();
+        services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
+    }
+}

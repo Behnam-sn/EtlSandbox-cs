@@ -1,10 +1,11 @@
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.Shared.Options;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Loaders;
-
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public sealed class CustomerOrderFlatSqlServerBulkCopyLoader(IOptions<DatabaseConnections> databaseConnectionsOptions)
-    : BaseSqlBulkCopyLoader<CustomerOrderFlat>(databaseConnectionsOptions, tableName: "CustomerOrders");
+public sealed class CustomerOrderFlatSqlServerBulkCopyLoader(IUnitOfWork unitOfWork)
+    : BaseSqlBulkCopyLoader<CustomerOrderFlat>(unitOfWork)
+{
+    protected override string TableName => "CustomerOrderFlats";
+}

@@ -21,7 +21,7 @@ services:
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
     ports:
-      - "5003:1433"
+      - "5002:1433"
   
   sqlserver2:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -31,7 +31,7 @@ services:
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
     ports:
-      - "5004:1433"
+      - "5003:1433"
 
   postgres:
     image: postgres:latest
@@ -42,4 +42,28 @@ services:
       POSTGRES_PASSWORD: "Your_password123"
       POSTGRES_DB: postgres
     ports:
-      - "5005:5432"
+      - "5004:5432"
+
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "5005:8123"
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    environment:
+      - CLICKHOUSE_PASSWORD=password
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  clickhouse-client:
+    image: clickhouse/clickhouse-client:latest
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+
+volumes:
+  clickhouse-data: 

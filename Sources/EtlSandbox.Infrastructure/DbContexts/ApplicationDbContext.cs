@@ -1,5 +1,4 @@
 ﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.EtlApplicationStates.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +10,7 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<CustomerOrderFlat> CustomerOrders => Set<CustomerOrderFlat>();
-
-    public DbSet<EtlApplicationState> EtlApplicationStates => Set<EtlApplicationState>();
+    public DbSet<CustomerOrderFlat> CustomerOrderFlats => Set<CustomerOrderFlat>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +18,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.CustomerName).HasMaxLength(100);
+            entity.Property(e => e.Amount).HasPrecision(18, 2);
             entity.Property(e => e.Category).HasMaxLength(50);
         });
     }

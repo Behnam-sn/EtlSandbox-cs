@@ -1,47 +1,30 @@
-﻿using System.Data;
-
-using Dapper;
+﻿using Dapper;
 
 using EtlSandbox.Domain.Shared;
-
-using Microsoft.Extensions.Logging;
 
 namespace EtlSandbox.Infrastructure.Shared.Synchronizers;
 
 public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
+    where T : class, IEntity
 {
-    private readonly ILogger<BaseDapperSynchronizer<T>> _logger;
-
     private readonly IUnitOfWork _unitOfWork;
 
-    private readonly string _sql;
-
-    protected BaseDapperSynchronizer(ILogger<BaseDapperSynchronizer<T>> logger, IUnitOfWork unitOfWork, string sql)
+    protected BaseDapperSynchronizer(IUnitOfWork unitOfWork)
     {
-        _logger = logger;
         _unitOfWork = unitOfWork;
-        _sql = sql;
     }
 
-    public async Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null)
+    protected abstract string Sql { get; }
+
+    public async Task SoftDeleteObsoleteRowsAsync(long fromId, long toId)
     {
-        _logger.LogInformation("Deleting from {FromId} to {ToId}", fromId, toId);
-        
         var parameters = new
         {
             FromId = fromId,
             ToId = toId,
         };
 
-        if (transaction is null)
-        {
-            var connection = _unitOfWork.Connection;
-            await connection.ExecuteAsync(_sql, parameters);
-        }
-        else
-        {
-            var connection = transaction.Connection ?? throw new ArgumentNullException(nameof(transaction), "Transaction must have a valid connection.");
-            await connection.ExecuteAsync(_sql, parameters, transaction);
-        }
+        using var connection = _unitOfWork.Connection;
+        await connection.ExecuteAsync(Sql, parameters);
     }
 }

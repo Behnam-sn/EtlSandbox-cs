@@ -1,8 +1,7 @@
-﻿using System.Data;
-
-namespace EtlSandbox.Domain.Shared;
+﻿namespace EtlSandbox.Domain.Shared;
 
 public interface ISynchronizer<T>
+    where T : class, IEntity
 {
-    Task SoftDeleteObsoleteRowsAsync(int fromId, int toId, IDbTransaction? transaction = null);
+    Task SoftDeleteObsoleteRowsAsync(long fromId, long toId);
 }

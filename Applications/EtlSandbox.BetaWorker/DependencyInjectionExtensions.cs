@@ -1,17 +1,17 @@
 using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.EtlApplicationStates.Repositories;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
-using EtlSandbox.Infrastructure.EtlApplicationStates;
-using EtlSandbox.Infrastructure.EtlApplicationStates.Repositories;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
+using EtlSandbox.Infrastructure.Shared.Synchronizers;
+using EtlSandbox.Infrastructure.Shared.Transformers;
 using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
@@ -43,7 +43,7 @@ internal static class DependencyInjectionExtensions
     public static void AddApplication(this IServiceCollection services)
     {
         // MediatR
-        services.AddMediatR(config => config.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly));
+        services.AddScoped<IMediator, Mediator>();
         services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
         services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
@@ -63,17 +63,31 @@ internal static class DependencyInjectionExtensions
             })
         );
 
+        // Unit of Work
+        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
+
+        // Db Connection Factory
+        services.AddScoped<IDbConnectionFactory, NpgsqlConnectionFactory>();
+
+        // Repositories
+        services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatEfRepository>();
+
+        // Extractors
+        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
+
+        // Transformers
+        services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
+
+        // Loaders
+        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperLoader>();
+
+        // Synchronizers
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
+        services.AddSingleton<ISynchronizerUtils<CustomerOrderFlat>, SynchronizerUtils<CustomerOrderFlat>>();
+
         // Rest Api Client
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
-
-        services.AddScoped<IEtlApplicationStateCommandRepository, EtlApplicationStatePostgreSqlDapperCommandRepository>();
-        services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperLoader>();
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
-        services.AddScoped<IDbConnectionFactory, NpgsqlConnectionFactory>();
-        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
     }
 
     internal static void AddPresentation(this IServiceCollection services)

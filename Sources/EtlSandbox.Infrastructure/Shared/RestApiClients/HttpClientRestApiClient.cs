@@ -21,13 +21,14 @@ public sealed class HttpClientRestApiClient : IRestApiClient
         return await _httpClient.GetFromJsonAsync<T>(url, cancellationToken);
     }
 
-    private static IDictionary<string, object?> ToDictionary(object obj)
+    private static Dictionary<string, object?> ToDictionary(object obj)
     {
         var dict = new Dictionary<string, object?>();
         foreach (var prop in obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
         {
             dict[prop.Name] = prop.GetValue(obj);
         }
+
         return dict;
     }
 
@@ -41,6 +42,7 @@ public sealed class HttpClientRestApiClient : IRestApiClient
                 .Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value!.ToString()!)}"));
             uriBuilder.Query = query;
         }
+
         return uriBuilder.ToString();
     }
 }

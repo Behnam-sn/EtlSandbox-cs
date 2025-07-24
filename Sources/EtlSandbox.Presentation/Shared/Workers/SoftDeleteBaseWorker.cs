@@ -27,7 +27,7 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
     protected int? BatchSize { get; set; }
 
     protected int? DelayInSeconds { get; set; }
-
+    
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)

@@ -10,8 +10,6 @@ public sealed class RawSqlUnitOfWork : IUnitOfWork
 
     private IDbConnection? _connection;
 
-    private IDbTransaction? _transaction;
-
     private bool _disposed;
 
     public RawSqlUnitOfWork(IDbConnectionFactory connectionFactory)
@@ -21,35 +19,22 @@ public sealed class RawSqlUnitOfWork : IUnitOfWork
 
     public IDbConnection Connection => _connection ??= _connectionFactory.CreateConnection();
 
-    public IDbTransaction? Transaction => _transaction;
-
-    public void BeginTransaction()
-    {
-        if (_transaction is null)
-        {
-            _transaction = Connection.BeginTransaction();
-        }
-    }
-
-    public void Commit()
-    {
-        _transaction?.Commit();
-        _transaction?.Dispose();
-        _transaction = null;
-    }
-
-    public void Rollback()
-    {
-        _transaction?.Rollback();
-        _transaction?.Dispose();
-        _transaction = null;
-    }
-
     public void Dispose()
     {
         if (_disposed) return;
-        _transaction?.Dispose();
         _connection?.Dispose();
         _disposed = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_connection is IAsyncDisposable connectionAsyncDisposable)
+        {
+            await connectionAsyncDisposable.DisposeAsync();
+        }
+        else
+        {
+            _connection?.Dispose();
+        }
     }
 }

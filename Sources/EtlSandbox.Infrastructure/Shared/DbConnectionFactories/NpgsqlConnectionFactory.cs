@@ -9,7 +9,7 @@ using Npgsql;
 
 namespace EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 
-public class NpgsqlConnectionFactory : IDbConnectionFactory
+public sealed class NpgsqlConnectionFactory : IDbConnectionFactory
 {
     private readonly string _connectionString;
     
