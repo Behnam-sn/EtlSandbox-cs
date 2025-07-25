@@ -1,6 +1,7 @@
 using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Options;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
@@ -9,6 +10,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
 using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
@@ -17,6 +19,7 @@ using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.GammaWorker;
 
@@ -49,11 +52,11 @@ internal static class DependencyInjectionExtensions
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["Source"] ??
-            throw new InvalidOperationException("Connection string 'Source'" + " not found.");
+        var destinationConnectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
+            throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
-            connectionString,
+            destinationConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -68,10 +71,23 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();
 
         // Repositories
-        services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatEfRepository>();
+        services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV2<CustomerOrderFlat>>();
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            var sourceConnectionString = sp.GetRequiredService<IConfiguration>().GetSection("DatabaseConnections")["Source"] ??
+                throw new InvalidOperationException("Connection string 'Source' not found.");
+
+            optionsBuilder.UseSqlServer(sourceConnectionString, providerOptions =>
+            {
+                providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            });
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            return new CustomerOrderFlatEfExtractor(dbContext);
+        });
 
         // Transformers
         services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();

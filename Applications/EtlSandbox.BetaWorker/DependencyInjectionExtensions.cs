@@ -9,6 +9,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
@@ -70,7 +71,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IDbConnectionFactory, NpgsqlConnectionFactory>();
 
         // Repositories
-        services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatEfRepository>();
+        services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV2<CustomerOrderFlat>>();
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();

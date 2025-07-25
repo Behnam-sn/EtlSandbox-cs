@@ -6,7 +6,7 @@ public sealed class CustomerOrderFlat : IEntity
 {
     public long Id { get; set; }
 
-    public int RentalId { get; set; }
+    public long RentalId { get; set; }
 
     public string? CustomerName { get; set; }
 
@@ -18,5 +18,5 @@ public sealed class CustomerOrderFlat : IEntity
 
     public bool IsDeleted { get; set; }
 
-    public int ImportantId => RentalId;
+    public long ImportantId => RentalId;
 }

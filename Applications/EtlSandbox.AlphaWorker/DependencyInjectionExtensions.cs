@@ -9,6 +9,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
@@ -67,7 +68,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();
 
         // Repositories
-        services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatEfRepository>();
+        services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV1<CustomerOrderFlat>>();
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatMySqlDapperExtractor>();
@@ -86,6 +87,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddPresentation(this IServiceCollection services)
     {
         services.AddHostedService<InsertCustomerOrderFlatWorker>();
-        services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
+        // services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
     }
 }

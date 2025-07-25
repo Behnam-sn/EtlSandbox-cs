@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.GammaWorker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250724232631_Initial")]
+    [Migration("20250725011403_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -51,8 +51,8 @@ namespace EtlSandbox.GammaWorker.Migrations
                     b.Property<DateTime>("RentalDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RentalId")
-                        .HasColumnType("int");
+                    b.Property<long>("RentalId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

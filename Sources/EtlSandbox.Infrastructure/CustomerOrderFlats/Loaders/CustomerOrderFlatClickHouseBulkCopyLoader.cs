@@ -23,8 +23,8 @@ public sealed class CustomerOrderFlatClickHouseBulkCopyLoader : ILoader<Customer
     {
         // var table = DataTableConverter.ToDataTable(data);
         var table = new DataTable();
-        table.Columns.Add("Id", typeof(int));
-        table.Columns.Add("RentalId", typeof(int));
+        table.Columns.Add("Id", typeof(long));
+        table.Columns.Add("RentalId", typeof(long));
         table.Columns.Add("CustomerName", typeof(string));
         table.Columns.Add("Amount", typeof(decimal));
         table.Columns.Add("RentalDate", typeof(DateTime));

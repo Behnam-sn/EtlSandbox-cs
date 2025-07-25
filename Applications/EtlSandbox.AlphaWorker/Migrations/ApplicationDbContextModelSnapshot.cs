@@ -48,8 +48,8 @@ namespace EtlSandbox.AlphaWorker.Migrations
                     b.Property<DateTime>("RentalDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RentalId")
-                        .HasColumnType("int");
+                    b.Property<long>("RentalId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

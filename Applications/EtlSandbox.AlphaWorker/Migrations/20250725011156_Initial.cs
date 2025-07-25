@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EtlSandbox.GammaWorker.Migrations
+namespace EtlSandbox.AlphaWorker.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -17,7 +17,7 @@ namespace EtlSandbox.GammaWorker.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RentalId = table.Column<int>(type: "int", nullable: false),
+                    RentalId = table.Column<long>(type: "bigint", nullable: false),
                     CustomerName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     RentalDate = table.Column<DateTime>(type: "datetime2", nullable: false),

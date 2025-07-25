@@ -48,8 +48,8 @@ namespace EtlSandbox.BetaWorker.Migrations
                     b.Property<DateTime>("RentalDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("RentalId")
-                        .HasColumnType("integer");
+                    b.Property<long>("RentalId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

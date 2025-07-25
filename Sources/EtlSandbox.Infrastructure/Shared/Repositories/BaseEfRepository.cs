@@ -8,21 +8,14 @@ namespace EtlSandbox.Infrastructure.Shared.Repositories;
 public abstract class BaseEfRepository<T> : IRepository<T>
     where T : class, IEntity
 {
-    private readonly DbSet<T> _dbSet;
+    protected readonly DbSet<T> _dbSet;
 
     protected BaseEfRepository(ApplicationDbContext dbContext)
     {
         _dbSet = dbContext.Set<T>();
     }
 
-    public async Task<long> GetLastProcessedImportantIdAsync()
-    {
-        var lastItem = await _dbSet
-            .AsNoTracking()
-            .OrderByDescending(item => item.Id)
-            .FirstOrDefaultAsync();
-        return lastItem?.ImportantId ?? 0;
-    }
+    public abstract Task<long> GetLastProcessedImportantIdAsync();
 
     public async Task<long> GetLastSoftDeletedItemIdAsync()
     {
