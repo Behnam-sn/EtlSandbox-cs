@@ -7,11 +7,11 @@ namespace EtlSandbox.Infrastructure.Shared.Synchronizers;
 public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
     where T : class, IEntity
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseDapperSynchronizer(IUnitOfWork unitOfWork)
+    protected BaseDapperSynchronizer(IDbConnectionFactory dbConnectionFactory)
     {
-        _unitOfWork = unitOfWork;
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
     protected abstract string Sql { get; }
@@ -24,7 +24,7 @@ public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
             ToId = toId,
         };
 
-        using var connection = _unitOfWork.Connection;
+        using var connection = _dbConnectionFactory.CreateConnection();
         await connection.ExecuteAsync(Sql, parameters);
     }
 }

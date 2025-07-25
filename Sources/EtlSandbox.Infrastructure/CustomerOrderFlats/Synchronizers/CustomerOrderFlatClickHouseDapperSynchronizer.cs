@@ -4,8 +4,8 @@ using EtlSandbox.Infrastructure.Shared.Synchronizers;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatClickHouseDapperSynchronizer(IUnitOfWork unitOfWork)
-    : BaseDapperSynchronizer<CustomerOrderFlat>(unitOfWork)
+public sealed class CustomerOrderFlatClickHouseDapperSynchronizer(IDbConnectionFactory dbConnectionFactory)
+    : BaseDapperSynchronizer<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """
                                      ALTER TABLE SakilaFlat.CustomerOrderFlats

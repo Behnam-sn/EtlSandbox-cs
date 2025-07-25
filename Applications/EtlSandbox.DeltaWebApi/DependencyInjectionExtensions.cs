@@ -1,12 +1,10 @@
 using EtlSandbox.Application.ClickHouseUtils;
-using EtlSandbox.Application.Shared.Commands;
-using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
-using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
+
 
 using MediatR;
 
@@ -53,8 +51,7 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Unit of Work
-        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
+
 
         // Db Connection Factory
         services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();

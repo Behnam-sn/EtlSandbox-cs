@@ -10,7 +10,7 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
+
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -60,8 +60,7 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Unit of Work
-        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
+
 
         // Db Connection Factory
         services.AddScoped<IDbConnectionFactory, ClickHouseConnectionFactory>();

@@ -3,7 +3,6 @@ using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
@@ -11,7 +10,7 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
-using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
+
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -61,8 +60,7 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Unit of Work
-        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
+
 
         // Db Connection Factory
         services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();

@@ -4,8 +4,8 @@ using EtlSandbox.Infrastructure.Shared.Synchronizers;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer(IUnitOfWork unitOfWork)
-    : BaseDapperSynchronizer<CustomerOrderFlat>(unitOfWork)
+public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer(IDbConnectionFactory dbConnectionFactory)
+    : BaseDapperSynchronizer<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """
                                      UPDATE "CustomerOrderFlats" T

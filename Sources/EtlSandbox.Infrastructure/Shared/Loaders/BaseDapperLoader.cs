@@ -7,11 +7,11 @@ namespace EtlSandbox.Infrastructure.Shared.Loaders;
 public abstract class BaseDapperLoader<T> : ILoader<T>
     where T : class, IEntity
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseDapperLoader(IUnitOfWork unitOfWork)
+    protected BaseDapperLoader(IDbConnectionFactory dbConnectionFactory)
     {
-        _unitOfWork = unitOfWork;
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
     protected abstract string Sql { get; }
@@ -23,7 +23,7 @@ public abstract class BaseDapperLoader<T> : ILoader<T>
             return;
         }
 
-        using var connection = _unitOfWork.Connection;
+        using var connection = _dbConnectionFactory.CreateConnection();
         await connection.ExecuteAsync(Sql, items);
     }
 }

@@ -1,25 +1,21 @@
 using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-using EtlSandbox.Infrastructure.Shared.UnitOfWorks;
+
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.GammaWorker;
 
@@ -63,9 +59,6 @@ internal static class DependencyInjectionExtensions
                 providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
             })
         );
-
-        // Unit of Work
-        services.AddScoped<IUnitOfWork, RawSqlUnitOfWork>();
 
         // Db Connection Factory
         services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();

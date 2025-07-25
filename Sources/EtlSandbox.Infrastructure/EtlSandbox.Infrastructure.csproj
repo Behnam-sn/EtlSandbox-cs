@@ -22,4 +22,8 @@
     <PackageReference Include="Npgsql" Version="9.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\UnitOfWorks\" />
+  </ItemGroup>
+
 </Project>

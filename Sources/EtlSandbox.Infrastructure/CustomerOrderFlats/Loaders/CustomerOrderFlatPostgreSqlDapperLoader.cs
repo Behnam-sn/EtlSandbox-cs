@@ -4,8 +4,8 @@ using EtlSandbox.Infrastructure.Shared.Loaders;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public sealed class CustomerOrderFlatPostgreSqlDapperLoader(IUnitOfWork unitOfWork)
-    : BaseDapperLoader<CustomerOrderFlat>(unitOfWork)
+public sealed class CustomerOrderFlatPostgreSqlDapperLoader(IDbConnectionFactory dbConnectionFactory)
+    : BaseDapperLoader<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """
                                      INSERT INTO "CustomerOrderFlats" 

@@ -6,11 +6,11 @@ namespace EtlSandbox.Infrastructure.Shared.Repositories;
 
 public sealed class SqlServerDapperDatabaseRepository : IDatabaseRepository
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    public SqlServerDapperDatabaseRepository(IUnitOfWork unitOfWork)
+    public SqlServerDapperDatabaseRepository(IDbConnectionFactory dbConnectionFactory)
     {
-        _unitOfWork = unitOfWork;
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
     public async Task<List<dynamic>> GetSchemaInformationAsync(string tableName)
@@ -26,7 +26,7 @@ public sealed class SqlServerDapperDatabaseRepository : IDatabaseRepository
             TableName = tableName
         };
 
-        using var connection = _unitOfWork.Connection;
+        using var connection = _dbConnectionFactory.CreateConnection();
         var columns = await connection.QueryAsync(sql, parameters);
         return columns.ToList();
     }
