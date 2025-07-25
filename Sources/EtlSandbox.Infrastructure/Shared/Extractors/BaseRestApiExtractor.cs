@@ -12,9 +12,9 @@ public abstract class BaseRestApiExtractor<T> : IExtractor<T>
 
     private readonly IRestApiClient _restApiClient;
 
-    protected BaseRestApiExtractor(IOptions<RestApiConnections> options, IRestApiClient restApiClient)
+    protected BaseRestApiExtractor(string baseUrl, IRestApiClient restApiClient)
     {
-        _baseUrl = options.Value.WebApi;
+        _baseUrl = baseUrl;
         _restApiClient = restApiClient;
     }
     

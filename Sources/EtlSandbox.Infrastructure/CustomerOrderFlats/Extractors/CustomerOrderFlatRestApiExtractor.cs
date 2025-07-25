@@ -7,8 +7,8 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
-public sealed class CustomerOrderFlatRestApiExtractor(IOptions<RestApiConnections> options, IRestApiClient restApiClient)
-    : BaseRestApiExtractor<CustomerOrderFlat>(options, restApiClient)
+public sealed class CustomerOrderFlatRestApiExtractor(string baseUrl, IRestApiClient restApiClient)
+    : BaseRestApiExtractor<CustomerOrderFlat>(baseUrl, restApiClient)
 {
     protected override string Path => "CustomerOrderFlats";
 }

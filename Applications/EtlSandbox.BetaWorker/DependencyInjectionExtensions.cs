@@ -25,8 +25,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-
-        services.ConfigureOptions<RestApiConnectionsSetup>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -50,6 +48,8 @@ internal static class DependencyInjectionExtensions
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Connection Strings
+        var sourceConnectionString = configuration.GetConnectionString("Source") ??
+                                          throw new InvalidOperationException("Connection string 'Source' not found.");
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
                                           throw new InvalidOperationException("Connection string 'Destination' not found.");
 
@@ -70,7 +70,11 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV2<CustomerOrderFlat>>();
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
+        {
+            var restApiClient = sp.GetRequiredService<IRestApiClient>();
+            return new CustomerOrderFlatRestApiExtractor(sourceConnectionString, restApiClient);
+        });
 
         // Transformers
         services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
