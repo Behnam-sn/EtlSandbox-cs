@@ -12,7 +12,7 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
-        services.ConfigureOptions<DatabaseConnectionsSetup>();
+
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -31,12 +31,13 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["Source"] ??
-            throw new InvalidOperationException("Connection string 'Source'" + " not found.");
+        // Connection Strings
+        var sourceConnectionString = configuration.GetConnectionString("Source") ??
+                                          throw new InvalidOperationException("Connection string 'Source' not found.");
 
+        // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
-            connectionString,
+            sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -44,6 +45,7 @@ internal static class DependencyInjectionExtensions
             })
         );
 
+        // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
     }
 

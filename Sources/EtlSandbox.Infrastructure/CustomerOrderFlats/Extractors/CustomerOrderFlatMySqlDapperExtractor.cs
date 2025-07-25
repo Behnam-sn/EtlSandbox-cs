@@ -1,4 +1,5 @@
 ﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
 using EtlSandbox.Infrastructure.Shared.Extractors;
 
@@ -6,8 +7,8 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
-public sealed class CustomerOrderFlatMySqlDapperExtractor(IOptions<DatabaseConnections> options)
-    : BaseMySqlDapperExtractor<CustomerOrderFlat>(options)
+public sealed class CustomerOrderFlatMySqlDapperExtractor(IDbConnectionFactory dbConnectionFactory)
+    : BaseDapperExtractor<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """
                                      SELECT r.rental_id AS RentalId,

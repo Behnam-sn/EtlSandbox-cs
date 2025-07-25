@@ -24,7 +24,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-        services.ConfigureOptions<DatabaseConnectionsSetup>();
+
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -47,12 +47,15 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
-            throw new InvalidOperationException("Connection string 'Destination'" + " not found.");
+        // Connection Strings
+        var sourceConnectionString = configuration.GetConnectionString("Source") ??
+                                          throw new InvalidOperationException("Connection string 'Source' not found.");
+        var destinationConnectionString = configuration.GetConnectionString("Destination") ??
+                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
 
+        // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
-            connectionString,
+            destinationConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -60,22 +63,24 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-
-
         // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(destinationConnectionString));
 
         // Repositories
         services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV1<CustomerOrderFlat>>();
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatMySqlDapperExtractor>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(_ =>
+        {
+            var connectionFactory = new MySqlConnectionFactory(sourceConnectionString);
+            return new CustomerOrderFlatMySqlDapperExtractor(connectionFactory);
+        });
 
         // Transformers
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
 
         // Loaders
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlServerBulkCopyLoader>();
+        services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatSqlServerBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();

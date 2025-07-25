@@ -16,7 +16,7 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
-        services.ConfigureOptions<DatabaseConnectionsSetup>();
+
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -38,23 +38,21 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
-            throw new InvalidOperationException("Connection string 'Destination'" + " not found.");
+        // Connection Strings
+        var sourceConnectionString = configuration.GetConnectionString("Source") ??
+                                     throw new InvalidOperationException("Connection string 'Source' not found.");
 
+        // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
-            connectionString,
+            sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
             })
         );
 
-
-
         // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(sourceConnectionString));
 
         // Repositories
         services.AddScoped<IDatabaseRepository, SqlServerDapperDatabaseRepository>();

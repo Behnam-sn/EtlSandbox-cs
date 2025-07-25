@@ -24,7 +24,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-        services.ConfigureOptions<DatabaseConnectionsSetup>();
+
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -47,12 +47,16 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        // Connection Strings
+        var sourceConnectionString = configuration.GetConnectionString("Source") ??
+                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+        var destinationConnectionString = configuration.GetConnectionString("Destination") ??
+                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
+
         // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["Source"] ??
-            throw new InvalidOperationException("Connection string 'Source'" + " not found.");
 
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
-            connectionString,
+            sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -60,10 +64,8 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-
-
         // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory, ClickHouseConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory>(_ => new ClickHouseConnectionFactory(destinationConnectionString));
 
         // Repositories
         services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperRepository>();
@@ -75,7 +77,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
 
         // Loaders
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatClickHouseBulkCopyLoader>();
+        services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatClickHouseBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperSynchronizer>();

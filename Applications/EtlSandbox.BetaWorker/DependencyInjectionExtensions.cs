@@ -25,7 +25,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-        services.ConfigureOptions<DatabaseConnectionsSetup>();
+
         services.ConfigureOptions<RestApiConnectionsSetup>();
     }
 
@@ -49,12 +49,13 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Entity Framework
-        var connectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
-            throw new InvalidOperationException("Connection string 'Destination'" + " not found.");
+        // Connection Strings
+        var destinationConnectionString = configuration.GetConnectionString("Destination") ??
+                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
 
+        // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseNpgsql(
-            connectionString,
+            destinationConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -62,10 +63,8 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-
-
         // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory, NpgsqlConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory>(_ => new NpgsqlConnectionFactory(destinationConnectionString));
 
         // Repositories
         services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV2<CustomerOrderFlat>>();

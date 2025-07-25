@@ -8,11 +8,11 @@ namespace EtlSandbox.Infrastructure.Shared.Loaders;
 public abstract class BaseSqlBulkCopyLoader<T> : ILoader<T>
     where T : class, IEntity
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
+    private readonly string _connectionString;
 
-    protected BaseSqlBulkCopyLoader(IDbConnectionFactory dbConnectionFactory)
+    protected BaseSqlBulkCopyLoader(string connectionString)
     {
-        _dbConnectionFactory = dbConnectionFactory;
+        _connectionString = connectionString;
     }
 
     protected abstract string TableName { get; }
@@ -21,7 +21,7 @@ public abstract class BaseSqlBulkCopyLoader<T> : ILoader<T>
     {
         var dataTable = DataTableConverter.ToDataTable(items);
 
-        using var bulkCopy = new SqlBulkCopy(_dbConnectionFactory.CreateConnection().ConnectionString);
+        using var bulkCopy = new SqlBulkCopy(_connectionString);
         bulkCopy.DestinationTableName = TableName;
 
         await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);

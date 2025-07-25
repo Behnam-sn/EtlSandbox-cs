@@ -4,9 +4,6 @@ using ClickHouse.Client.Copy;
 
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
-
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
@@ -14,9 +11,9 @@ public sealed class CustomerOrderFlatClickHouseBulkCopyLoader : ILoader<Customer
 {
     private readonly string _connectionString;
 
-    public CustomerOrderFlatClickHouseBulkCopyLoader(IOptions<DatabaseConnections> databaseConnectionsOptions)
+    public CustomerOrderFlatClickHouseBulkCopyLoader(string connectionString)
     {
-        _connectionString = databaseConnectionsOptions.Value.Destination;
+        _connectionString = connectionString;
     }
 
     public async Task LoadAsync(List<CustomerOrderFlat> items, CancellationToken cancellationToken)

@@ -1,30 +1,24 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
-
-using Microsoft.Extensions.Options;
-
-using MySql.Data.MySqlClient;
 
 namespace EtlSandbox.Infrastructure.Shared.Extractors;
 
-public abstract class BaseMySqlDapperExtractor<T> : IExtractor<T>
+public abstract class BaseDapperExtractor<T> : IExtractor<T>
     where T : class, IEntity
 {
-    private readonly string _sourceConnectionString;
+    private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseMySqlDapperExtractor(IOptions<DatabaseConnections> options)
+    protected BaseDapperExtractor(IDbConnectionFactory dbConnectionFactory)
     {
-        _sourceConnectionString = options.Value.Source;
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
     protected abstract string Sql { get; }
 
     public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken)
     {
-        await using var connection = new MySqlConnection(_sourceConnectionString);
-
+        using var connection = _dbConnectionFactory.CreateConnection();
         var parameters = new
         {
             LastProcessedId = lastProcessedId,

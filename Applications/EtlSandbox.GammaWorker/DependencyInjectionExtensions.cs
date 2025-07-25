@@ -24,7 +24,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-        services.ConfigureOptions<DatabaseConnectionsSetup>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -47,10 +46,13 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Entity Framework
-        var destinationConnectionString = configuration.GetSection("DatabaseConnections")["Destination"] ??
-            throw new InvalidOperationException("Connection string 'Destination' not found.");
+        // Connection Strings
+        var sourceConnectionString = configuration.GetConnectionString("Source") ??
+                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+        var destinationConnectionString = configuration.GetConnectionString("Destination") ??
+                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
 
+        // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
             destinationConnectionString,
             providerOptions =>
@@ -61,7 +63,7 @@ internal static class DependencyInjectionExtensions
         );
 
         // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory, SqlServerConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(destinationConnectionString));
 
         // Repositories
         services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV2<CustomerOrderFlat>>();
@@ -70,14 +72,10 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            var sourceConnectionString = sp.GetRequiredService<IConfiguration>().GetSection("DatabaseConnections")["Source"] ??
-                throw new InvalidOperationException("Connection string 'Source' not found.");
-
             optionsBuilder.UseSqlServer(sourceConnectionString, providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             });
-
             var dbContext = new ApplicationDbContext(optionsBuilder.Options);
             return new CustomerOrderFlatEfExtractor(dbContext);
         });
@@ -86,7 +84,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
 
         // Loaders
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatSqlServerBulkCopyLoader>();
+        services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatSqlServerBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
