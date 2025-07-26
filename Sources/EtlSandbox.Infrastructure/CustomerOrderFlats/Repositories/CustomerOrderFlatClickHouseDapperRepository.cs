@@ -5,7 +5,7 @@ using EtlSandbox.Infrastructure.Shared.Repositories;
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 
 public sealed class CustomerOrderFlatClickHouseDapperRepository(IDbConnectionFactory dbConnectionFactory)
-    : BaseDapperRepository<CustomerOrderFlat>(dbConnectionFactory)
+    : BaseClickHouseDapperRepository<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string TableName => "SakilaFlat.CustomerOrderFlats";
 }

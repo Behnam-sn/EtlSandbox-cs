@@ -5,7 +5,7 @@ using EtlSandbox.Domain.Shared;
 namespace EtlSandbox.Infrastructure.Shared.Repositories;
 
 public abstract class BaseDapperRepository<T> : IRepository<T>
-    where T : class,IEntity
+    where T : class, IEntity
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
@@ -13,34 +13,33 @@ public abstract class BaseDapperRepository<T> : IRepository<T>
     {
         _dbConnectionFactory = dbConnectionFactory;
     }
-    
+
     protected abstract string TableName { get; }
+
+    protected abstract string GetLastProcessedImportantIdSql { get; }
+
+    protected abstract string GetLastSoftDeletedItemIdSql { get; }
+
+    protected abstract string GetLastItemIdSql { get; }
 
     public async Task<long> GetLastProcessedImportantIdAsync()
     {
-        var sql = $"SELECT max(Id) FROM {TableName}";
         using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(sql);
+        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastProcessedImportantIdSql);
         return result ?? 0;
     }
 
     public async Task<long> GetLastSoftDeletedItemIdAsync()
     {
-        var sql = $"""
-                   SELECT max(Id)
-                   FROM {TableName}
-                   WHERE IsDeleted = 1;
-                   """;
         using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(sql);
+        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastSoftDeletedItemIdSql);
         return result ?? 0;
     }
 
     public async Task<long> GetLastItemIdAsync()
     {
-        var sql = $"SELECT max(Id) FROM {TableName}";
         using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(sql);
+        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastItemIdSql);
         return result ?? 0;
     }
 }
