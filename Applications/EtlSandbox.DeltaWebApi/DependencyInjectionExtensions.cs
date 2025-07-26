@@ -1,7 +1,6 @@
 using EtlSandbox.Application.ClickHouseUtils;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.DbContexts;
-using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 

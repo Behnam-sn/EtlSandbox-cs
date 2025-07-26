@@ -10,7 +10,6 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -24,7 +23,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -49,9 +47,9 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
-                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
+            throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
