@@ -10,23 +10,17 @@ public sealed class CustomerOrderFlatClickHouseDapperSynchronizer(IDbConnectionF
     protected override string Sql => """
                                      ALTER TABLE SakilaFlat.CustomerOrderFlats
                                      UPDATE IsDeleted = 1
-                                     WHERE (Id, IsDeleted) IN (
-                                         SELECT 
-                                             T.Id, 
-                                             T.IsDeleted
-                                         FROM SakilaFlat.CustomerOrderFlats T
-                                         INNER JOIN (
-                                             SELECT 
-                                                 CustomerName, 
-                                                 MAX(Id) AS MaxId
-                                             FROM SakilaFlat.CustomerOrderFlats
-                                             WHERE Id BETWEEN @FromId AND @ToId
-                                             GROUP BY CustomerName
-                                         ) Latest ON T.CustomerName = Latest.CustomerName
-                                         WHERE 
-                                             T.Id < Latest.MaxId
-                                             AND T.Id < @ToId
-                                             AND T.IsDeleted = 0
-                                     );
+                                     WHERE (IsDeleted = 0)
+                                     AND (CustomerName, Id) IN (
+                                        SELECT T.CustomerName, T.Id
+                                        FROM SakilaFlat.CustomerOrderFlats AS T
+                                            INNER JOIN (
+                                                SELECT CustomerName, MAX(Id) AS MaxId
+                                                FROM SakilaFlat.CustomerOrderFlats
+                                                WHERE Id BETWEEN @FromId AND @ToId
+                                                GROUP BY CustomerName
+                                            ) AS Latest ON T.CustomerName = Latest.CustomerName
+                                        WHERE T.Id < Latest.MaxId
+                                     )
                                      """;
 }
