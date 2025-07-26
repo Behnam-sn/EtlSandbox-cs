@@ -2,13 +2,10 @@
 
 namespace EtlSandbox.Infrastructure.Shared.Repositories;
 
-public abstract class BaseClickHouseDapperRepository<T> : BaseDapperRepository<T>
+public abstract class BaseClickHouseDapperRepository<T>(IDbConnectionFactory dbConnectionFactory)
+    : BaseDapperRepository<T>(dbConnectionFactory)
     where T : class, IEntity
 {
-    protected BaseClickHouseDapperRepository(IDbConnectionFactory dbConnectionFactory) : base(dbConnectionFactory)
-    {
-    }
-
     protected override string GetLastProcessedImportantIdSql => $"SELECT max(Id) FROM {TableName}";
 
     protected override string GetLastSoftDeletedItemIdSql => $"""
