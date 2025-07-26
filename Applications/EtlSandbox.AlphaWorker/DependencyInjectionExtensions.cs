@@ -89,6 +89,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddPresentation(this IServiceCollection services)
     {
         services.AddHostedService<InsertCustomerOrderFlatWorker>();
-        // services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
+        services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
     }
 }

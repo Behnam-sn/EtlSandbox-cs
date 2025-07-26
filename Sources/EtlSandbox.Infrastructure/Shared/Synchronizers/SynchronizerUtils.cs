@@ -25,7 +25,7 @@ public sealed class SynchronizerUtils<T> : ISynchronizerUtils<T>
         var repository = scope.ServiceProvider.GetRequiredService<IRepository<T>>();
         var lastSoftDeletedItemId = await repository.GetLastSoftDeletedItemIdAsync();
 
-        if (lastSoftDeletedItemId > _lastSoftDeletedItemId)
+        if (lastSoftDeletedItemId >= _lastSoftDeletedItemId)
         {
             _lastSoftDeletedItemId = lastSoftDeletedItemId;
         }
