@@ -4,33 +4,30 @@ using ClickHouse.Client.Copy;
 
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Infrastructure.Shared.Loaders;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 
-public sealed class CustomerOrderFlatClickHouseBulkCopyLoader : ILoader<CustomerOrderFlat>
+public sealed class CustomerOrderFlatClickHouseBulkCopyLoader(string connectionString)
+    : BaseClickHouseBulkCopyLoader<CustomerOrderFlat>(connectionString)
 {
-    private readonly string _connectionString;
+    protected override string TableName => "SakilaFlat.CustomerOrderFlats";
 
-    public CustomerOrderFlatClickHouseBulkCopyLoader(string connectionString)
+    protected override DataTable GetDataTable(List<CustomerOrderFlat> items)
     {
-        _connectionString = connectionString;
-    }
+        var dataTable = new DataTable();
 
-    public async Task LoadAsync(List<CustomerOrderFlat> items, CancellationToken cancellationToken)
-    {
-        // var table = DataTableConverter.ToDataTable(data);
-        var table = new DataTable();
-        table.Columns.Add("Id", typeof(long));
-        table.Columns.Add("RentalId", typeof(long));
-        table.Columns.Add("CustomerName", typeof(string));
-        table.Columns.Add("Amount", typeof(decimal));
-        table.Columns.Add("RentalDate", typeof(DateTime));
-        table.Columns.Add("Category", typeof(string));
-        table.Columns.Add("IsDeleted", typeof(bool));
+        dataTable.Columns.Add("Id", typeof(long));
+        dataTable.Columns.Add("RentalId", typeof(long));
+        dataTable.Columns.Add("CustomerName", typeof(string));
+        dataTable.Columns.Add("Amount", typeof(decimal));
+        dataTable.Columns.Add("RentalDate", typeof(DateTime));
+        dataTable.Columns.Add("Category", typeof(string));
+        dataTable.Columns.Add("IsDeleted", typeof(bool));
 
         foreach (var item in items)
         {
-            table.Rows.Add(
+            dataTable.Rows.Add(
                 item.Id,
                 item.RentalId,
                 item.CustomerName,
@@ -41,12 +38,6 @@ public sealed class CustomerOrderFlatClickHouseBulkCopyLoader : ILoader<Customer
             );
         }
 
-        using var bulkCopyInterface = new ClickHouseBulkCopy(_connectionString)
-        {
-            DestinationTableName = "SakilaFlat.CustomerOrderFlats"
-        };
-
-        await bulkCopyInterface.InitAsync();
-        await bulkCopyInterface.WriteToServerAsync(table, cancellationToken);
+        return dataTable;
     }
 }
