@@ -23,7 +23,6 @@ public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
             FromId = fromId,
             ToId = toId,
         };
-
         using var connection = _dbConnectionFactory.CreateConnection();
         await connection.ExecuteAsync(Sql, parameters);
     }

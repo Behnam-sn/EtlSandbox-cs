@@ -54,7 +54,6 @@ internal static class DependencyInjectionExtensions
                                           throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
-
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>

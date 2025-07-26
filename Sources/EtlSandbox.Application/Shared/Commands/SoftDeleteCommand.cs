@@ -4,4 +4,4 @@ using EtlSandbox.Domain.Shared;
 namespace EtlSandbox.Application.Shared.Commands;
 
 public sealed record SoftDeleteCommand<T>(int BatchSize) : ICommand
-    where T : IEntity;
+    where T : class, IEntity;

@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace EtlSandbox.Presentation.Shared.Workers;
 
 public abstract class InsertBaseWorker<T> : BackgroundService
-    where T : IEntity
+    where T : class, IEntity
 {
     private readonly ILogger _logger;
 

@@ -24,7 +24,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
-
     }
 
     internal static void AddLogs(this IServiceCollection services)

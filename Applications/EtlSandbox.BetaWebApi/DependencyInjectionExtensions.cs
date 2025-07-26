@@ -10,11 +10,6 @@ namespace EtlSandbox.BetaWebApi;
 
 internal static class DependencyInjectionExtensions
 {
-    internal static void AddConfigureOptions(this IServiceCollection services)
-    {
-
-    }
-
     internal static void AddLogs(this IServiceCollection services)
     {
         services.AddLogging(logging =>

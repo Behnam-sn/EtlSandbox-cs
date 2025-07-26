@@ -2,7 +2,6 @@ using EtlSandbox.BetaWebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddConfigureOptions();
 builder.Services.AddLogs();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);

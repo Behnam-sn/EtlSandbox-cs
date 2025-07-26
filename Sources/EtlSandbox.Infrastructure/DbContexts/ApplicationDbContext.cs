@@ -10,7 +10,7 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<CustomerOrderFlat> CustomerOrderFlats => Set<CustomerOrderFlat>();
+    public DbSet<CustomerOrderFlat> CustomerOrderFlats { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

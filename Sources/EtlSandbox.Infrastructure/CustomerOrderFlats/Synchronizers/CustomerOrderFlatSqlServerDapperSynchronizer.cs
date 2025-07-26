@@ -16,7 +16,6 @@ public sealed class CustomerOrderFlatSqlServerDapperSynchronizer(IDbConnectionFa
                                          FROM CustomerOrderFlats
                                          WHERE Id BETWEEN @FromId AND @ToId
                                          GROUP BY CustomerName
-                                     ) Latest ON T.CustomerName = Latest.CustomerName AND T.Id < Latest.MaxId
-                                     AND T.IsDeleted = 0
+                                     ) Latest ON T.CustomerName = Latest.CustomerName AND T.Id < Latest.MaxId AND T.IsDeleted = 0
                                      """;
 }
