@@ -3,5 +3,5 @@
 public sealed class EntitySettings<T>
     where T : class, IEntity
 {
-    public long LastProcessedId { get; set; } = 0;
+    public long LastInsertedId { get; set; } = 0;
 }

@@ -20,7 +20,7 @@ public sealed class CustomerOrderFlatMySqlDapperExtractor(IDbConnectionFactory d
                                      INNER JOIN film f ON f.film_id = i.film_id
                                      INNER JOIN film_category fc ON fc.film_id = f.film_id
                                      INNER JOIN category cat ON cat.category_id = fc.category_id
-                                     WHERE r.rental_id > @LastProcessedId
+                                     WHERE r.rental_id > @LastInsertedId
                                      ORDER BY r.rental_id
                                      LIMIT @BatchSize
                                      """;

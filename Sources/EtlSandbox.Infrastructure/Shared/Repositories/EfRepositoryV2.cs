@@ -8,7 +8,7 @@ namespace EtlSandbox.Infrastructure.Shared.Repositories;
 public sealed class EfRepositoryV2<T>(ApplicationDbContext dbContext) : BaseEfRepository<T>(dbContext)
     where T : class, IEntity
 {
-    public override async Task<long> GetLastProcessedImportantIdAsync()
+    public override async Task<long> GetLastInsertedImportantIdAsync()
     {
         var lastItem = await _dbSet
             .AsNoTracking()

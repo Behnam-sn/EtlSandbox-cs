@@ -1,5 +1,6 @@
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
+
 using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared.Resolvers;
@@ -15,11 +16,11 @@ public class InsertStartingPointResolver<T> : IInsertStartingPointResolver<T> wh
         _settings = options.Value;
     }
 
-    public async Task<long> GetLastProcessedIdAsync()
+    public async Task<long> GetLastInsertedIdAsync()
     {
-        var dbLastProcessedId = await _repository.GetLastProcessedImportantIdAsync();
-        var settingsLastProcessedId = _settings.LastProcessedId;
-        
-        return dbLastProcessedId < settingsLastProcessedId ? settingsLastProcessedId : dbLastProcessedId;
+        var dbLastInsertedId = await _repository.GetLastInsertedImportantIdAsync();
+        var settingsLastInsertedId = _settings.LastInsertedId;
+
+        return dbLastInsertedId < settingsLastInsertedId ? settingsLastInsertedId : dbLastInsertedId;
     }
 }

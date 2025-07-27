@@ -34,11 +34,11 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 
     public async Task Handle(InsertCommand<T> request, CancellationToken cancellationToken)
     {
-        var lastProcessedId = await _insertStartingPointResolver.GetLastProcessedIdAsync();
+        var lastInsertedId = await _insertStartingPointResolver.GetLastInsertedIdAsync();
 
-        _logger.LogInformation("Extracting data since {LastProcessedId}", lastProcessedId);
+        _logger.LogInformation("Extracting data since {LastInsertedId}", lastInsertedId);
         var extractedItems = await _extractor.ExtractAsync(
-            lastProcessedId,
+            lastInsertedId,
             request.BatchSize,
             cancellationToken
         );

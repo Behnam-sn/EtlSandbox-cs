@@ -3,7 +3,7 @@
 public interface IRepository<T>
     where T : class, IEntity
 {
-    Task<long> GetLastProcessedImportantIdAsync();
+    Task<long> GetLastInsertedImportantIdAsync();
 
     Task<long> GetLastSoftDeletedItemIdAsync();
 

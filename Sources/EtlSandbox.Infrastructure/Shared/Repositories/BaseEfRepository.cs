@@ -15,7 +15,7 @@ public abstract class BaseEfRepository<T> : IRepository<T>
         _dbSet = dbContext.Set<T>();
     }
 
-    public abstract Task<long> GetLastProcessedImportantIdAsync();
+    public abstract Task<long> GetLastInsertedImportantIdAsync();
 
     public async Task<long> GetLastSoftDeletedItemIdAsync()
     {
