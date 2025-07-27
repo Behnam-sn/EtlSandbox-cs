@@ -6,14 +6,14 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared.Synchronizers;
 
-public sealed class SynchronizerUtils<T> : ISynchronizerUtils<T>
+public sealed class SoftDeleteStartingPointResolver<T> : ISoftDeleteStartingPointResolver<T>
     where T : class, IEntity
 {
     private readonly IServiceProvider _serviceProvider;
 
     private long _lastSoftDeletedItemId;
 
-    public SynchronizerUtils(IServiceProvider serviceProvider)
+    public SoftDeleteStartingPointResolver(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }

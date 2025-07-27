@@ -80,10 +80,10 @@ internal static class DependencyInjectionExtensions
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperSynchronizer>();
-        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
 
         // Resolvers
         services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
+        services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)

@@ -11,7 +11,6 @@ using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -50,9 +49,9 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
-                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
+            throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
@@ -90,10 +89,10 @@ internal static class DependencyInjectionExtensions
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
-        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
 
         // Resolvers
         services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
+        services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)

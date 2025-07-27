@@ -1,6 +1,6 @@
 ﻿namespace EtlSandbox.Domain.Shared;
 
-public interface ISynchronizerUtils<T>
+public interface ISoftDeleteStartingPointResolver<T>
     where T : class, IEntity
 {
     Task<long> GetLastSoftDeletedIdAsync();

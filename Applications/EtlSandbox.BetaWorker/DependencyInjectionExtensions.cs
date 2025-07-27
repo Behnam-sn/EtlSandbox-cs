@@ -12,7 +12,6 @@ using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -51,9 +50,9 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                          throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
-                                          throw new InvalidOperationException("Connection string 'Destination' not found.");
+            throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseNpgsql(
@@ -86,14 +85,14 @@ internal static class DependencyInjectionExtensions
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
-        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
+
+        // Resolvers
+        services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
+        services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
 
         // Rest Api Client
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
-
-        // Resolvers
-        services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)
