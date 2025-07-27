@@ -73,7 +73,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
 
         // Transformers
-        services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
+        services.AddScoped(typeof(ITransformer<>), typeof(EmptyTransformer<>));
 
         // Loaders
         services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatClickHouseBulkCopyLoader(destinationConnectionString));

@@ -83,14 +83,14 @@ internal static class DependencyInjectionExtensions
         });
 
         // Transformers
-        services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
+        services.AddScoped(typeof(ITransformer<>), typeof(EmptyTransformer<>));
 
         // Loaders
         services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatSqlServerBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
-        services.AddSingleton<ISynchronizerUtils<CustomerOrderFlat>, SynchronizerUtils<CustomerOrderFlat>>();
+        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
 
         // Resolvers
         services.AddScoped(typeof(IStartingPointResolver<>), typeof(StartingPointResolver<>));

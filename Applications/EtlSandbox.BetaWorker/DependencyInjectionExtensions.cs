@@ -86,7 +86,7 @@ internal static class DependencyInjectionExtensions
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
-        services.AddSingleton<ISynchronizerUtils<CustomerOrderFlat>, SynchronizerUtils<CustomerOrderFlat>>();
+        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
 
         // Rest Api Client
         services.AddHttpClient();

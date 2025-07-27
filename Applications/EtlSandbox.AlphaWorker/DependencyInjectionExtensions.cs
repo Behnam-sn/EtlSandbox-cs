@@ -85,7 +85,7 @@ internal static class DependencyInjectionExtensions
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
-        services.AddSingleton<ISynchronizerUtils<CustomerOrderFlat>, SynchronizerUtils<CustomerOrderFlat>>();
+        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
 
         // Resolvers
         services.AddScoped(typeof(IStartingPointResolver<>), typeof(StartingPointResolver<>));
