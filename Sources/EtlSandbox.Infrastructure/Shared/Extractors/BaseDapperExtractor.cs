@@ -16,7 +16,7 @@ public abstract class BaseDapperExtractor<T> : IExtractor<T>
 
     protected abstract string Sql { get; }
 
-    public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken = default)
     {
         var parameters = new
         {

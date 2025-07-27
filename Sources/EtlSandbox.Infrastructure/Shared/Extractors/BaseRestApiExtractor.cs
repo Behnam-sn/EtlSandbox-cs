@@ -17,7 +17,7 @@ public abstract class BaseRestApiExtractor<T> : IExtractor<T>
 
     protected abstract string Path { get; }
 
-    public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken = default)
     {
         var items = await _restApiClient.GetAsync<List<T>>(
             baseUrl: _baseUrl,

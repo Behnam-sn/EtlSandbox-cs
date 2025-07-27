@@ -10,7 +10,7 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 {
     private readonly ILogger _logger;
 
-    private readonly IRepository<T> _repository;
+    private readonly IStartingPointResolver<T> _startingPointResolver;
 
     private readonly IExtractor<T> _extractor;
 
@@ -18,10 +18,15 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 
     private readonly ILoader<T> _loader;
 
-    public InsertCommandHandler(ILogger<InsertCommandHandler<T>> logger, IRepository<T> repository, IExtractor<T> extractor, ITransformer<T> transformer, ILoader<T> loader)
+    public InsertCommandHandler(
+        ILogger<InsertCommandHandler<T>> logger,
+        IStartingPointResolver<T> startingPointResolver,
+        IExtractor<T> extractor,
+        ITransformer<T> transformer,
+        ILoader<T> loader)
     {
         _logger = logger;
-        _repository = repository;
+        _startingPointResolver = startingPointResolver;
         _extractor = extractor;
         _transformer = transformer;
         _loader = loader;
@@ -29,7 +34,7 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 
     public async Task Handle(InsertCommand<T> request, CancellationToken cancellationToken)
     {
-        var lastProcessedId = await _repository.GetLastProcessedImportantIdAsync();
+        var lastProcessedId = await _startingPointResolver.GetLastProcessedIdAsync();
 
         _logger.LogInformation("Extracting data since {LastProcessedId}", lastProcessedId);
         var extractedItems = await _extractor.ExtractAsync(

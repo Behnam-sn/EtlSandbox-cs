@@ -1,9 +1,6 @@
 ﻿using System.Data;
 
-using ClickHouse.Client.Copy;
-
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Loaders;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;

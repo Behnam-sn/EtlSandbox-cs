@@ -9,6 +9,7 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
+using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
 
@@ -25,6 +26,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
+        services.ConfigureOptions<EntitySettingsSetup<CustomerOrderFlat>>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -89,6 +91,9 @@ internal static class DependencyInjectionExtensions
         // Rest Api Client
         services.AddHttpClient();
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
+
+        // Resolvers
+        services.AddScoped(typeof(IStartingPointResolver<>), typeof(StartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)

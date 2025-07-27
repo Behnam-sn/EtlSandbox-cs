@@ -8,6 +8,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Synchronizers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
@@ -23,6 +24,7 @@ internal static class DependencyInjectionExtensions
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<ApplicationSettingsSetup>();
+        services.ConfigureOptions<EntitySettingsSetup<CustomerOrderFlat>>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -78,7 +80,10 @@ internal static class DependencyInjectionExtensions
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperSynchronizer>();
-        services.AddSingleton<ISynchronizerUtils<CustomerOrderFlat>, SynchronizerUtils<CustomerOrderFlat>>();
+        services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
+
+        // Resolvers
+        services.AddScoped(typeof(IStartingPointResolver<>), typeof(StartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)

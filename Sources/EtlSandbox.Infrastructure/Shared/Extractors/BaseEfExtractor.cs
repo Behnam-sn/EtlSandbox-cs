@@ -15,7 +15,7 @@ public abstract class BaseEfExtractor<T> : IExtractor<T>
         _dbSet = applicationDbContext.Set<T>();
     }
 
-    public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<List<T>> ExtractAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken = default)
     {
         return await _dbSet
             .AsNoTracking()
