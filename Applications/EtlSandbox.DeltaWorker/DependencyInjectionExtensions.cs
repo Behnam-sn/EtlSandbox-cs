@@ -83,7 +83,7 @@ internal static class DependencyInjectionExtensions
         services.AddSingleton(typeof(ISynchronizerUtils<>), typeof(SynchronizerUtils<>));
 
         // Resolvers
-        services.AddScoped(typeof(IStartingPointResolver<>), typeof(StartingPointResolver<>));
+        services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)

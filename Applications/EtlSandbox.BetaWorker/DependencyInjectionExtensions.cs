@@ -93,7 +93,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IRestApiClient, FlurlRestApiClient>();
 
         // Resolvers
-        services.AddScoped(typeof(IStartingPointResolver<>), typeof(StartingPointResolver<>));
+        services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)

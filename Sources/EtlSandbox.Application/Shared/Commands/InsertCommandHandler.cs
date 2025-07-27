@@ -10,7 +10,7 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 {
     private readonly ILogger _logger;
 
-    private readonly IStartingPointResolver<T> _startingPointResolver;
+    private readonly IInsertStartingPointResolver<T> _insertStartingPointResolver;
 
     private readonly IExtractor<T> _extractor;
 
@@ -20,13 +20,13 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 
     public InsertCommandHandler(
         ILogger<InsertCommandHandler<T>> logger,
-        IStartingPointResolver<T> startingPointResolver,
+        IInsertStartingPointResolver<T> insertStartingPointResolver,
         IExtractor<T> extractor,
         ITransformer<T> transformer,
         ILoader<T> loader)
     {
         _logger = logger;
-        _startingPointResolver = startingPointResolver;
+        _insertStartingPointResolver = insertStartingPointResolver;
         _extractor = extractor;
         _transformer = transformer;
         _loader = loader;
@@ -34,7 +34,7 @@ public sealed class InsertCommandHandler<T> : ICommandHandler<InsertCommand<T>>
 
     public async Task Handle(InsertCommand<T> request, CancellationToken cancellationToken)
     {
-        var lastProcessedId = await _startingPointResolver.GetLastProcessedIdAsync();
+        var lastProcessedId = await _insertStartingPointResolver.GetLastProcessedIdAsync();
 
         _logger.LogInformation("Extracting data since {LastProcessedId}", lastProcessedId);
         var extractedItems = await _extractor.ExtractAsync(
