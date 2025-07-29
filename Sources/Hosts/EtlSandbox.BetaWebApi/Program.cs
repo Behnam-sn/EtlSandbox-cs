@@ -1,4 +1,4 @@
-using EtlSandbox.BetaWebApi;
+using EtlSandbox.BetaWebApiService;
 
 var builder = WebApplication.CreateBuilder(args);
 

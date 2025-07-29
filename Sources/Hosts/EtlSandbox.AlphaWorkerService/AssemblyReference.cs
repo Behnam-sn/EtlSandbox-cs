@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace EtlSandbox.DeltaWorker;
+namespace EtlSandbox.AlphaWorkerService;
 
 public static class AssemblyReference
 {

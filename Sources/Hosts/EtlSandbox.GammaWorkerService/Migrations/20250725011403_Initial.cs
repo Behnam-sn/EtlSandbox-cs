@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EtlSandbox.GammaWorker.Migrations
+namespace EtlSandbox.GammaWorkerService.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

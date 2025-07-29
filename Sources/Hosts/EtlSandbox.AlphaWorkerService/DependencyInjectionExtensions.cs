@@ -10,14 +10,13 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
-
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.AlphaWorker;
+namespace EtlSandbox.AlphaWorkerService;
 
 internal static class DependencyInjectionExtensions
 {

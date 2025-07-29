@@ -17,7 +17,7 @@ using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.BetaWorker;
+namespace EtlSandbox.BetaWorkerService;
 
 internal static class DependencyInjectionExtensions
 {

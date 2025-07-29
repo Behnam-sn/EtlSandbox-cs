@@ -1,4 +1,4 @@
-namespace EtlSandbox.GammaWorker;
+namespace EtlSandbox.GammaWorkerService;
 
 public class Worker : BackgroundService
 {

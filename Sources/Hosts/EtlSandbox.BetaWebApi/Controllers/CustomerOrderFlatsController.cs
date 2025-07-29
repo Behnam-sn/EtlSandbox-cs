@@ -3,7 +3,7 @@ using EtlSandbox.Domain.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace EtlSandbox.BetaWebApi.Controllers;
+namespace EtlSandbox.BetaWebApiService.Controllers;
 
 [Route("api/CustomerOrderFlats")]
 public sealed class CustomerOrderFlatsController : ControllerBase

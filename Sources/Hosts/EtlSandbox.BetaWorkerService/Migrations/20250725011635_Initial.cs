@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace EtlSandbox.BetaWorker.Migrations
+namespace EtlSandbox.BetaWorkerService.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

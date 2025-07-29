@@ -28,17 +28,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{A8D67E31-4DA8-4C81-5CB5-320D3F2F2EAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.AlphaWorker", "Sources\Hosts\EtlSandbox.AlphaWorker\EtlSandbox.AlphaWorker.csproj", "{405CD566-086D-4159-9AD0-3ECAB5E90474}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.AlphaWorkerService", "Sources\Hosts\EtlSandbox.AlphaWorkerService\EtlSandbox.AlphaWorkerService.csproj", "{405CD566-086D-4159-9AD0-3ECAB5E90474}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.BetaWebApi", "Sources\Hosts\EtlSandbox.BetaWebApi\EtlSandbox.BetaWebApi.csproj", "{AEFF7EAB-60B2-4077-9847-0FE2561B9B04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.BetaWorker", "Sources\Hosts\EtlSandbox.BetaWorker\EtlSandbox.BetaWorker.csproj", "{7C01B2A5-DFDF-41CB-8AD4-82C59C097860}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.BetaWorkerService", "Sources\Hosts\EtlSandbox.BetaWorkerService\EtlSandbox.BetaWorkerService.csproj", "{7C01B2A5-DFDF-41CB-8AD4-82C59C097860}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.GammaWorker", "Sources\Hosts\EtlSandbox.GammaWorker\EtlSandbox.GammaWorker.csproj", "{0886DB5E-67F8-4742-A5FD-0CBD3CEE0224}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.GammaWorkerService", "Sources\Hosts\EtlSandbox.GammaWorkerService\EtlSandbox.GammaWorkerService.csproj", "{0886DB5E-67F8-4742-A5FD-0CBD3CEE0224}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWebApi", "Sources\Hosts\EtlSandbox.DeltaWebApi\EtlSandbox.DeltaWebApi.csproj", "{71E191D4-71EE-4272-9361-0DD8C12F144E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWorker", "Sources\Hosts\EtlSandbox.DeltaWorker\EtlSandbox.DeltaWorker.csproj", "{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWorkerService", "Sources\Hosts\EtlSandbox.DeltaWorkerService\EtlSandbox.DeltaWorkerService.csproj", "{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

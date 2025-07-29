@@ -5,7 +5,7 @@ using EtlSandbox.Infrastructure.DbContexts;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.BetaWebApi;
+namespace EtlSandbox.BetaWebApiService;
 
 internal static class DependencyInjectionExtensions
 {

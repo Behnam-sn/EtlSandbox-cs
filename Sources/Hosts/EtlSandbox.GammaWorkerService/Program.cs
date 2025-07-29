@@ -1,9 +1,6 @@
-using EtlSandbox.BetaWorker;
-using EtlSandbox.Infrastructure.Shared;
+using EtlSandbox.GammaWorkerService;
 
 var builder = Host.CreateApplicationBuilder(args);
-
-builder.Configuration.AddSharedConfiguration();
 
 builder.Services.AddConfigureOptions();
 builder.Services.AddLogs();
