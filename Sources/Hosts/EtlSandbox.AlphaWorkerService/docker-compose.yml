@@ -1,7 +1,6 @@
 services:
   mysql:
-    image: mysql:8.0
-    container_name: sakila_mysql
+    image: mysql:8
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -12,8 +11,29 @@ services:
       - ./mysql-data:/var/lib/mysql
       - ./sakila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
       - ./sakila-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    networks:
+      - network
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5002:1433"
+    networks:
+      - network
 
   etl-sandbox-alpha-worker-service:
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.AlphaWorkerService/Dockerfile
+    profiles:
+      - apps
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

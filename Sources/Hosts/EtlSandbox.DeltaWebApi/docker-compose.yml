@@ -1,6 +1,16 @@
 services:
   etl-sandbox-delta-web-api:
-    image: ${DOCKER_REGISTRY-}etlsandboxdeltawebapi
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.DeltaWebApi/Dockerfile
+    profiles:
+      - apps
+    networks:
+      - network
+    ports:
+      - "5005:8080"
+      - "5006:8081"
+
+networks:
+  network:
+    driver: bridge

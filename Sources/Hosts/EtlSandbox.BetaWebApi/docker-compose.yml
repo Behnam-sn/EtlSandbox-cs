@@ -1,6 +1,16 @@
 services:
   etl-sandbox-beta-web-api:
-    image: ${DOCKER_REGISTRY-}etlsandboxbetawebapi
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.BetaWebApi/Dockerfile
+    profiles:
+      - apps
+    networks:
+      - network
+    ports:
+      - "5003:8080"
+      - "5004:8081"
+
+networks:
+  network:
+    driver: bridge

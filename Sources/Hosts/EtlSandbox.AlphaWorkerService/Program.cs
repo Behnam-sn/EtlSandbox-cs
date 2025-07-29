@@ -1,4 +1,3 @@
-using EtlSandbox.AlphaWorker;
 using EtlSandbox.AlphaWorkerService;
 using EtlSandbox.Infrastructure.Shared;
 

@@ -1,4 +1,0 @@
-services:
-  etl-sandbox-beta-worker-service:
-    environment:
-      - DOTNET_ENVIRONMENT=Development

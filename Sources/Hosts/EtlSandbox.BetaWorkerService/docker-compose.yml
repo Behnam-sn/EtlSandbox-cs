@@ -1,6 +1,25 @@
 services:
   etl-sandbox-beta-worker-service:
-    image: ${DOCKER_REGISTRY-}etlsandboxbetaworkerservice
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.BetaWorkerService/Dockerfile
+    profiles:
+      - apps
+    networks:
+      - network
+   
+  postgres:
+    image: postgres:10
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Your_password123"
+      POSTGRES_DB: postgres
+    ports:
+      - "5005:5432"
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

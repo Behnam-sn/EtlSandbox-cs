@@ -1,7 +1,0 @@
-services:
-  etl-sandbox-delta-web-api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-    ports:
-      - "8081:8080"

@@ -1,4 +1,0 @@
-services:
-  etl-sandbox-delta-worker-service:
-    environment:
-      - DOTNET_ENVIRONMENT=Development

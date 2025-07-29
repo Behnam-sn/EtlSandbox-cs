@@ -1,6 +1,24 @@
 services:
   etl-sandbox-gamma-worker-service:
-    image: ${DOCKER_REGISTRY-}etlsandboxgammaworkerservice
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.GammaWorkerService/Dockerfile
+    profiles:
+      - apps
+    networks:
+      - network
+        
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5009:1433"
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
