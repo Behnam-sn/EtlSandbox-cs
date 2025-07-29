@@ -1,0 +1,6 @@
+services:
+  etl-sandbox-delta-web-api:
+    image: ${DOCKER_REGISTRY-}etlsandboxdeltawebapi
+    build:
+      context: ../../../
+      dockerfile: Sources/Hosts/EtlSandbox.DeltaWebApi/Dockerfile

@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sakila_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sakila
+    ports:
+      - "5001:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./sakila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./sakila-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  etl-sandbox-alpha-worker-service:
+    build:
+      context: ../../../
+      dockerfile: Sources/Hosts/EtlSandbox.AlphaWorkerService/Dockerfile

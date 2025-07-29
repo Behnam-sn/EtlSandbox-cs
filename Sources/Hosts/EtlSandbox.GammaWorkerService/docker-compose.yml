@@ -1,0 +1,6 @@
+services:
+  etl-sandbox-gamma-worker-service:
+    image: ${DOCKER_REGISTRY-}etlsandboxgammaworkerservice
+    build:
+      context: ../../../
+      dockerfile: Sources/Hosts/EtlSandbox.GammaWorkerService/Dockerfile

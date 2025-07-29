@@ -1,0 +1,6 @@
+services:
+  etl-sandbox-beta-web-api:
+    image: ${DOCKER_REGISTRY-}etlsandboxbetawebapi
+    build:
+      context: ../../../
+      dockerfile: Sources/Hosts/EtlSandbox.BetaWebApi/Dockerfile

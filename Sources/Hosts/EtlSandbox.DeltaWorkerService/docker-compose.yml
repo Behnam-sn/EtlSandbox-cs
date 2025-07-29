@@ -1,0 +1,6 @@
+services:
+  etl-sandbox-delta-worker-service:
+    image: ${DOCKER_REGISTRY-}etlsandboxdeltaworkerservice
+    build:
+      context: ../../../
+      dockerfile: Sources/Hosts/EtlSandbox.DeltaWorkerService/Dockerfile
