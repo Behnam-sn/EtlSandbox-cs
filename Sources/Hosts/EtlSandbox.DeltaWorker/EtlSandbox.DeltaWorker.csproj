@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-EtlSandbox.DeltaWorker-80465b97-2ce2-4232-a985-9f19b25afaa3</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Presentations\EtlSandbox.Presentation\EtlSandbox.Presentation.csproj"/>
+        <ProjectReference Include="..\..\Infrastructures\EtlSandbox.Infrastructure\EtlSandbox.Infrastructure.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7"/>
+    </ItemGroup>
+</Project>
