@@ -3,13 +3,13 @@ services:
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.DeltaWebApi/Dockerfile
+    ports:
+      - "5005:8080"
+      - "5006:8081"
     profiles:
       - apps
     networks:
       - network
-    ports:
-      - "5005:8080"
-      - "5006:8081"
 
 networks:
   network:

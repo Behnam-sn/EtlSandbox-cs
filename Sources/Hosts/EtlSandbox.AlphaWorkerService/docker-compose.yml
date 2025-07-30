@@ -1,4 +1,13 @@
 services:
+  etl-sandbox-alpha-worker-service:
+    build:
+      context: ../../../
+      dockerfile: Sources/Hosts/EtlSandbox.AlphaWorkerService/Dockerfile
+    profiles:
+      - apps
+    networks:
+      - network
+  
   mysql:
     image: mysql:8
     restart: always
@@ -22,15 +31,6 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "5002:1433"
-    networks:
-      - network
-
-  etl-sandbox-alpha-worker-service:
-    build:
-      context: ../../../
-      dockerfile: Sources/Hosts/EtlSandbox.AlphaWorkerService/Dockerfile
-    profiles:
-      - apps
     networks:
       - network
 

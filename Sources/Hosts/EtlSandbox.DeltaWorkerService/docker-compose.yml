@@ -1,29 +1,4 @@
 services:
-  clickhouse-server:
-    image: clickhouse/clickhouse-server:25.7.1
-    ports:
-      - "5007:8123"
-    networks:
-      - network
-    volumes:
-      - clickhouse-data:/var/lib/clickhouse
-    environment:
-      - CLICKHOUSE_PASSWORD=password
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8123/ping" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-  
-  tabix:
-    image: spoonest/clickhouse-tabix-web-client
-    ports:
-      - "5008:80"
-    depends_on:
-      - clickhouse
-    networks:
-      - network
-  
   etl-sandbox-delta-worker-service:
     build:
       context: ../../../
@@ -33,8 +8,33 @@ services:
     networks:
       - network
 
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:25.7.1
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    environment:
+      - CLICKHOUSE_PASSWORD=password
+    networks:
+      - network
+    ports:
+      - "5007:8123"
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8123/ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  tabix:
+    image: spoonest/clickhouse-tabix-web-client
+    depends_on:
+      - clickhouse
+    networks:
+      - network
+    ports:
+      - "5008:80"
+
 volumes:
-  clickhouse-data: 
+  clickhouse-data:
 
 networks:
   network:

@@ -3,13 +3,13 @@ services:
     build:
       context: ../../../
       dockerfile: Sources/Hosts/EtlSandbox.BetaWebApi/Dockerfile
+    ports:
+      - "5003:8080"
+      - "5004:8081"
     profiles:
       - apps
     networks:
       - network
-    ports:
-      - "5003:8080"
-      - "5004:8081"
 
 networks:
   network:
