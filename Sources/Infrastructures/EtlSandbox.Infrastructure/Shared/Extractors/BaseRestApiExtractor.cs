@@ -17,15 +17,15 @@ public abstract class BaseRestApiExtractor<T> : IExtractor<T>
 
     protected abstract string Path { get; }
 
-    public async Task<List<T>> ExtractAsync(long lastInsertedId, int batchSize, CancellationToken cancellationToken = default)
+    public async Task<List<T>> ExtractAsync(long from, long to, CancellationToken cancellationToken = default)
     {
         var items = await _restApiClient.GetAsync<List<T>>(
             baseUrl: _baseUrl,
             path: Path,
             queryParams: new
             {
-                lastProcessedId = lastInsertedId,
-                batchSize
+                from,
+                to
             },
             cancellationToken: cancellationToken
         );

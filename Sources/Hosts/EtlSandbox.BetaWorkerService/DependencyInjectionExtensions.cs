@@ -1,8 +1,10 @@
 using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
@@ -41,7 +43,7 @@ internal static class DependencyInjectionExtensions
     {
         // MediatR
         services.AddScoped<IMediator, Mediator>();
-        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
+        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
         services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
@@ -67,7 +69,12 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IDbConnectionFactory>(_ => new NpgsqlConnectionFactory(destinationConnectionString));
 
         // Repositories
-        services.AddScoped<IRepository<CustomerOrderFlat>, EfRepositoryV2<CustomerOrderFlat>>();
+        services.AddScoped<ISourceRepository<CustomerOrderFlat>, CustomerOrderFlatWebApiSourceRepository>();
+        services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
+        {
+            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            return new EfDestinationRepositoryV2<CustomerOrderFlat>(dbContext);
+        });
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
@@ -86,7 +93,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
 
         // Resolvers
-        services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
+        services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));
         services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
 
         // Rest Api Client

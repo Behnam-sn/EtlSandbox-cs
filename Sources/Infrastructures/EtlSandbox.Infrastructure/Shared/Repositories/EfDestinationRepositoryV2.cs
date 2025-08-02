@@ -1,11 +1,10 @@
 ﻿using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.DbContexts;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.Infrastructure.Shared.Repositories;
 
-public sealed class EfRepositoryV1<T>(ApplicationDbContext dbContext) : BaseEfRepository<T>(dbContext)
+public sealed class EfDestinationRepositoryV2<T>(DbContext dbContext) : BaseEfDestinationRepository<T>(dbContext)
     where T : class, IEntity
 {
     public override async Task<long> GetLastInsertedImportantIdAsync()
@@ -14,6 +13,6 @@ public sealed class EfRepositoryV1<T>(ApplicationDbContext dbContext) : BaseEfRe
             .AsNoTracking()
             .OrderByDescending(item => item.Id)
             .FirstOrDefaultAsync();
-        return lastItem?.ImportantId ?? 0;
+        return lastItem?.Id ?? 0;
     }
 }

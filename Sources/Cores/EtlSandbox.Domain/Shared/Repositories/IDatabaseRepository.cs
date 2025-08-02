@@ -1,4 +1,4 @@
-﻿namespace EtlSandbox.Domain.Shared;
+﻿namespace EtlSandbox.Domain.Shared.Repositories;
 
 public interface IDatabaseRepository
 {

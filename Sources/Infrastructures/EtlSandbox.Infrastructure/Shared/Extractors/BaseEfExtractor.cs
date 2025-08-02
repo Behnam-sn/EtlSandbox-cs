@@ -15,13 +15,12 @@ public abstract class BaseEfExtractor<T> : IExtractor<T>
         _dbSet = applicationDbContext.Set<T>();
     }
 
-    public async Task<List<T>> ExtractAsync(long lastInsertedId, int batchSize, CancellationToken cancellationToken = default)
+    public async Task<List<T>> ExtractAsync(long from, long to, CancellationToken cancellationToken = default)
     {
         return await _dbSet
             .AsNoTracking()
-            .Where(i => i.Id > lastInsertedId)
+            .Where(i => i.Id > from && i.Id <= to)
             .OrderBy(i => i.Id)
-            .Take(batchSize)
             .ToListAsync(cancellationToken);
     }
 }

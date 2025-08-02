@@ -1,5 +1,6 @@
 ﻿using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Options;
+using EtlSandbox.Domain.Shared.Repositories;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -20,21 +21,20 @@ public sealed class SoftDeleteStartingPointResolver<T> : ISoftDeleteStartingPoin
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<long> GetLastSoftDeletedIdAsync()
+    public async Task<long> GetLastSoftDeletedIdAsync(int batchSize)
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<IRepository<T>>();
-        var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
+
+        var destinationRepository = scope.ServiceProvider.GetRequiredService<IDestinationRepository<T>>();
 
         if (_lastSoftDeletedItemId == null)
         {
-            _lastSoftDeletedItemId = await repository.GetLastSoftDeletedItemIdAsync();
+            _lastSoftDeletedItemId = await destinationRepository.GetLastSoftDeletedItemIdAsync();
             _startingPoint = _lastSoftDeletedItemId.Value;
             return _startingPoint;
         }
 
-        var lastItemId = await repository.GetLastItemIdAsync();
-        var batchSize = applicationSettings.Value.BatchSize;
+        var lastItemId = await destinationRepository.GetLastItemIdAsync();
 
         if (_startingPoint + batchSize < lastItemId)
         {

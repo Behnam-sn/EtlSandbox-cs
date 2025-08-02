@@ -1,16 +1,16 @@
 ﻿using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Domain.Shared.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.Infrastructure.Shared.Repositories;
 
-public abstract class BaseEfRepository<T> : IRepository<T>
+public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
     where T : class, IEntity
 {
     protected readonly DbSet<T> _dbSet;
 
-    protected BaseEfRepository(ApplicationDbContext dbContext)
+    protected BaseEfDestinationRepository(DbContext dbContext)
     {
         _dbSet = dbContext.Set<T>();
     }

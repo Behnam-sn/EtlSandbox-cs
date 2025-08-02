@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.Infrastructure.DbContexts;
 
-public class ApplicationDbContext : DbContext
+public sealed class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

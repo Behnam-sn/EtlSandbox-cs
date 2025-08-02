@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtlSandbox.GammaWorkerService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250725011403_Initial")]
+    [Migration("20250802201048_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

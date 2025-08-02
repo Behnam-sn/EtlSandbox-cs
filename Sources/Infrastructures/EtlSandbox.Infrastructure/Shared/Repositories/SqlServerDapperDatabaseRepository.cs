@@ -1,6 +1,7 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 
 namespace EtlSandbox.Infrastructure.Shared.Repositories;
 

@@ -1,6 +1,6 @@
-﻿namespace EtlSandbox.Domain.Shared;
+﻿namespace EtlSandbox.Domain.Shared.Repositories;
 
-public interface IRepository<T>
+public interface IDestinationRepository<T>
     where T : class, IEntity
 {
     Task<long> GetLastInsertedImportantIdAsync();

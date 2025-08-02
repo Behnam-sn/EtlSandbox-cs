@@ -1,9 +1,9 @@
 using EtlSandbox.Application.ClickHouseUtils;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
-
 
 using MediatR;
 
@@ -15,7 +15,6 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
-
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -39,7 +38,7 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
 
         // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(

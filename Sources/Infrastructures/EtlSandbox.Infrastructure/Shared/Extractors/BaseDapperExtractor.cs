@@ -16,12 +16,12 @@ public abstract class BaseDapperExtractor<T> : IExtractor<T>
 
     protected abstract string Sql { get; }
 
-    public async Task<List<T>> ExtractAsync(long lastInsertedId, int batchSize, CancellationToken cancellationToken = default)
+    public async Task<List<T>> ExtractAsync(long from, long to, CancellationToken cancellationToken = default)
     {
         var parameters = new
         {
-            LastInsertedId = lastInsertedId,
-            BatchSize = batchSize
+            From = from,
+            To = to
         };
         using var connection = _dbConnectionFactory.CreateConnection();
         var items = await connection.QueryAsync<T>(Sql, parameters);

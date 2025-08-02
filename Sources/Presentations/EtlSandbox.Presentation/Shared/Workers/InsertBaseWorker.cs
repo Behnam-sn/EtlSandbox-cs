@@ -11,14 +11,15 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Shared.Workers;
 
-public abstract class InsertBaseWorker<T> : BackgroundService
-    where T : class, IEntity
+public class InsertBaseWorker<TSource, TDestination> : BackgroundService
+    where TSource : class
+    where TDestination : class, IEntity
 {
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
 
-    protected InsertBaseWorker(ILogger logger, IServiceProvider serviceProvider)
+    public InsertBaseWorker(ILogger<InsertBaseWorker<TSource, TDestination>> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
@@ -42,7 +43,7 @@ public abstract class InsertBaseWorker<T> : BackgroundService
 
             try
             {
-                var command = new InsertCommand<T>(
+                var command = new InsertCommand<TSource, TDestination>(
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);

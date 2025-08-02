@@ -1,15 +1,16 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 
 namespace EtlSandbox.Infrastructure.Shared.Repositories;
 
-public abstract class BaseDapperRepository<T> : IRepository<T>
+public abstract class BaseDapperDestinationRepository<T> : IDestinationRepository<T>
     where T : class, IEntity
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseDapperRepository(IDbConnectionFactory dbConnectionFactory)
+    protected BaseDapperDestinationRepository(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }

@@ -1,7 +1,8 @@
 namespace EtlSandbox.Domain.Shared;
 
-public interface IInsertStartingPointResolver<T>
-    where T : class, IEntity
+public interface IInsertStartingPointResolver<TSource, TDestination>
+    where TSource : class
+    where TDestination : class, IEntity
 {
-    Task<long> GetLastInsertedIdAsync();
+    Task<long> GetStartingPointAsync(int batchSize);
 }

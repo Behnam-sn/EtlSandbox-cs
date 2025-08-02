@@ -24,10 +24,10 @@ public abstract class SoftDeleteBaseWorker<T> : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
-    protected int? BatchSize { get; set; }
+    protected int? BatchSize { get; set; } = 50;
 
     protected int? DelayInSeconds { get; set; }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)

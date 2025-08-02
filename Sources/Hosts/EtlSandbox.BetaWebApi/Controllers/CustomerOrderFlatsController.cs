@@ -16,9 +16,9 @@ public sealed class CustomerOrderFlatsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CustomerOrderFlat>>> GetAsync(long lastProcessedId, int batchSize, CancellationToken cancellationToken)
+    public async Task<ActionResult<List<CustomerOrderFlat>>> GetAsync(long from, long to, CancellationToken cancellationToken)
     {
-        var items = await _extractor.ExtractAsync(lastProcessedId, batchSize, cancellationToken);
+        var items = await _extractor.ExtractAsync(from, to, cancellationToken);
         return Ok(items);
     }
 }

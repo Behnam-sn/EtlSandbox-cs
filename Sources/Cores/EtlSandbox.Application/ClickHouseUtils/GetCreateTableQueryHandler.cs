@@ -2,6 +2,7 @@
 
 using EtlSandbox.Application.Shared.Abstractions.Messaging;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 
 namespace EtlSandbox.Application.ClickHouseUtils;
 

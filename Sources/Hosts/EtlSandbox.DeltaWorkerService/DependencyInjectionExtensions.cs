@@ -1,6 +1,7 @@
 using EtlSandbox.Application.Shared.Commands;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
@@ -11,6 +12,7 @@ using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
+using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
 
@@ -40,7 +42,7 @@ internal static class DependencyInjectionExtensions
     {
         // MediatR
         services.AddScoped<IMediator, Mediator>();
-        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat>>();
+        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
         services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
@@ -66,7 +68,12 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IDbConnectionFactory>(_ => new ClickHouseConnectionFactory(destinationConnectionString));
 
         // Repositories
-        services.AddScoped<IRepository<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperRepository>();
+        services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
+        {
+            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            return new CustomerOrderFlatEfSourceRepository(dbContext);
+        });
+        services.AddScoped<IDestinationRepository<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperDestinationRepository>();
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
@@ -81,13 +88,13 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperSynchronizer>();
 
         // Resolvers
-        services.AddScoped(typeof(IInsertStartingPointResolver<>), typeof(InsertStartingPointResolver<>));
+        services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));
         services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
     }
 
     internal static void AddPresentation(this IServiceCollection services)
     {
-        services.AddHostedService<InsertCustomerOrderFlatWorker>();
+        services.AddHostedService<InsertBaseWorker<CustomerOrderFlat, CustomerOrderFlat>>();
         services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
     }
 }
