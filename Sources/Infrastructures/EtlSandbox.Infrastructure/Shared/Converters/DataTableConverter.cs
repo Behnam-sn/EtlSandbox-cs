@@ -15,7 +15,13 @@ public static class DataTableConverter
 
         foreach (var prop in properties)
         {
-            table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            var columnType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            var column = new DataColumn(prop.Name, columnType);
+            if (Nullable.GetUnderlyingType(prop.PropertyType) != null)
+            {
+                column.AllowDBNull = true;
+            }
+            table.Columns.Add(column);
         }
 
         foreach (var item in data)
@@ -23,7 +29,23 @@ public static class DataTableConverter
             var row = table.NewRow();
             foreach (var prop in properties)
             {
-                row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                var value = prop.GetValue(item);
+                if (value != null)
+                {
+                    row[prop.Name] = value;
+                }
+                else
+                {
+                    var propType = prop.PropertyType;
+                    if (propType.IsValueType && Nullable.GetUnderlyingType(propType) == null)
+                    {
+                        row[prop.Name] = Activator.CreateInstance(propType);
+                    }
+                    else
+                    {
+                        row[prop.Name] = DBNull.Value;
+                    }
+                }
             }
 
             table.Rows.Add(row);

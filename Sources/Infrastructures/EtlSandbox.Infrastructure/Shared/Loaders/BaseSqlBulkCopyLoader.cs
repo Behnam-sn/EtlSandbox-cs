@@ -1,4 +1,6 @@
-﻿using EtlSandbox.Domain.Shared;
+﻿using System.Data;
+
+using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.Shared.Converters;
 
 using Microsoft.Data.SqlClient;
@@ -23,6 +25,11 @@ public abstract class BaseSqlBulkCopyLoader<T> : ILoader<T>
 
         using var bulkCopy = new SqlBulkCopy(_connectionString);
         bulkCopy.DestinationTableName = TableName;
+
+        foreach (DataColumn column in dataTable.Columns)
+        {
+            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+        }
 
         await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
     }
