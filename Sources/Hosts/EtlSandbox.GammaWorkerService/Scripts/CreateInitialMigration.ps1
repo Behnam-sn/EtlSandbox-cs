@@ -1,11 +1,11 @@
 # Drop Database:
-dotnet ef database drop --project Sources\Hosts\EtlSandbox.GammaWorkerService\
+dotnet ef database drop --project Sources\Infrastructures\EtlSandbox.Persistence.Venus --startup-project Sources\Hosts\EtlSandbox.GammaWorkerService --context VenusDbContext
 
 # Remove Migrations
-dotnet ef migrations remove --project Sources\Hosts\EtlSandbox.GammaWorkerService\
+dotnet ef migrations remove --project Sources\Infrastructures\EtlSandbox.Persistence.Venus --startup-project Sources\Hosts\EtlSandbox.GammaWorkerService --context VenusDbContext
 
 # Add Migration
-dotnet ef migrations add Initial --project Sources\Hosts\EtlSandbox.GammaWorkerService\
+dotnet ef migrations add Initial --project Sources\Infrastructures\EtlSandbox.Persistence.Venus --startup-project Sources\Hosts\EtlSandbox.GammaWorkerService --context VenusDbContext
 
 # Apply Migrations
-dotnet ef database update --project Sources\Hosts\EtlSandbox.GammaWorkerService\
+dotnet ef database update --project Sources\Infrastructures\EtlSandbox.Persistence.Venus --startup-project Sources\Hosts\EtlSandbox.GammaWorkerService --context VenusDbContext
