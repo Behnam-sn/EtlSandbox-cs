@@ -40,9 +40,9 @@ internal static class DependencyInjectionExtensions
     public static void AddApplication(this IServiceCollection services)
     {
         // MediatR
-        services.AddScoped<IMediator, Mediator>();
-        services.AddScoped<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
-        services.AddScoped<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
+        services.AddTransient<IMediator, Mediator>();
+        services.AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
+        services.AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

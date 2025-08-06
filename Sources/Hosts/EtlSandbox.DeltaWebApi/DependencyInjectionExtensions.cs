@@ -30,8 +30,8 @@ internal static class DependencyInjectionExtensions
     public static void AddApplication(this IServiceCollection services)
     {
         // MediatR
-        services.AddScoped<IMediator, Mediator>();
-        services.AddScoped<IRequestHandler<GetCreateTableQuery, string>, GetCreateTableQueryHandler>();
+        services.AddTransient<IMediator, Mediator>();
+        services.AddTransient<IRequestHandler<GetCreateTableQuery, string>, GetCreateTableQueryHandler>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
