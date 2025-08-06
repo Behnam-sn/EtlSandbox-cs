@@ -18,7 +18,7 @@ public abstract class BaseEfExtractor<T> : IExtractor<T>
     {
         return await _dbSet
             .AsNoTracking()
-            .Where(i => i.Id > from && i.Id <= to)
+            .Where(i => from < i.Id && i.Id <= to)
             .OrderBy(i => i.Id)
             .ToListAsync(cancellationToken);
     }

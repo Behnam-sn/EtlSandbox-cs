@@ -55,10 +55,10 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
-                                          throw new InvalidOperationException(
-                                              "Connection string 'Destination' not found.");
+            throw new InvalidOperationException(
+                "Connection string 'Destination' not found.");
 
         // Entity Framework
         services.AddDbContext<NeptuneDbContext>(b => b.UseNpgsql(
@@ -71,7 +71,11 @@ internal static class DependencyInjectionExtensions
         );
 
         // Repositories
-        services.AddScoped<ISourceRepository<CustomerOrderFlat>, CustomerOrderFlatWebApiSourceRepository>();
+        services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
+        {
+            var restApiClient = sp.GetRequiredService<IRestApiClient>();
+            return new CustomerOrderFlatWebApiSourceRepository(sourceConnectionString, restApiClient);
+        });
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
             var dbContext = sp.GetRequiredService<NeptuneDbContext>();
