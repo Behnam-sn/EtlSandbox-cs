@@ -11,22 +11,22 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Shared.Workers;
 
-public abstract class SoftDeleteBaseWorker<T> : BackgroundService
+public sealed class SoftDeleteWorker<T> : BackgroundService
     where T : class, IEntity
 {
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
 
-    protected SoftDeleteBaseWorker(ILogger logger, IServiceProvider serviceProvider)
+    public SoftDeleteWorker(ILogger<SoftDeleteWorker<T>> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
 
-    protected int? BatchSize { get; set; } = 50;
+    private int? BatchSize { get; set; } = 50;
 
-    protected int? DelayInSeconds { get; set; }
+    private int? DelayInSeconds { get; set; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

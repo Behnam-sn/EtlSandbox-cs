@@ -13,7 +13,6 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
-using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -112,6 +111,6 @@ internal static class DependencyInjectionExtensions
     internal static void AddPresentation(this IServiceCollection services)
     {
         services.AddHostedService<InsertWorker<Rental, CustomerOrderFlat>>();
-        services.AddHostedService<SoftDeleteCustomerOrderFlatWorker>();
+        services.AddHostedService<SoftDeleteWorker<CustomerOrderFlat>>();
     }
 }
