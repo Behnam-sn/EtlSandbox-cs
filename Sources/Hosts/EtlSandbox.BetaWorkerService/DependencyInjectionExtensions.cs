@@ -6,14 +6,13 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-using EtlSandbox.Persistence.Jupiter;
+using EtlSandbox.Persistence.Neptune;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -44,25 +43,30 @@ internal static class DependencyInjectionExtensions
     {
         // MediatR
         services.AddTransient<IMediator, Mediator>();
-        services.AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
-        services.AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
+        services
+            .AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>,
+                InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
+        services
+            .AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>,
+                SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-            throw new InvalidOperationException("Connection string 'Source' not found.");
+                                     throw new InvalidOperationException("Connection string 'Source' not found.");
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
-            throw new InvalidOperationException("Connection string 'Destination' not found.");
+                                          throw new InvalidOperationException(
+                                              "Connection string 'Destination' not found.");
 
         // Entity Framework
-        services.AddDbContext<JupiterDbContext>(b => b.UseNpgsql(
+        services.AddDbContext<NeptuneDbContext>(b => b.UseNpgsql(
             destinationConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
+                providerOptions.MigrationsAssembly(Persistence.Neptune.AssemblyReference.Assembly);
             })
         );
 
@@ -70,7 +74,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ISourceRepository<CustomerOrderFlat>, CustomerOrderFlatWebApiSourceRepository>();
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<JupiterDbContext>();
+            var dbContext = sp.GetRequiredService<NeptuneDbContext>();
             return new EfDestinationRepositoryV2<CustomerOrderFlat>(dbContext);
         });
 

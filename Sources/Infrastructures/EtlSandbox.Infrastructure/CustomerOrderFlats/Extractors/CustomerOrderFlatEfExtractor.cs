@@ -1,5 +1,4 @@
 ﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.Extractors;
 
 using Microsoft.EntityFrameworkCore;

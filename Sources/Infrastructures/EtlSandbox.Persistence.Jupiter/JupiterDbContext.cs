@@ -1,25 +1,18 @@
-﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+﻿using EtlSandbox.Domain.Rentals;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace EtlSandbox.Persistence.Jupiter;
 
-public sealed class JupiterDbContext : DbContext
+public sealed class JupiterDbContext(DbContextOptions<JupiterDbContext> options) : DbContext(options)
 {
-    public JupiterDbContext(DbContextOptions<JupiterDbContext> options) : base(options)
-    {
-    }
-
-    public DbSet<CustomerOrderFlat> CustomerOrderFlats { get; set; }
+    public DbSet<Rental> Rental { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CustomerOrderFlat>(entity =>
+        modelBuilder.Entity<Rental>(entity =>
         {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.CustomerName).HasMaxLength(100);
-            entity.Property(e => e.Amount).HasPrecision(18, 2);
-            entity.Property(e => e.Category).HasMaxLength(50);
+            entity.HasKey(e => e.rental_id);
         });
     }
 }

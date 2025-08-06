@@ -1,10 +1,8 @@
 using EtlSandbox.Application.ClickHouseUtils;
-using EtlSandbox.Domain.Shared;
 using EtlSandbox.Domain.Shared.Repositories;
-using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
-using EtlSandbox.Persistence.Jupiter;
+using EtlSandbox.Persistence.Mars;
 
 using MediatR;
 
@@ -42,7 +40,7 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Source' not found.");
 
         // Entity Framework
-        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>
             {

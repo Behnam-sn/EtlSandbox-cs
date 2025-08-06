@@ -7,13 +7,13 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
-using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Rentals;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Persistence.Jupiter;
+using EtlSandbox.Persistence.Mars;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -57,31 +57,31 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
-        services.AddDbContext<BDbContext>(b => b.UseMySQL(
+        services.AddDbContext<JupiterDbContext>(b => b.UseMySQL(
             sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
-        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
             destinationConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
+                providerOptions.MigrationsAssembly(Persistence.Mars.AssemblyReference.Assembly);
             })
         );
 
         // Repositories
         services.AddScoped<ISourceRepository<Rental>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<BDbContext>();
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
             return new RentalEfRepository(dbContext);
         });
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<JupiterDbContext>();
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
             return new EfDestinationRepositoryV1<CustomerOrderFlat>(dbContext);
         });
 

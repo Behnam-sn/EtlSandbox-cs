@@ -1,9 +1,7 @@
 ﻿using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Options;
 using EtlSandbox.Domain.Shared.Repositories;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Shared.Resolvers;
 

@@ -6,12 +6,11 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
-using EtlSandbox.Persistence.Jupiter;
+using EtlSandbox.Persistence.Mars;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -55,19 +54,18 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
-        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                providerOptions.MigrationsAssembly(AssemblyReference.Assembly);
             })
         );
 
         // Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<JupiterDbContext>();
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
             return new CustomerOrderFlatEfSourceRepository(dbContext);
         });
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(_ =>
@@ -77,7 +75,11 @@ internal static class DependencyInjectionExtensions
         });
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
+        {
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
+            return new CustomerOrderFlatEfExtractor(dbContext);
+        });
 
         // Transformers
         services.AddScoped(typeof(ITransformer<>), typeof(EmptyTransformer<>));
