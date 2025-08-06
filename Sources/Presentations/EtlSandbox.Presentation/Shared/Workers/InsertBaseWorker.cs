@@ -31,29 +31,29 @@ public class InsertBaseWorker<TSource, TDestination> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            using var scope = _serviceProvider.CreateScope();
-
-            var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
-            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-            var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
-            var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
-
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
+                using var scope = _serviceProvider.CreateScope();
+
+                var applicationSettings = scope.ServiceProvider.GetRequiredService<IOptions<ApplicationSettings>>();
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
+                var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
+
                 var command = new InsertCommand<TSource, TDestination>(
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Insert failed: {Message}", e.Message);
-            }
 
-            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), stoppingToken);
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Insert failed: {Message}", e.Message);
         }
     }
 }
