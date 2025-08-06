@@ -1,20 +1,20 @@
-using EtlSandbox.Application.Shared.Commands;
+using EtlSandbox.Application.Common.Commands;
+using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Rentals;
-using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Repositories;
+using EtlSandbox.Infrastructure.Common.ConfigureOptions;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Common.Repositories;
+using EtlSandbox.Infrastructure.Common.Resolvers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.Rentals;
-using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
-using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
-using EtlSandbox.Infrastructure.Shared.Repositories;
-using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Persistence.Jupiter;
 using EtlSandbox.Persistence.Mars;
-using EtlSandbox.Presentation.Shared.Workers;
+using EtlSandbox.Presentation.Common.Workers;
 
 using MediatR;
 

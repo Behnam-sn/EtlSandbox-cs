@@ -1,6 +1,6 @@
-﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.Shared;
-using EtlSandbox.Domain.Shared.Repositories;
+﻿using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.Repositories;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 

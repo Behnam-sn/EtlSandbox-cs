@@ -1,5 +1,5 @@
-﻿using EtlSandbox.Domain.Rentals;
-using EtlSandbox.Domain.Shared.Repositories;
+﻿using EtlSandbox.Domain.Common.Repositories;
+using EtlSandbox.Domain.Rentals;
 
 using Microsoft.EntityFrameworkCore;
 

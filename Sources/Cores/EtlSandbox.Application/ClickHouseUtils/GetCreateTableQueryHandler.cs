@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
-using EtlSandbox.Application.Shared.Abstractions.Messaging;
-using EtlSandbox.Domain.Shared.Repositories;
+using EtlSandbox.Application.Common.Abstractions.Messaging;
+using EtlSandbox.Domain.Common.Repositories;
 
 namespace EtlSandbox.Application.ClickHouseUtils;
 

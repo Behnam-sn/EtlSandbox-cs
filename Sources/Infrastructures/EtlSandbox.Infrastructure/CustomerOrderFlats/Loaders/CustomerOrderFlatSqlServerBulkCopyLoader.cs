@@ -1,5 +1,5 @@
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Infrastructure.Shared.Loaders;
+using EtlSandbox.Infrastructure.Common.Loaders;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 

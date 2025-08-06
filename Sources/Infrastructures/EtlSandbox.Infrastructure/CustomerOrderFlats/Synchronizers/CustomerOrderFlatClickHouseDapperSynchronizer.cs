@@ -1,6 +1,6 @@
-﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.Shared;
-using EtlSandbox.Infrastructure.Shared.Synchronizers;
+﻿using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+using EtlSandbox.Infrastructure.Common.Synchronizers;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 

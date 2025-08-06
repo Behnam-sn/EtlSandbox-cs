@@ -1,5 +1,5 @@
+using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Domain.Shared;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 

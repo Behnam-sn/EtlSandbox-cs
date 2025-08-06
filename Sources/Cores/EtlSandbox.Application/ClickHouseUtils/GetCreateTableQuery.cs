@@ -1,4 +1,4 @@
-﻿using EtlSandbox.Application.Shared.Abstractions.Messaging;
+﻿using EtlSandbox.Application.Common.Abstractions.Messaging;
 
 namespace EtlSandbox.Application.ClickHouseUtils;
 

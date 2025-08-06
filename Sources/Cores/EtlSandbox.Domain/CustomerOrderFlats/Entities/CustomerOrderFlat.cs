@@ -1,4 +1,4 @@
-﻿using EtlSandbox.Domain.Shared;
+﻿using EtlSandbox.Domain.Common;
 
 namespace EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
