@@ -13,6 +13,7 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
+using EtlSandbox.Persistence.Jupiter;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -63,7 +64,7 @@ internal static class DependencyInjectionExtensions
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
-        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
             destinationConnectionString,
             providerOptions =>
             {
@@ -80,7 +81,7 @@ internal static class DependencyInjectionExtensions
         });
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
             return new EfDestinationRepositoryV1<CustomerOrderFlat>(dbContext);
         });
 

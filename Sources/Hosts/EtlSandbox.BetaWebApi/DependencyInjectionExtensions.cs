@@ -2,6 +2,7 @@ using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.DbContexts;
+using EtlSandbox.Persistence.Jupiter;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +31,7 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Source' not found.");
 
         // Entity Framework
-        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>
             {
@@ -42,7 +43,7 @@ internal static class DependencyInjectionExtensions
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
             return new CustomerOrderFlatEfExtractor(dbContext);
         });
     }

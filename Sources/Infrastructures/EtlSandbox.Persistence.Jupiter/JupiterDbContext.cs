@@ -2,11 +2,11 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Infrastructure.DbContexts;
+namespace EtlSandbox.Persistence.Jupiter;
 
-public sealed class ApplicationDbContext : DbContext
+public sealed class JupiterDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public JupiterDbContext(DbContextOptions<JupiterDbContext> options) : base(options)
     {
     }
 

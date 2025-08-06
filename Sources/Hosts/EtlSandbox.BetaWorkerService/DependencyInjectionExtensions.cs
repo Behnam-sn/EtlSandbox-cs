@@ -13,6 +13,7 @@ using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.RestApiClients;
 using EtlSandbox.Infrastructure.Shared.Transformers;
+using EtlSandbox.Persistence.Jupiter;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -56,7 +57,7 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
-        services.AddDbContext<ApplicationDbContext>(b => b.UseNpgsql(
+        services.AddDbContext<JupiterDbContext>(b => b.UseNpgsql(
             destinationConnectionString,
             providerOptions =>
             {
@@ -69,7 +70,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ISourceRepository<CustomerOrderFlat>, CustomerOrderFlatWebApiSourceRepository>();
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
             return new EfDestinationRepositoryV2<CustomerOrderFlat>(dbContext);
         });
 

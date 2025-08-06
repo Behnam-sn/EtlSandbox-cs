@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWebApi", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWorkerService", "Sources\Hosts\EtlSandbox.DeltaWorkerService\EtlSandbox.DeltaWorkerService.csproj", "{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Persistence.Jupiter", "Sources\Infrastructures\EtlSandbox.Persistence.Jupiter\EtlSandbox.Persistence.Jupiter.csproj", "{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +171,18 @@ Global
 		{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}.Release|x64.Build.0 = Release|Any CPU
 		{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}.Release|x86.ActiveCfg = Release|Any CPU
 		{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}.Release|x86.Build.0 = Release|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Debug|x64.Build.0 = Debug|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Debug|x86.Build.0 = Debug|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Release|x64.ActiveCfg = Release|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Release|x64.Build.0 = Release|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,5 +202,6 @@ Global
 		{0886DB5E-67F8-4742-A5FD-0CBD3CEE0224} = {A8D67E31-4DA8-4C81-5CB5-320D3F2F2EAB}
 		{71E191D4-71EE-4272-9361-0DD8C12F144E} = {A8D67E31-4DA8-4C81-5CB5-320D3F2F2EAB}
 		{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B} = {A8D67E31-4DA8-4C81-5CB5-320D3F2F2EAB}
+		{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6} = {F5D40451-AE41-939C-F916-38EBA10B26C6}
 	EndGlobalSection
 EndGlobal

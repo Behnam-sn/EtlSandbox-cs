@@ -11,6 +11,7 @@ using EtlSandbox.Infrastructure.Shared.ConfigureOptions;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
+using EtlSandbox.Persistence.Jupiter;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -54,7 +55,7 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
-        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>
             {
@@ -66,7 +67,7 @@ internal static class DependencyInjectionExtensions
         // Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
             return new CustomerOrderFlatEfSourceRepository(dbContext);
         });
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(_ =>

@@ -12,6 +12,7 @@ using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
 using EtlSandbox.Infrastructure.Shared.Resolvers;
 using EtlSandbox.Infrastructure.Shared.Transformers;
+using EtlSandbox.Persistence.Jupiter;
 using EtlSandbox.Presentation.Shared.Workers;
 
 using MediatR;
@@ -55,7 +56,7 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // Entity Framework
-        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
             destinationConnectionString,
             providerOptions =>
             {
@@ -67,29 +68,29 @@ internal static class DependencyInjectionExtensions
         // Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(_ =>
         {
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<JupiterDbContext>();
             optionsBuilder.UseSqlServer(sourceConnectionString, providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             });
-            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            var dbContext = new JupiterDbContext(optionsBuilder.Options);
             return new CustomerOrderFlatEfSourceRepository(dbContext);
         });
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
             return new EfDestinationRepositoryV2<CustomerOrderFlat>(dbContext);
         });
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>>(_ =>
         {
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<JupiterDbContext>();
             optionsBuilder.UseSqlServer(sourceConnectionString, providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             });
-            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            var dbContext = new JupiterDbContext(optionsBuilder.Options);
             return new CustomerOrderFlatEfExtractor(dbContext);
         });
 

@@ -4,6 +4,7 @@ using EtlSandbox.Domain.Shared.Repositories;
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Shared.Repositories;
+using EtlSandbox.Persistence.Jupiter;
 
 using MediatR;
 
@@ -41,14 +42,14 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException("Connection string 'Source' not found.");
 
         // Entity Framework
-        services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<JupiterDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
-        
+
         // Repositories
         services.AddScoped<IDatabaseRepository>(_ =>
         {
