@@ -64,9 +64,6 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(destinationConnectionString));
-
         // Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(_ =>
         {
@@ -103,7 +100,11 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatSqlServerBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>>(_ =>
+        {
+            var connectionFactory = new SqlServerConnectionFactory(destinationConnectionString);
+            return new CustomerOrderFlatSqlServerDapperSynchronizer(connectionFactory);
+        });
 
         // Resolvers
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));

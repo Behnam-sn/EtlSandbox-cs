@@ -48,12 +48,13 @@ internal static class DependencyInjectionExtensions
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
-
-        // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(sourceConnectionString));
-
+        
         // Repositories
-        services.AddScoped<IDatabaseRepository, SqlServerDapperDatabaseRepository>();
+        services.AddScoped<IDatabaseRepository>(_ =>
+        {
+            var connectionFactory = new SqlServerConnectionFactory(sourceConnectionString);
+            return new SqlServerDapperDatabaseRepository(connectionFactory);
+        });
     }
 
     internal static void AddPresentation(this IServiceCollection services)

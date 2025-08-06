@@ -63,16 +63,17 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory>(_ => new ClickHouseConnectionFactory(destinationConnectionString));
-
         // Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
         {
             var dbContext = sp.GetRequiredService<ApplicationDbContext>();
             return new CustomerOrderFlatEfSourceRepository(dbContext);
         });
-        services.AddScoped<IDestinationRepository<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperDestinationRepository>();
+        services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(_ =>
+        {
+            var connectionFactory = new ClickHouseConnectionFactory(destinationConnectionString);
+            return new CustomerOrderFlatClickHouseDapperDestinationRepository(connectionFactory);
+        });
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
@@ -84,7 +85,11 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatClickHouseBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatClickHouseDapperSynchronizer>();
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>>(_ =>
+        {
+            var connectionFactory = new ClickHouseConnectionFactory(destinationConnectionString);
+            return new CustomerOrderFlatClickHouseDapperSynchronizer(connectionFactory);
+        });
 
         // Resolvers
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));

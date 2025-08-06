@@ -65,9 +65,6 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Db Connection Factory
-        services.AddScoped<IDbConnectionFactory>(_ => new NpgsqlConnectionFactory(destinationConnectionString));
-
         // Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>, CustomerOrderFlatWebApiSourceRepository>();
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
@@ -87,10 +84,18 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
 
         // Loaders
-        services.AddScoped<ILoader<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperLoader>();
+        services.AddScoped<ILoader<CustomerOrderFlat>>(_ =>
+        {
+            var connectionFactory = new NpgsqlConnectionFactory(destinationConnectionString);
+            return new CustomerOrderFlatPostgreSqlDapperLoader(connectionFactory);
+        });
 
         // Synchronizers
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>>(_ =>
+        {
+            var connectionFactory = new NpgsqlConnectionFactory(destinationConnectionString);
+            return new CustomerOrderFlatPostgreSqlDapperSynchronizer(connectionFactory);
+        });
 
         // Resolvers
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));
