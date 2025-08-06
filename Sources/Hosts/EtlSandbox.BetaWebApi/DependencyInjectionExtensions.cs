@@ -27,7 +27,7 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                          throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
 
         // Entity Framework
         services.AddDbContext<ApplicationDbContext>(b => b.UseSqlServer(
@@ -40,7 +40,11 @@ internal static class DependencyInjectionExtensions
         );
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatEfExtractor>();
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
+        {
+            var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+            return new CustomerOrderFlatEfExtractor(dbContext);
+        });
     }
 
     internal static void AddPresentation(this IServiceCollection services)

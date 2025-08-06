@@ -2,7 +2,9 @@
 using EtlSandbox.Infrastructure.DbContexts;
 using EtlSandbox.Infrastructure.Shared.Extractors;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 
-public sealed class CustomerOrderFlatEfExtractor(ApplicationDbContext applicationDbContext)
-    : BaseEfExtractor<CustomerOrderFlat>(applicationDbContext);
+public sealed class CustomerOrderFlatEfExtractor(DbContext dbContext)
+    : BaseEfExtractor<CustomerOrderFlat>(dbContext);

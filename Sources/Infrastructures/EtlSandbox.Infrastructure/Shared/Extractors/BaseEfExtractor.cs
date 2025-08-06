@@ -10,9 +10,9 @@ public abstract class BaseEfExtractor<T> : IExtractor<T>
 {
     private readonly DbSet<T> _dbSet;
 
-    protected BaseEfExtractor(ApplicationDbContext applicationDbContext)
+    protected BaseEfExtractor(DbContext dbContext)
     {
-        _dbSet = applicationDbContext.Set<T>();
+        _dbSet = dbContext.Set<T>();
     }
 
     public async Task<List<T>> ExtractAsync(long from, long to, CancellationToken cancellationToken = default)
