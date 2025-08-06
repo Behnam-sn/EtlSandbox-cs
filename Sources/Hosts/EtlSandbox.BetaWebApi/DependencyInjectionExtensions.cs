@@ -1,6 +1,8 @@
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Shared;
+using EtlSandbox.Domain.Shared.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Persistence.Mars;
 
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,13 @@ internal static class DependencyInjectionExtensions
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
+
+        // Repositories
+        services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
+        {
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
+            return new CustomerOrderFlatEfSourceRepository(dbContext);
+        });
 
         // Extractors
         services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
