@@ -14,12 +14,12 @@ public sealed class CustomerOrderFlatEfSourceRepository : ISourceRepository<Cust
         _dbSet = dbContext.Set<CustomerOrderFlat>();
     }
 
-    public async Task<long> GetLastItemIdAsync()
+    public async Task<long> GetLastItemIdAsync(CancellationToken cancellationToken = default)
     {
         var lastItem = await _dbSet
             .AsNoTracking()
             .OrderByDescending(item => item.Id)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return lastItem?.Id ?? 0;
     }
 }

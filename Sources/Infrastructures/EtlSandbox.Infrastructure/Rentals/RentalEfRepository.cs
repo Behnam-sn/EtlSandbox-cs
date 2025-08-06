@@ -14,12 +14,12 @@ public sealed class RentalEfRepository : ISourceRepository<Rental>
         _dbSet = dbContext.Set<Rental>();
     }
 
-    public async Task<long> GetLastItemIdAsync()
+    public async Task<long> GetLastItemIdAsync(CancellationToken cancellationToken = default)
     {
         var lastItem = await _dbSet
             .AsNoTracking()
             .OrderByDescending(item => item.rental_id)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return lastItem?.rental_id ?? 0;
     }
 }
