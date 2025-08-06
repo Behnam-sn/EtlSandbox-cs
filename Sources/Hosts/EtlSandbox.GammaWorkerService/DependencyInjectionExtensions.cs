@@ -57,7 +57,7 @@ internal static class DependencyInjectionExtensions
 
         // Entity Framework
         services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
-            destinationConnectionString,
+            sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
