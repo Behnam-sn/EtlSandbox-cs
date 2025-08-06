@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Shared.Workers;
 
-public class InsertBaseWorker<TSource, TDestination> : BackgroundService
+public sealed class InsertWorker<TSource, TDestination> : BackgroundService
     where TSource : class
     where TDestination : class, IEntity
 {
@@ -19,15 +19,15 @@ public class InsertBaseWorker<TSource, TDestination> : BackgroundService
 
     private readonly IServiceProvider _serviceProvider;
 
-    public InsertBaseWorker(ILogger<InsertBaseWorker<TSource, TDestination>> logger, IServiceProvider serviceProvider)
+    public InsertWorker(ILogger<InsertWorker<TSource, TDestination>> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
 
-    protected int? BatchSize { get; set; }
+    private int? BatchSize { get; set; }
 
-    protected int? DelayInSeconds { get; set; }
+    private int? DelayInSeconds { get; set; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
