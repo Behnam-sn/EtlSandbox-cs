@@ -26,7 +26,7 @@ public sealed class SoftDeleteWorker<T> : BackgroundService
 
     private int? BatchSize { get; set; } = 50;
 
-    private int? DelayInSeconds { get; set; }
+    private int? DelayInMilliSeconds { get; set; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -40,14 +40,14 @@ public sealed class SoftDeleteWorker<T> : BackgroundService
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                 var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
-                var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
+                var delayInMilliSeconds = DelayInMilliSeconds ?? applicationSettings.Value.DelayInMilliSeconds;
 
                 var command = new SoftDeleteCommand<T>(
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
 
-                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), stoppingToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliSeconds), stoppingToken);
             }
         }
         catch (Exception e)

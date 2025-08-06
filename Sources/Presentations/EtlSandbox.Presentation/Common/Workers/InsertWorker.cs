@@ -27,7 +27,7 @@ public sealed class InsertWorker<TSource, TDestination> : BackgroundService
 
     private int? BatchSize { get; set; }
 
-    private int? DelayInSeconds { get; set; }
+    private int? DelayInMilliSeconds { get; set; }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -41,14 +41,14 @@ public sealed class InsertWorker<TSource, TDestination> : BackgroundService
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                 var batchSize = BatchSize ?? applicationSettings.Value.BatchSize;
-                var delayInSeconds = DelayInSeconds ?? applicationSettings.Value.DelayInSeconds;
+                var delayInMilliSeconds = DelayInMilliSeconds ?? applicationSettings.Value.DelayInMilliSeconds;
 
                 var command = new InsertCommand<TSource, TDestination>(
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
 
-                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), stoppingToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliSeconds), stoppingToken);
             }
         }
         catch (Exception e)

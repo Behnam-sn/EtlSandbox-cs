@@ -2,7 +2,7 @@ namespace EtlSandbox.Domain.Common.Options;
 
 public sealed class ApplicationSettings
 {
-    public int BatchSize { get; set; } = 1000;
+    public int BatchSize { get; set; } = 100;
 
-    public int DelayInSeconds { get; set; } = 10;
+    public int DelayInMilliSeconds { get; set; } = 100;
 }
