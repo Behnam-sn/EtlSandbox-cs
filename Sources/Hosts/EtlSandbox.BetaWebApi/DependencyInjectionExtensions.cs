@@ -11,6 +11,10 @@ namespace EtlSandbox.BetaWebApiService;
 
 internal static class DependencyInjectionExtensions
 {
+    internal static void AddConfigureOptions(this IServiceCollection services)
+    {
+    }
+
     internal static void AddLogs(this IServiceCollection services)
     {
         services.AddLogging(logging =>
@@ -29,7 +33,7 @@ internal static class DependencyInjectionExtensions
     {
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
-                                     throw new InvalidOperationException("Connection string 'Source' not found.");
+            throw new InvalidOperationException("Connection string 'Source' not found.");
 
         // DbContexts
         services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
