@@ -10,9 +10,6 @@ public sealed class JupiterDbContext(DbContextOptions<JupiterDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Rental>(entity =>
-        {
-            entity.HasKey(e => e.rental_id);
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
     }
 }

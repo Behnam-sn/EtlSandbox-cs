@@ -10,13 +10,6 @@ public sealed class VenusDbContext(DbContextOptions<VenusDbContext> options) : D
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CustomerOrderFlat>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CustomerName).HasMaxLength(100);
-            entity.Property(e => e.Amount).HasPrecision(18, 2);
-            entity.Property(e => e.Category).HasMaxLength(50);
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
     }
 }
