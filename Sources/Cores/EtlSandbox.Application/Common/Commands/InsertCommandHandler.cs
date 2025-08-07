@@ -1,5 +1,6 @@
 ﻿using EtlSandbox.Application.Common.Abstractions.Messaging;
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.Resolvers;
 
 using Microsoft.Extensions.Logging;
 

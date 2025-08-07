@@ -1,6 +1,7 @@
 using EtlSandbox.Application.Common.Commands;
 using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Repositories;
+using EtlSandbox.Domain.Common.Resolvers;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Rentals;
 using EtlSandbox.Infrastructure.Common.ConfigureOptions;
@@ -12,6 +13,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
 using EtlSandbox.Infrastructure.Jupiter;
+using EtlSandbox.Infrastructure.Jupiter.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.Mars;
 using EtlSandbox.Infrastructure.Rentals;
 using EtlSandbox.Presentation.Common.Workers;
@@ -89,7 +91,7 @@ internal static class DependencyInjectionExtensions
         services.AddScoped<IExtractor<CustomerOrderFlat>>(_ =>
         {
             var connectionFactory = new MySqlConnectionFactory(sourceConnectionString);
-            return new CustomerOrderFlatMySqlDapperExtractor(connectionFactory);
+            return new CustomerOrderFlatJupiterDapperExtractor(connectionFactory);
         });
 
         // Transformers

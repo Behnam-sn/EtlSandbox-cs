@@ -1,4 +1,4 @@
-﻿namespace EtlSandbox.Domain.Common;
+﻿namespace EtlSandbox.Domain.Common.Resolvers;
 
 public interface ISoftDeleteStartingPointResolver<T>
     where T : class, IEntity
