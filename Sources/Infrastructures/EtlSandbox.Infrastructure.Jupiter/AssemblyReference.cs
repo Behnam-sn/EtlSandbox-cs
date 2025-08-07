@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace EtlSandbox.Persistence.Neptune;
+namespace EtlSandbox.Infrastructure.Jupiter;
 
 public static class AssemblyReference
 {

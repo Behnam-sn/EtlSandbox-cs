@@ -8,10 +8,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Cores\EtlSandbox.Application\EtlSandbox.Application.csproj"/>
-        <ProjectReference Include="..\EtlSandbox.Persistence.Jupiter\EtlSandbox.Persistence.Jupiter.csproj" />
-        <ProjectReference Include="..\EtlSandbox.Persistence.Mars\EtlSandbox.Persistence.Mars.csproj" />
-        <ProjectReference Include="..\EtlSandbox.Persistence.Neptune\EtlSandbox.Persistence.Neptune.csproj" />
-        <ProjectReference Include="..\EtlSandbox.Persistence.Venus\EtlSandbox.Persistence.Venus.csproj" />
+        <ProjectReference Include="..\EtlSandbox.Infrastructure.Jupiter\EtlSandbox.Infrastructure.Jupiter.csproj" />
+        <ProjectReference Include="..\EtlSandbox.Infrastructure.Mars\EtlSandbox.Infrastructure.Mars.csproj" />
+        <ProjectReference Include="..\EtlSandbox.Infrastructure.Neptune\EtlSandbox.Infrastructure.Neptune.csproj" />
+        <ProjectReference Include="..\EtlSandbox.Infrastructure.Venus\EtlSandbox.Infrastructure.Venus.csproj" />
     </ItemGroup>
 
     <ItemGroup>

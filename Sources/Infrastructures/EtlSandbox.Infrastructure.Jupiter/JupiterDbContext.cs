@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Persistence.Jupiter;
+namespace EtlSandbox.Infrastructure.Jupiter;
 
 public sealed class JupiterDbContext(DbContextOptions<JupiterDbContext> options) : DbContext(options)
 {

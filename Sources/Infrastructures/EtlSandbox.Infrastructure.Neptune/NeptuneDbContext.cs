@@ -1,10 +1,10 @@
-﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Persistence.Mars;
+namespace EtlSandbox.Infrastructure.Neptune;
 
-public sealed class MarsDbContext(DbContextOptions<MarsDbContext> options) : DbContext(options)
+public sealed class NeptuneDbContext(DbContextOptions<NeptuneDbContext> options) : DbContext(options)
 {
     public DbSet<CustomerOrderFlat> CustomerOrderFlats { get; set; }
 
@@ -13,6 +13,7 @@ public sealed class MarsDbContext(DbContextOptions<MarsDbContext> options) : DbC
         modelBuilder.Entity<CustomerOrderFlat>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CustomerName).HasMaxLength(100);
             entity.Property(e => e.Amount).HasPrecision(18, 2);
             entity.Property(e => e.Category).HasMaxLength(50);

@@ -11,8 +11,8 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Persistence.Mars;
-using EtlSandbox.Persistence.Venus;
+using EtlSandbox.Infrastructure.Mars;
+using EtlSandbox.Infrastructure.Venus;
 using EtlSandbox.Presentation.Common.Workers;
 
 using MediatR;
@@ -68,7 +68,7 @@ internal static class DependencyInjectionExtensions
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                providerOptions.MigrationsAssembly(Persistence.Venus.AssemblyReference.Assembly);
+                providerOptions.MigrationsAssembly(Infrastructure.Venus.AssemblyReference.Assembly);
             })
         );
 

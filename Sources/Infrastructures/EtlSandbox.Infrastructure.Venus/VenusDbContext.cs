@@ -2,7 +2,7 @@ using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Persistence.Venus;
+namespace EtlSandbox.Infrastructure.Venus;
 
 public sealed class VenusDbContext(DbContextOptions<VenusDbContext> options) : DbContext(options)
 {

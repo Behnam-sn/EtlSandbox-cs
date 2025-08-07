@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EtlSandbox.Persistence.Common\EtlSandbox.Persistence.Common.csproj" />
+        <ProjectReference Include="..\EtlSandbox.Infrastructure.Common\EtlSandbox.Infrastructure.Common.csproj" />
     </ItemGroup>
 
 </Project>

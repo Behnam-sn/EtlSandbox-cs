@@ -10,7 +10,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Persistence.Mars;
+using EtlSandbox.Infrastructure.Mars;
 using EtlSandbox.Presentation.Common.Workers;
 
 using MediatR;

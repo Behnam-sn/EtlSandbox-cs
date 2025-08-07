@@ -39,15 +39,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWebApi", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.DeltaWorkerService", "Sources\Hosts\EtlSandbox.DeltaWorkerService\EtlSandbox.DeltaWorkerService.csproj", "{C72EDBA4-A03D-4AA6-B5C8-45966A752C5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Persistence.Jupiter", "Sources\Infrastructures\EtlSandbox.Persistence.Jupiter\EtlSandbox.Persistence.Jupiter.csproj", "{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Jupiter", "Sources\Infrastructures\EtlSandbox.Infrastructure.Jupiter\EtlSandbox.Infrastructure.Jupiter.csproj", "{C1B0F3A9-B2D2-4D0C-897B-68E679B296C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Persistence.Mars", "Sources\Infrastructures\EtlSandbox.Persistence.Mars\EtlSandbox.Persistence.Mars.csproj", "{D1EDD03F-D888-4115-876E-175CAD1C4FBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Mars", "Sources\Infrastructures\EtlSandbox.Infrastructure.Mars\EtlSandbox.Infrastructure.Mars.csproj", "{D1EDD03F-D888-4115-876E-175CAD1C4FBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Persistence.Neptune", "Sources\Infrastructures\EtlSandbox.Persistence.Neptune\EtlSandbox.Persistence.Neptune.csproj", "{B2B2B4A6-D8B5-43D6-AFB5-70C7BC0B1634}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Neptune", "Sources\Infrastructures\EtlSandbox.Infrastructure.Neptune\EtlSandbox.Infrastructure.Neptune.csproj", "{B2B2B4A6-D8B5-43D6-AFB5-70C7BC0B1634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Persistence.Venus", "Sources\Infrastructures\EtlSandbox.Persistence.Venus\EtlSandbox.Persistence.Venus.csproj", "{1D167DCE-11B9-4BA3-910F-4AB30BA78A3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Venus", "Sources\Infrastructures\EtlSandbox.Infrastructure.Venus\EtlSandbox.Infrastructure.Venus.csproj", "{1D167DCE-11B9-4BA3-910F-4AB30BA78A3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Persistence.Common", "Sources\Infrastructures\EtlSandbox.Persistence.Common\EtlSandbox.Persistence.Common.csproj", "{60AB87FD-2FDA-490F-AD30-B512D5369046}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Common", "Sources\Infrastructures\EtlSandbox.Infrastructure.Common\EtlSandbox.Infrastructure.Common.csproj", "{60AB87FD-2FDA-490F-AD30-B512D5369046}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

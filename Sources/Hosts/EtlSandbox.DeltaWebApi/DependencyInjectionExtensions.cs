@@ -2,7 +2,7 @@ using EtlSandbox.Application.ClickHouseUtils;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Common.Repositories;
-using EtlSandbox.Persistence.Mars;
+using EtlSandbox.Infrastructure.Mars;
 
 using MediatR;
 

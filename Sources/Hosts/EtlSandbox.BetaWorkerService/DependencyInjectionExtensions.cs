@@ -12,7 +12,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
-using EtlSandbox.Persistence.Neptune;
+using EtlSandbox.Infrastructure.Neptune;
 using EtlSandbox.Presentation.Common.Workers;
 
 using MediatR;
@@ -66,7 +66,7 @@ internal static class DependencyInjectionExtensions
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                providerOptions.MigrationsAssembly(Persistence.Neptune.AssemblyReference.Assembly);
+                providerOptions.MigrationsAssembly(Infrastructure.Neptune.AssemblyReference.Assembly);
             })
         );
 
