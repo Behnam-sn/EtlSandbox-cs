@@ -2,9 +2,9 @@
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Infrastructure.Common.Extractors;
 
-namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
+namespace EtlSandbox.Infrastructure.Jupiter.CustomerOrderFlats.Extractors;
 
-public sealed class CustomerOrderFlatMySqlDapperExtractor(IDbConnectionFactory dbConnectionFactory)
+public sealed class CustomerOrderFlatJupiterDapperExtractor(IDbConnectionFactory dbConnectionFactory)
     : BaseDapperExtractor<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """
