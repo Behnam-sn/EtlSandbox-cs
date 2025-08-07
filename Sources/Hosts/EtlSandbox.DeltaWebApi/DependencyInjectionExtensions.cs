@@ -26,9 +26,9 @@ internal static class DependencyInjectionExtensions
         });
     }
 
-    public static void AddApplication(this IServiceCollection services)
+    internal static void AddApplication(this IServiceCollection services)
     {
-        // MediatR
+        // Mediatr
         services.AddTransient<IMediator, Mediator>();
         services.AddTransient<IRequestHandler<GetCreateTableQuery, string>, GetCreateTableQueryHandler>();
     }

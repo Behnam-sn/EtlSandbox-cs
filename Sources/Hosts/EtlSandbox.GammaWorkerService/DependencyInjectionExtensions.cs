@@ -40,9 +40,9 @@ internal static class DependencyInjectionExtensions
         });
     }
 
-    public static void AddApplication(this IServiceCollection services)
+    internal static void AddApplication(this IServiceCollection services)
     {
-        // MediatR
+        // Mediatr
         services.AddTransient<IMediator, Mediator>();
         services.AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
         services.AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
@@ -73,12 +73,14 @@ internal static class DependencyInjectionExtensions
             })
         );
 
-        // Repositories
+        // Source Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
         {
             var dbContext = sp.GetRequiredService<MarsDbContext>();
             return new CustomerOrderFlatEfSourceRepository(dbContext);
         });
+
+        // Destination Repositories
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
             var dbContext = sp.GetRequiredService<VenusDbContext>();
