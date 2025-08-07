@@ -58,7 +58,7 @@ internal static class DependencyInjectionExtensions
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
-        // Entity Framework
+        // DbContexts
         services.AddDbContext<JupiterDbContext>(b => b.UseMySQL(
             sourceConnectionString,
             providerOptions =>

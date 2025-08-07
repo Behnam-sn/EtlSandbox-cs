@@ -54,7 +54,7 @@ internal static class DependencyInjectionExtensions
         var destinationConnectionString = configuration.GetConnectionString("Destination") ??
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
-        // Entity Framework
+        // DbContexts
         services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>

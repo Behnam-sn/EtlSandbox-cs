@@ -61,7 +61,7 @@ internal static class DependencyInjectionExtensions
             throw new InvalidOperationException(
                 "Connection string 'Destination' not found.");
 
-        // Entity Framework
+        // DbContexts
         services.AddDbContext<NeptuneDbContext>(b => b.UseNpgsql(
             destinationConnectionString,
             providerOptions =>

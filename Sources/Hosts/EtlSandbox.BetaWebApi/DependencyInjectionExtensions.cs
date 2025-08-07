@@ -31,7 +31,7 @@ internal static class DependencyInjectionExtensions
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
                                      throw new InvalidOperationException("Connection string 'Source' not found.");
 
-        // Entity Framework
+        // DbContexts
         services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
             sourceConnectionString,
             providerOptions =>
