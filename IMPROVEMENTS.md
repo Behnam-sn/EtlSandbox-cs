@@ -83,6 +83,8 @@ Based on the analysis of the `EtlSandbox` project, here are several suggestions 
 
 ### 4. Security
 
+#### a. Secure API Endpoints
+
 **Current State:** The Web APIs (`BetaWebApi`, `DeltaWebApi`) are unsecured, allowing anonymous access to their endpoints.
 
 **Suggestion:** Secure all public-facing API endpoints.
@@ -93,3 +95,22 @@ Based on the analysis of the `EtlSandbox` project, here are several suggestions 
 **How to Implement:**
 1.  **Authentication:** Implement JWT (JSON Web Token) bearer authentication. This can be achieved by setting up a dedicated identity provider service (using a library like **Duende IdentityServer**) or by integrating with a cloud-based identity service like **Auth0** or **Azure AD**.
 2.  **Authorization:** Once authentication is in place, add `[Authorize]` attributes to your API controllers and actions to enforce that only authenticated and authorized users can access them.
+
+#### b. Implement Secure Secret Management
+
+**Current State:** Sensitive data like database passwords and connection strings are hardcoded in `docker-compose.yml` and `appsettings.json` files. This is a major security risk, as these secrets are checked into source control.
+
+**Suggestion:** Externalize all secrets using a dedicated secret management tool like **HashiCorp Vault**.
+
+**Why This Is Better:**
+*   **Centralized & Secure Storage:** All secrets are stored in one encrypted location, with tightly controlled access policies and detailed audit logs.
+*   **Clean Codebase:** Your configuration files will be clean of any sensitive information, hardening your security posture.
+*   **Dynamic Secrets:** For advanced security, Vault can dynamically generate short-lived database credentials on-demand, minimizing the risk of leaked static credentials.
+
+**How to Implement:**
+1.  **Deploy Vault:** Add the official `vault` container to your `docker-compose.yml` file.
+2.  **Externalize Secrets:** Remove all hardcoded secrets from your configuration files and store them in Vault at a secure path (e.g., `secret/data/etl-sandbox/alpha-worker`).
+3.  **Integrate .NET Services:**
+    *   Add the `HashiCorp.Vault.Client` NuGet package to your host projects.
+    *   At application startup, have each service authenticate with Vault (e.g., using an **AppRole**) to fetch its secrets. The credentials for the AppRole are the only secrets the app needs, and they can be passed securely as environment variables.
+    *   Use a custom .NET `ConfigurationProvider` to load the secrets from Vault directly into the application's `IConfiguration`. This makes the secrets available to your application transparently, with no other code changes required.
