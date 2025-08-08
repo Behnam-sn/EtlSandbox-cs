@@ -96,3 +96,27 @@ Each worker service implements a similar pattern using `InsertWorker` and `SoftD
 -   **`GammaWorkerService`**:
     -   **Extractor**: `CustomerOrderFlatEfExtractor` (SQL Server/EF Core)
     -   **Loader**: `CustomerOrderFlatSqlServerBulkCopyLoader` (SQL Server/BulkCopy)
+
+## 6. How to Run
+
+1.  **Prerequisites**:
+    -   Docker Desktop
+    -   .NET SDK
+2.  **Build & Run**:
+    -   Navigate to the `Sources/Hosts/EtlSandbox.AlphaWorkerService` directory.
+    -   Run `docker-compose up --build`. This will build all the service images and start the containers.
+3.  **Verify**:
+    -   You can connect to the various databases using the connection details in `docker-compose.yml` to observe the data flowing through the system.
+    -   The `BetaWebApi` is accessible at `http://localhost:5010/swagger`.
+
+## 7. Future Improvements
+
+The `IMPROVEMENTS.md` file in the root directory contains a detailed list of potential enhancements, including:
+
+-   Adopting an event-driven architecture with Kafka or RabbitMQ.
+-   Implementing a comprehensive testing strategy (unit, integration, E2E).
+-   Centralizing dependency injection and configuration.
+-   Adding a modern observability stack (OpenTelemetry, Serilog, Jaeger, Prometheus).
+-   Securing APIs and managing secrets properly.
+-   Replacing custom ETL logic with industry-standard tools like Airbyte or Debezium. For large-scale transformations in a local environment, the ELT pattern (Airbyte + dbt) targeting an analytical database like ClickHouse is the recommended approach for performance and scalability.
+-   And many more advanced topics covering CI/CD, data governance, and cost optimization.
