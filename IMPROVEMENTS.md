@@ -175,6 +175,28 @@ The API services (`BetaWebApi`, `DeltaWebApi`) should remain as custom code, as 
 
 ---
 
+#### **Performance Considerations at Scale in a Local Environment**
+
+When the final joined model (`CustomerOrderFlat`) is expected to contain millions or tens of millions of rows, and the entire pipeline must run on a single local machine, the performance trade-offs between the ELT and Streaming approaches become critical.
+
+The performance of CDC itself (reading the transaction log) is not the bottleneck; it is determined by the rate of change in the source tables. The real challenge is the resource consumption of the large-scale `JOIN` transformation.
+
+*   **ELT Approach (Airbyte + dbt):**
+    *   **Resource Usage:** This pattern has **spiky** resource usage. The system is relatively quiet while Airbyte loads raw data, but it will cause extreme CPU, RAM, and disk I/O contention when `dbt` triggers the large `JOIN` query in the destination database.
+    *   **Viability:** The viability depends heavily on the destination database.
+        *   Using a transactional database (like the project's SQL Server or PostgreSQL) will be **extremely slow** and may fail.
+        *   Using an analytical/columnar database (like **ClickHouse**) is the **most practical path**. It is designed for these queries and will perform the join orders of magnitude faster, making the resource spike much shorter.
+
+*   **Streaming Approach (Debezium + Kafka + ksqlDB):**
+    *   **Resource Usage:** This pattern has **constant, high** resource usage. To perform the real-time join, ksqlDB must maintain a complete, queryable "state store" for each of the tables involved.
+    *   **Viability:** At the scale of millions of rows, this state store could require tens or hundreds of gigabytes of RAM. This constant memory pressure makes the streaming approach **likely not viable on a typical local machine**, as it would exhaust system resources.
+
+**Recommendation for Local, Large-Scale Joins:**
+
+For a self-hosted environment with large data volumes, the **ELT approach (Airbyte + dbt) targeting an OLAP database like ClickHouse is the clear recommendation.** It is more scalable, cost-effective, and operationally simpler because it uses the right tool for the job: an analytical database designed to perform massive-scale joins efficiently within a batch window, avoiding the constant memory pressure of the streaming alternative.
+
+---
+
 ### 6. Advanced Resiliency & Fault Tolerance
 
 **Current State:** The project has basic retry logic for database connections but lacks more sophisticated patterns to handle longer outages or different types of failures (e.g., poison pill messages).
