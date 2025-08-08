@@ -1,4 +1,4 @@
-# EtlSandbox Project Context
+# EtlSandbox
 
 ## 1. Project Purpose & Data Flow
 
@@ -43,19 +43,35 @@ The project uses a containerized microservices architecture orchestrated with Do
 
 ## 4. Code Structure
 
-The project follows a clean, layered architecture, separating concerns into distinct project types.
+The project is organized using a Clean Architecture approach, promoting a clear separation of concerns and establishing a well-defined dependency flow. The solution is divided into four main layers: `Cores`, `Infrastructures`, `Presentations`, and `Hosts`.
 
--   **`Sources/Cores`**:
-    -   `EtlSandbox.Domain`: Defines core business entities (`Rental`, `CustomerOrderFlat`) and repository interfaces.
-    -   `EtlSandbox.Application`: Implements application-level logic, including MediatR commands and handlers.
--   **`Sources/Infrastructures`**:
-    -   `EtlSandbox.Infrastructure.Common`: Shared infrastructure components like connection factories, transformers, and REST API clients.
-    -   `EtlSandbox.Infrastructure.Jupiter`: Data access logic for the source MySQL database.
-    -   `EtlSandbox.Infrastructure.Mars`: Data access logic for the central SQL Server database.
-    -   `EtlSandbox.Infrastructure.Neptune`: Data access logic for the destination PostgreSQL database.
-    -   `EtlSandbox.Infrastructure.Venus`: Data access logic for the second destination SQL Server database.
--   **`Sources/Hosts`**: Contains the runnable applications (worker services and web APIs), each with its own `Dockerfile`.
--   **`Sources/Presentations`**: Contains presentation-layer logic, such as API controllers and the hosted service workers.
+### Dependency Flow
+
+The dependencies flow inwards, from the outer layers to the core:
+
+`Hosts` -> `Presentations` -> `Infrastructures` / `Application` -> `Domain`
+
+This ensures that the core business logic (`Domain` and `Application`) is independent of any specific technology or delivery mechanism.
+
+### Layer Breakdown
+
+-   **`Sources/Cores`**: This is the heart of the application, containing the business logic. It is completely self-contained and has no dependencies on other layers.
+    -   **`EtlSandbox.Domain`**: Defines the "what" of the business. It contains the core business entities (e.g., `Rental`, `CustomerOrderFlat`) and the abstractions (interfaces) for data access, such as `ISourceRepository` and `IExtractor`.
+    -   **`EtlSandbox.Application`**: Orchestrates the domain logic. It defines the application's use cases through MediatR commands (e.g., `InsertCommand`) and their corresponding handlers. It depends on the `Domain` layer but knows nothing about how the data is stored or presented.
+
+-   **`Sources/Infrastructures`**: This layer contains the concrete implementations of the abstractions defined in the `Domain` and `Application` layers. It handles all external concerns, such as databases, file systems, and third-party APIs.
+    -   **`EtlSandbox.Infrastructure.Common`**: Holds shared infrastructure code, such as generic repository implementations (`EfDestinationRepositoryV1`), connection factories (`MySqlConnectionFactory`, `SqlServerConnectionFactory`), and REST API clients (`FlurlRestApiClient`).
+    -   **`EtlSandbox.Infrastructure.Jupiter`**: Implements data access for the MySQL (`Jupiter`) source. Contains the `JupiterDbContext` and concrete repository/extractor implementations for MySQL.
+    -   **`EtlSandbox.Infrastructure.Mars`**: Implements data access for the central SQL Server (`Mars`) database.
+    -   **`EtlSandbox.Infrastructure.Neptune`**: Implements data access for the PostgreSQL (`Neptune`) destination.
+    -   **`EtlSandbox.Infrastructure.Venus`**: Implements data access for the second SQL Server (`Venus`) destination.
+
+-   **`Sources/Presentations`**: This layer is responsible for presenting the data and handling user interaction. It acts as a bridge between the `Hosts` and the application core.
+    -   **`EtlSandbox.Presentation`**: Contains the components that drive the application's behavior, such as the ASP.NET Core controllers (`CustomerOrderFlatsController`) for the Web APIs and the generic background service workers (`InsertWorker`, `SoftDeleteWorker`) for the ETL services.
+
+-   **`Sources/Hosts`**: This is the entry point of the application. Each project in this layer is a runnable application that composes the other layers together.
+    -   **`EtlSandbox.AlphaWorkerService`, `BetaWorkerService`, etc.**: These are the executable worker services. Their primary responsibility is to configure and register all the necessary services for dependency injection and to run the application host.
+    -   **`EtlSandbox.BetaWebApi`, `DeltaWebApi`**: These are the executable ASP.NET Core Web APIs. They configure the HTTP request pipeline, controllers, and other API-specific services.
 
 ## 5. Key Logic & Components
 
