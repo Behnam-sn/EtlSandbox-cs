@@ -37,6 +37,13 @@ Based on the analysis of the `EtlSandbox` project, here are several suggestions 
 **How to Implement:**
 1.  **Unit Tests:** For each core project (e.g., `EtlSandbox.Application`), create a corresponding `xUnit` or `NUnit` test project. Use a mocking library like `Moq` or `NSubstitute` to test individual classes and logic in isolation.
 2.  **Integration Tests:** For your infrastructure projects (e.g., `EtlSandbox.Infrastructure.Mars`), use **Testcontainers**. This library allows you to programmatically spin up real, ephemeral Docker containers for your databases (MySQL, SQL Server, etc.) during test runs. This provides high-fidelity testing of your data access logic against a real database engine without requiring any manual setup.
+3.  **End-to-End (E2E) Tests:** This is the ultimate validation, ensuring the entire data flow works across all services. It provides the highest level of confidence by validating that the entire system, including inter-service communication and deployment configuration, is functioning correctly.
+    *   **Strategy:** Create a dedicated test project (e.g., `EtlSandbox.Tests.EndToEnd`) that orchestrates the full system using Docker Compose.
+    *   **Execution Flow:**
+        1.  **Setup:** The test runner programmatically executes `docker-compose up -d --build` and waits for all services to report as healthy.
+        2.  **Act:** A unique test record is inserted into the source `Jupiter` (MySQL) database.
+        3.  **Assert:** The test polls the final destination databases (`Mars`, `Neptune`, `Venus`, ClickHouse) with a timeout, asserting that the test record appears correctly in all locations.
+        4.  **Teardown:** The runner executes `docker-compose down -v` to shut down all containers and remove data volumes, ensuring a clean, isolated state for the next test run.
 
 #### b. Consolidate Dependency Injection with Shared Extensions
 
@@ -86,24 +93,3 @@ Based on the analysis of the `EtlSandbox` project, here are several suggestions 
 **How to Implement:**
 1.  **Authentication:** Implement JWT (JSON Web Token) bearer authentication. This can be achieved by setting up a dedicated identity provider service (using a library like **Duende IdentityServer**) or by integrating with a cloud-based identity service like **Auth0** or **Azure AD**.
 2.  **Authorization:** Once authentication is in place, add `[Authorize]` attributes to your API controllers and actions to enforce that only authenticated and authorized users can access them.
-
----
-
-### 5. End-to-End (E2E) Testing
-
-**Current State:** While unit and integration tests verify components in isolation, there is no test that validates the entire system working together.
-
-**Suggestion:** Add an E2E test suite that orchestrates the full data pipeline.
-
-**Why This Is Better:**
-*   **Ultimate Confidence:** E2E tests provide the highest level of confidence that the entire system is functioning correctly as a whole. They are the only tests that can catch issues arising from the interaction between services.
-*   **Validates Deployment:** An E2E suite is an excellent way to validate that your `docker-compose` configuration and inter-service communication are correct.
-
-**How to Implement:**
-1.  **Create a Test Project:** Create a new test project (e.g., `EtlSandbox.Tests.EndToEnd`).
-2.  **Orchestrate with Docker-Compose:** The test setup will programmatically:
-    *   Run `docker-compose up -d --build` to start the entire system.
-    *   Wait for all services to become healthy by polling database connections and `/health` endpoints. A library like `Polly` is ideal for this.
-3.  **Act:** The test will connect to the source `Jupiter` (MySQL) database and insert a unique test record.
-4.  **Assert:** The test will then poll the final destination databases (`Mars`, `Neptune`, `Venus`, ClickHouse) with a timeout, waiting for the test record to appear. It will then assert that the data is correct in all locations.
-5.  **Teardown:** After the test completes, it will run `docker-compose down -v` to shut down all containers and **remove the data volumes**, ensuring a clean, isolated state for the next test run.
