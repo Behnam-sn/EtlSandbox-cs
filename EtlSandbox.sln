@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.V
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Common", "Sources\Infrastructures\EtlSandbox.Infrastructure.Common\EtlSandbox.Infrastructure.Common.csproj", "{60AB87FD-2FDA-490F-AD30-B512D5369046}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtlSandbox.Infrastructure.Apollo", "Sources\Infrastructures\EtlSandbox.Infrastructure.Apollo\EtlSandbox.Infrastructure.Apollo.csproj", "{9D764D30-0055-4400-9077-CC8F67AB32BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -239,6 +241,18 @@ Global
 		{60AB87FD-2FDA-490F-AD30-B512D5369046}.Release|x64.Build.0 = Release|Any CPU
 		{60AB87FD-2FDA-490F-AD30-B512D5369046}.Release|x86.ActiveCfg = Release|Any CPU
 		{60AB87FD-2FDA-490F-AD30-B512D5369046}.Release|x86.Build.0 = Release|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Debug|x64.Build.0 = Debug|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Debug|x86.Build.0 = Debug|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Release|x64.ActiveCfg = Release|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Release|x64.Build.0 = Release|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{9D764D30-0055-4400-9077-CC8F67AB32BE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -263,5 +277,6 @@ Global
 		{B2B2B4A6-D8B5-43D6-AFB5-70C7BC0B1634} = {F5D40451-AE41-939C-F916-38EBA10B26C6}
 		{1D167DCE-11B9-4BA3-910F-4AB30BA78A3A} = {F5D40451-AE41-939C-F916-38EBA10B26C6}
 		{60AB87FD-2FDA-490F-AD30-B512D5369046} = {F5D40451-AE41-939C-F916-38EBA10B26C6}
+		{9D764D30-0055-4400-9077-CC8F67AB32BE} = {F5D40451-AE41-939C-F916-38EBA10B26C6}
 	EndGlobalSection
 EndGlobal
