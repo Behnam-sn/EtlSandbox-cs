@@ -8,7 +8,6 @@ using EtlSandbox.Infrastructure.Common.ConfigureOptions;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
 using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.Resolvers;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
@@ -16,7 +15,6 @@ using EtlSandbox.Infrastructure.Jupiter;
 using EtlSandbox.Infrastructure.Jupiter.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.Mars;
 using EtlSandbox.Infrastructure.Rentals;
-using EtlSandbox.Presentation.Common.Workers;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -29,6 +27,7 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
+        services.ConfigureOptions<GlobalSettingsSetup>();
         services.ConfigureOptions<InsertWorkerSettingsSetup<RentalToCustomerOrderFlatsInsertWorker>>();
         services.ConfigureOptions<SoftDeleteWorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
     }
@@ -119,7 +118,5 @@ internal static class DependencyInjectionExtensions
     {
         services.AddHostedService<RentalToCustomerOrderFlatsInsertWorker>();
         services.AddHostedService<CustomerOrderFlatsSoftDeleteWorker>();
-        // services.AddHostedService<InsertWorker<Rental, CustomerOrderFlat>>();
-        // services.AddHostedService<SoftDeleteWorker<CustomerOrderFlat>>();
     }
 }

@@ -2,5 +2,5 @@
 
 public sealed class InsertWorkerSettings<T> : BaseWorkerSettings<T>
 {
-    public long StartingPointId { get; set; }
+    public long? StartingPointId { get; set; }
 }

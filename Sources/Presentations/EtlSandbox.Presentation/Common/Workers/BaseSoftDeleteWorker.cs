@@ -28,29 +28,35 @@ public abstract class BaseSoftDeleteWorker<TWorker, TSource> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var serviceScope = _serviceProvider.CreateScope();
-
-        var workerSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<SoftDeleteWorkerSettings<TWorker>>>();
-        var workerSettings = workerSettingsOptions.Value;
-
-        if (!workerSettings.Enable)
-        {
-            return;
-        }
-
         try
         {
+            using var serviceScope = _serviceProvider.CreateScope();
+
+            var workerSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<SoftDeleteWorkerSettings<TWorker>>>();
+            var workerSettings = workerSettingsOptions.Value;
+
+            if (!workerSettings.Enable)
+            {
+                return;
+            }
+
+            var globalSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<GlobalSettings>>();
+            var globalSettings = globalSettingsOptions.Value;
+
+            var batchSize = workerSettings.BatchSize ?? globalSettings.BatchSize;
+            var delay = workerSettings.DelayInMilliSeconds ?? globalSettings.DelayInMilliSeconds;
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                 var command = new SoftDeleteCommand<TSource>(
-                    BatchSize: workerSettings.BatchSize
+                    BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
 
-                await Task.Delay(workerSettings.DelayInMilliSeconds, stoppingToken);
+                await Task.Delay(delay, stoppingToken);
             }
         }
         catch (Exception e)

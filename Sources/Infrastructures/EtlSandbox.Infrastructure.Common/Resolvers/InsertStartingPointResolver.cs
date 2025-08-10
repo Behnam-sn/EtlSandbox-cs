@@ -1,10 +1,8 @@
 using EtlSandbox.Domain.Common;
-using EtlSandbox.Domain.Common.Options;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.Common.Resolvers;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Common.Resolvers;
 
