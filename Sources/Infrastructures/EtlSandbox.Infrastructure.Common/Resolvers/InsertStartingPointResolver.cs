@@ -24,18 +24,16 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<long> GetStartingPointAsync(int batchSize)
+    public async Task<long> GetStartingPointAsync(long settingsStartingPoint, int batchSize)
     {
         using var scope = _serviceProvider.CreateScope();
 
         var sourceRepository = scope.ServiceProvider.GetRequiredService<ISourceRepository<TSource>>();
         var destinationRepository = scope.ServiceProvider.GetRequiredService<IDestinationRepository<TDestination>>();
-        var entitySettings = scope.ServiceProvider.GetRequiredService<IOptions<EntitySettings<TDestination>>>();
 
         if (_lastInsertedItemImportantId == null)
         {
             _lastInsertedItemImportantId = await destinationRepository.GetLastInsertedImportantIdAsync();
-            var settingsStartingPoint = entitySettings.Value.StartingPointId;
             _startingPoint = _lastInsertedItemImportantId.Value < settingsStartingPoint
                 ? settingsStartingPoint
                 : _lastInsertedItemImportantId.Value;

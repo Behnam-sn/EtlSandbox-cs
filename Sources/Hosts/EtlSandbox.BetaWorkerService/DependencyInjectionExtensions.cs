@@ -15,6 +15,7 @@ using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.Neptune;
 using EtlSandbox.Presentation.Common.Workers;
+using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
 
@@ -26,8 +27,8 @@ internal static class DependencyInjectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
-        services.ConfigureOptions<ApplicationSettingsSetup>();
-        services.ConfigureOptions<EntitySettingsSetup<CustomerOrderFlat>>();
+        services.ConfigureOptions<InsertWorkerSettingsSetup<CustomerOrderFlatsToCustomerOrderFlatsInsertWorker>>();
+        services.ConfigureOptions<SoftDeleteWorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -118,7 +119,7 @@ internal static class DependencyInjectionExtensions
 
     internal static void AddPresentation(this IServiceCollection services)
     {
-        services.AddHostedService<InsertWorker<CustomerOrderFlat, CustomerOrderFlat>>();
-        services.AddHostedService<SoftDeleteWorker<CustomerOrderFlat>>();
+        services.AddHostedService<CustomerOrderFlatsToCustomerOrderFlatsInsertWorker>();
+        services.AddHostedService<CustomerOrderFlatsSoftDeleteWorker>();
     }
 }

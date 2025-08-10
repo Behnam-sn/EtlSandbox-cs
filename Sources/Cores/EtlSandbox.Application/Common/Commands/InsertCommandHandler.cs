@@ -36,7 +36,10 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 
     public async Task Handle(InsertCommand<TSource, TDestination> request, CancellationToken cancellationToken)
     {
-        var from = await _insertStartingPointResolver.GetStartingPointAsync(request.BatchSize);
+        var from = await _insertStartingPointResolver.GetStartingPointAsync(
+            settingsStartingPoint: request.StartingPointId,
+            batchSize: request.BatchSize
+            );
         var to = from + request.BatchSize;
 
         _logger.LogInformation("Extracting data from {From} to {To}", from, to);
