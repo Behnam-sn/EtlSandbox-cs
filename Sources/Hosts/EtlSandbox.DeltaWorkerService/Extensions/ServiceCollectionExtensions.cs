@@ -18,9 +18,9 @@ using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.DeltaWorkerService;
+namespace EtlSandbox.DeltaWorkerService.Extensions;
 
-internal static class DependencyInjectionExtensions
+internal static class ServiceCollectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {

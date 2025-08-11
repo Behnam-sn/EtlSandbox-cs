@@ -1,4 +1,4 @@
-using EtlSandbox.DeltaWorkerService;
+using EtlSandbox.DeltaWorkerService.Extensions;
 
 var builder = Host.CreateApplicationBuilder(args);
 

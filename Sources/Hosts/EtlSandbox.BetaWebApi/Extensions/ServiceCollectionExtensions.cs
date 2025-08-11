@@ -7,9 +7,9 @@ using EtlSandbox.Infrastructure.Mars;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.BetaWebApiService;
+namespace EtlSandbox.BetaWebApiService.Extensions;
 
-internal static class DependencyInjectionExtensions
+internal static class ServiceCollectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {

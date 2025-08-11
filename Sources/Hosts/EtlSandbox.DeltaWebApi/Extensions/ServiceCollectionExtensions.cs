@@ -8,9 +8,9 @@ using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.DeltaWebApi;
+namespace EtlSandbox.DeltaWebApi.Extensions;
 
-internal static class DependencyInjectionExtensions
+internal static class ServiceCollectionExtensions
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
