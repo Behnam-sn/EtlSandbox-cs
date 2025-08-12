@@ -1,15 +1,16 @@
-using EtlSandbox.Domain.Common;
+using EtlSandbox.Application.ClickHouseUtils;
 using EtlSandbox.Domain.Common.Repositories;
-using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Mars;
+
+using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.BetaWebApiService.Extensions;
+namespace EtlSandbox.DeltaWebApi;
 
-internal static class ServiceCollectionExtensions
+internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
@@ -27,6 +28,9 @@ internal static class ServiceCollectionExtensions
 
     internal static void AddApplication(this IServiceCollection services)
     {
+        // Mediatr
+        services.AddTransient<IMediator, Mediator>();
+        services.AddTransient<IRequestHandler<GetCreateTableQuery, string>, GetCreateTableQueryHandler>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -44,18 +48,11 @@ internal static class ServiceCollectionExtensions
             })
         );
 
-        // Source Repositories
-        services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
+        // Repositories
+        services.AddScoped<IDatabaseRepository>(_ =>
         {
-            var dbContext = sp.GetRequiredService<MarsDbContext>();
-            return new CustomerOrderFlatEfSourceRepository(dbContext);
-        });
-
-        // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
-        {
-            var dbContext = sp.GetRequiredService<MarsDbContext>();
-            return new CustomerOrderFlatEfExtractor(dbContext);
+            var connectionFactory = new SqlServerConnectionFactory(sourceConnectionString);
+            return new SqlServerDapperDatabaseRepository(connectionFactory);
         });
     }
 

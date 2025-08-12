@@ -1,4 +1,4 @@
-using EtlSandbox.GammaWorkerService.Extensions;
+using EtlSandbox.GammaWorkerService;
 
 var builder = Host.CreateApplicationBuilder(args);
 

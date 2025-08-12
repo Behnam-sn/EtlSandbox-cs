@@ -1,4 +1,4 @@
-using EtlSandbox.DeltaWebApi.Extensions;
+using EtlSandbox.DeltaWebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 

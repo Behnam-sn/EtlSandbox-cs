@@ -20,9 +20,9 @@ using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.GammaWorkerService.Extensions;
+namespace EtlSandbox.GammaWorkerService;
 
-internal static class ServiceCollectionExtensions
+internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {

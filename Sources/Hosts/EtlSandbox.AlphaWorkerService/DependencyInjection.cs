@@ -3,29 +3,32 @@ using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.Common.Resolvers;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+using EtlSandbox.Domain.Rentals;
 using EtlSandbox.Infrastructure.Common.ConfigureOptions;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.Resolvers;
-using EtlSandbox.Infrastructure.Common.Transformers;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Transformers;
+using EtlSandbox.Infrastructure.Jupiter;
+using EtlSandbox.Infrastructure.Jupiter.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.Mars;
+using EtlSandbox.Infrastructure.Rentals.Repositories;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.DeltaWorkerService.Extensions;
+namespace EtlSandbox.AlphaWorkerService;
 
-internal static class ServiceCollectionExtensions
+internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
         services.ConfigureOptions<GlobalSettingsSetup>();
-        services.ConfigureOptions<InsertWorkerSettingsSetup<CustomerOrderFlatsToCustomerOrderFlatsInsertWorker>>();
+        services.ConfigureOptions<InsertWorkerSettingsSetup<RentalToCustomerOrderFlatsInsertWorker>>();
         services.ConfigureOptions<SoftDeleteWorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
     }
 
@@ -43,7 +46,7 @@ internal static class ServiceCollectionExtensions
     {
         // Mediatr
         services.AddTransient<IMediator, Mediator>();
-        services.AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
+        services.AddTransient<IRequestHandler<InsertCommand<Rental, CustomerOrderFlat>>, InsertCommandHandler<Rental, CustomerOrderFlat>>();
         services.AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
@@ -56,46 +59,54 @@ internal static class ServiceCollectionExtensions
             throw new InvalidOperationException("Connection string 'Destination' not found.");
 
         // DbContexts
-        services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
+        services.AddDbContext<JupiterDbContext>(b => b.UseMySQL(
             sourceConnectionString,
             providerOptions =>
             {
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
+        services.AddDbContext<MarsDbContext>(b => b.UseSqlServer(
+            destinationConnectionString,
+            providerOptions =>
+            {
+                providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                providerOptions.MigrationsAssembly(Infrastructure.Mars.AssemblyReference.Assembly);
+            })
+        );
 
         // Source Repositories
-        services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
+        services.AddScoped<ISourceRepository<Rental>>(sp =>
         {
-            var dbContext = sp.GetRequiredService<MarsDbContext>();
-            return new CustomerOrderFlatEfSourceRepository(dbContext);
+            var dbContext = sp.GetRequiredService<JupiterDbContext>();
+            return new RentalEfSourceRepository(dbContext);
         });
 
         // Destination Repositories
-        services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(_ =>
+        services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
-            var connectionFactory = new ClickHouseConnectionFactory(destinationConnectionString);
-            return new CustomerOrderFlatClickHouseDapperDestinationRepository(connectionFactory);
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
+            return new EfDestinationRepositoryV1<CustomerOrderFlat>(dbContext);
         });
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(_ =>
         {
-            var dbContext = sp.GetRequiredService<MarsDbContext>();
-            return new CustomerOrderFlatEfExtractor(dbContext);
+            var connectionFactory = new MySqlConnectionFactory(sourceConnectionString);
+            return new CustomerOrderFlatJupiterDapperExtractor(connectionFactory);
         });
 
         // Transformers
-        services.AddScoped(typeof(ITransformer<>), typeof(EmptyTransformer<>));
+        services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();
 
         // Loaders
-        services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatClickHouseBulkCopyLoader(destinationConnectionString));
+        services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatSqlServerBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
         services.AddScoped<ISynchronizer<CustomerOrderFlat>>(_ =>
         {
-            var connectionFactory = new ClickHouseConnectionFactory(destinationConnectionString);
-            return new CustomerOrderFlatClickHouseDapperSynchronizer(connectionFactory);
+            var connectionFactory = new SqlServerConnectionFactory(destinationConnectionString);
+            return new CustomerOrderFlatSqlServerDapperSynchronizer(connectionFactory);
         });
 
         // Resolvers
@@ -105,7 +116,7 @@ internal static class ServiceCollectionExtensions
 
     internal static void AddPresentation(this IServiceCollection services)
     {
-        services.AddHostedService<CustomerOrderFlatsToCustomerOrderFlatsInsertWorker>();
+        services.AddHostedService<RentalToCustomerOrderFlatsInsertWorker>();
         services.AddHostedService<CustomerOrderFlatsSoftDeleteWorker>();
     }
 }

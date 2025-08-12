@@ -1,4 +1,4 @@
-using EtlSandbox.BetaWorkerService.Extensions;
+using EtlSandbox.BetaWorkerService;
 
 var builder = Host.CreateApplicationBuilder(args);
 

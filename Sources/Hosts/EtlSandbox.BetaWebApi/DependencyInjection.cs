@@ -1,16 +1,15 @@
-using EtlSandbox.Application.ClickHouseUtils;
+using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Repositories;
-using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
-using EtlSandbox.Infrastructure.Common.Repositories;
+using EtlSandbox.Domain.CustomerOrderFlats.Entities;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.Mars;
-
-using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.DeltaWebApi.Extensions;
+namespace EtlSandbox.BetaWebApiService;
 
-internal static class ServiceCollectionExtensions
+internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
@@ -28,9 +27,6 @@ internal static class ServiceCollectionExtensions
 
     internal static void AddApplication(this IServiceCollection services)
     {
-        // Mediatr
-        services.AddTransient<IMediator, Mediator>();
-        services.AddTransient<IRequestHandler<GetCreateTableQuery, string>, GetCreateTableQueryHandler>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -48,11 +44,18 @@ internal static class ServiceCollectionExtensions
             })
         );
 
-        // Repositories
-        services.AddScoped<IDatabaseRepository>(_ =>
+        // Source Repositories
+        services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
         {
-            var connectionFactory = new SqlServerConnectionFactory(sourceConnectionString);
-            return new SqlServerDapperDatabaseRepository(connectionFactory);
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
+            return new CustomerOrderFlatEfSourceRepository(dbContext);
+        });
+
+        // Extractors
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
+        {
+            var dbContext = sp.GetRequiredService<MarsDbContext>();
+            return new CustomerOrderFlatEfExtractor(dbContext);
         });
     }
 
