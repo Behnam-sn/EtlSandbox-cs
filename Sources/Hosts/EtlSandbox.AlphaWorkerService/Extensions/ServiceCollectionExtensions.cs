@@ -15,6 +15,7 @@ using EtlSandbox.Infrastructure.Jupiter;
 using EtlSandbox.Infrastructure.Jupiter.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.Mars;
 using EtlSandbox.Infrastructure.Rentals;
+using EtlSandbox.Infrastructure.Rentals.Repositories;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;
 
 using MediatR;
@@ -79,7 +80,7 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<ISourceRepository<Rental>>(sp =>
         {
             var dbContext = sp.GetRequiredService<JupiterDbContext>();
-            return new RentalEfRepository(dbContext);
+            return new RentalEfSourceRepository(dbContext);
         });
 
         // Destination Repositories
