@@ -19,7 +19,7 @@ public abstract class BaseSqlBulkCopyLoader<T> : ILoader<T>
 
     protected abstract string TableName { get; }
 
-    public async Task LoadAsync(List<T> items, CancellationToken cancellationToken)
+    public async Task LoadAsync(List<T> items, CancellationToken cancellationToken = default)
     {
         var dataTable = DataTableConverter.ToDataTable(items);
 

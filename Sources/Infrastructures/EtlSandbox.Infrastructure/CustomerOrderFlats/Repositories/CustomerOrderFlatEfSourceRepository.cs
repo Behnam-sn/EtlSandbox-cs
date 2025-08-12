@@ -16,10 +16,12 @@ public sealed class CustomerOrderFlatEfSourceRepository : ISourceRepository<Cust
 
     public async Task<long> GetLastItemIdAsync(CancellationToken cancellationToken = default)
     {
-        var lastItem = await _dbSet
+        // Todo: change this into max
+        var lastItemId = await _dbSet
             .AsNoTracking()
             .OrderByDescending(item => item.Id)
+            .Select(item => (long?)item.Id)
             .FirstOrDefaultAsync(cancellationToken);
-        return lastItem?.Id ?? 0;
+        return lastItemId ?? 0;
     }
 }
