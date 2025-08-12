@@ -13,7 +13,7 @@ public sealed class CustomerOrderFlatPostgreSqlDapperSynchronizer(IDbConnectionF
                                      FROM (
                                          SELECT "CustomerName", MAX("Id") AS "MaxId"
                                          FROM "CustomerOrderFlats"
-                                         WHERE "Id" BETWEEN @FromId AND @ToId
+                                         WHERE "Id" BETWEEN @From AND @To
                                          GROUP BY "CustomerName"
                                      ) Latest
                                      WHERE T."CustomerName" = Latest."CustomerName"

@@ -17,7 +17,7 @@ public sealed class CustomerOrderFlatClickHouseDapperSynchronizer(IDbConnectionF
                                             INNER JOIN (
                                                 SELECT CustomerName, MAX(Id) AS MaxId
                                                 FROM SakilaFlat.CustomerOrderFlats
-                                                WHERE Id BETWEEN @FromId AND @ToId
+                                                WHERE Id BETWEEN @From AND @To
                                                 GROUP BY CustomerName
                                             ) AS Latest ON T.CustomerName = Latest.CustomerName
                                         WHERE T.Id < Latest.MaxId

@@ -29,8 +29,8 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
 
         _logger.LogInformation("Soft deleting");
         await _synchronizer.SoftDeleteObsoleteRowsAsync(
-            fromId: fromId,
-            toId: toId
+            from: fromId,
+            to: toId
         );
         _logger.LogInformation("Soft deleted from {LastDeletedId} to {ToId}", fromId, toId);
     }

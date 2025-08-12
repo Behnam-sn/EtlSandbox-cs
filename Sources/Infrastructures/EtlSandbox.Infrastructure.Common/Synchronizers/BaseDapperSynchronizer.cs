@@ -16,12 +16,12 @@ public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
 
     protected abstract string Sql { get; }
 
-    public async Task SoftDeleteObsoleteRowsAsync(long fromId, long toId)
+    public async Task SoftDeleteObsoleteRowsAsync(long from, long to)
     {
         var parameters = new
         {
-            FromId = fromId,
-            ToId = toId,
+            From = from,
+            To = to,
         };
         using var connection = _dbConnectionFactory.CreateConnection();
         await connection.ExecuteAsync(Sql, parameters);
