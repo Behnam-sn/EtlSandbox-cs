@@ -1,6 +1,6 @@
 ﻿using EtlSandbox.Domain.Common;
 
-namespace EtlSandbox.Infrastructure.Common.Repositories;
+namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 
 public abstract class BaseClickHouseDapperDestinationRepository<T>(IDbConnectionFactory dbConnectionFactory)
     : BaseDapperDestinationRepository<T>(dbConnectionFactory)

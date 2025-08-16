@@ -3,7 +3,7 @@
 using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Repositories;
 
-namespace EtlSandbox.Infrastructure.Common.Repositories;
+namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 
 public abstract class BaseDapperDestinationRepository<T> : IDestinationRepository<T>
     where T : class, IEntity

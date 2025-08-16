@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Infrastructure.Common.Repositories;
+namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 
 public sealed class EfDestinationRepositoryV1<T>(DbContext dbContext) : BaseEfDestinationRepository<T>(dbContext)
     where T : class, IEntity

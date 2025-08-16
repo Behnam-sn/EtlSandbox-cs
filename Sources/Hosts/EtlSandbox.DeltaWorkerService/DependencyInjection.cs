@@ -10,6 +10,8 @@ using EtlSandbox.Infrastructure.Common.Transformers;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Loaders;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories.Destinations;
+using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories.Sources;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 using EtlSandbox.Infrastructure.Mars;
 using EtlSandbox.Presentation.CustomerOrderFlats.Workers;

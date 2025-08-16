@@ -3,7 +3,7 @@ using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories.Sources;
 
 public sealed class CustomerOrderFlatEfSourceRepository : ISourceRepository<CustomerOrderFlat>
 {

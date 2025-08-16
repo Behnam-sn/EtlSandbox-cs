@@ -3,7 +3,7 @@ using EtlSandbox.Domain.Common.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EtlSandbox.Infrastructure.Common.Repositories;
+namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 
 public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
     where T : class, IEntity

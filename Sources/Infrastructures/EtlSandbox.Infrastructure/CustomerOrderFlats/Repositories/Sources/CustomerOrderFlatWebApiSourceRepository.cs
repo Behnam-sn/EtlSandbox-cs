@@ -2,7 +2,7 @@
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 
-namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
+namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories.Sources;
 
 public sealed class CustomerOrderFlatWebApiSourceRepository : ISourceRepository<CustomerOrderFlat>
 {
