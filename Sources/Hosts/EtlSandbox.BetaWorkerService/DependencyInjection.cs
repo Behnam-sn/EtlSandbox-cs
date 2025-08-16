@@ -1,10 +1,14 @@
 using EtlSandbox.Application.Common.Commands;
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.Common.Resolvers;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Infrastructure.Common.ConfigureOptions;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Bases;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Destinations;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Sources;
 using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 using EtlSandbox.Infrastructure.Common.Resolvers;
@@ -28,6 +32,7 @@ internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
+        services.ConfigureOptions<ConnectionStringsSetup>();
         services.ConfigureOptions<GlobalSettingsSetup>();
         services.ConfigureOptions<InsertWorkerSettingsSetup<CustomerOrderFlatsToCustomerOrderFlatsInsertWorker>>();
         services.ConfigureOptions<SoftDeleteWorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
@@ -47,12 +52,8 @@ internal static class DependencyInjection
     {
         // Mediatr
         services.AddTransient<IMediator, Mediator>();
-        services
-            .AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>,
-                InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
-        services
-            .AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>,
-                SoftDeleteCommandHandler<CustomerOrderFlat>>();
+        services.AddTransient<IRequestHandler<InsertCommand<CustomerOrderFlat, CustomerOrderFlat>>, InsertCommandHandler<CustomerOrderFlat, CustomerOrderFlat>>();
+        services.AddTransient<IRequestHandler<SoftDeleteCommand<CustomerOrderFlat>>, SoftDeleteCommandHandler<CustomerOrderFlat>>();
     }
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -73,6 +74,9 @@ internal static class DependencyInjection
                 providerOptions.MigrationsAssembly(Infrastructure.Neptune.AssemblyReference.Assembly);
             })
         );
+        
+        // Db Connection Factories
+        services.AddScoped<IDestinationDbConnectionFactory, DestinationNpgsqlConnectionFactory>();
 
         // Source Repositories
         services.AddScoped<ISourceRepository<CustomerOrderFlat>>(sp =>
@@ -97,18 +101,14 @@ internal static class DependencyInjection
         services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
 
         // Loaders
-        services.AddScoped<ILoader<CustomerOrderFlat>>(_ =>
+        services.AddScoped<ILoader<CustomerOrderFlat>>(sp =>
         {
-            var connectionFactory = new NpgsqlConnectionFactory(destinationConnectionString);
+            var connectionFactory = sp.GetRequiredService<IDestinationDbConnectionFactory>();
             return new CustomerOrderFlatPostgreSqlDapperLoader(connectionFactory);
         });
 
         // Synchronizers
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>>(_ =>
-        {
-            var connectionFactory = new NpgsqlConnectionFactory(destinationConnectionString);
-            return new CustomerOrderFlatPostgreSqlDapperSynchronizer(connectionFactory);
-        });
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
 
         // Resolvers
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));

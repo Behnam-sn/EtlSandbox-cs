@@ -1,6 +1,7 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.Common.Repositories;
 
 namespace EtlSandbox.Infrastructure.Common.Repositories;

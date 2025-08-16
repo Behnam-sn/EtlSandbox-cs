@@ -1,10 +1,11 @@
 ﻿using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Infrastructure.Common.Synchronizers;
 
 namespace EtlSandbox.Infrastructure.CustomerOrderFlats.Synchronizers;
 
-public sealed class CustomerOrderFlatClickHouseDapperSynchronizer(IDbConnectionFactory dbConnectionFactory)
+public sealed class CustomerOrderFlatClickHouseDapperSynchronizer(IDestinationDbConnectionFactory dbConnectionFactory)
     : BaseDapperSynchronizer<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.Common.Repositories;
 
 namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
@@ -10,7 +11,7 @@ public abstract class BaseDapperDestinationRepository<T> : IDestinationRepositor
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseDapperDestinationRepository(IDbConnectionFactory dbConnectionFactory)
+    protected BaseDapperDestinationRepository(IDestinationDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }

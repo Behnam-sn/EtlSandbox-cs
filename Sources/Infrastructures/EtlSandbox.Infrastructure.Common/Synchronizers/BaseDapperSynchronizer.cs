@@ -1,6 +1,7 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 
 namespace EtlSandbox.Infrastructure.Common.Synchronizers;
 
@@ -9,7 +10,7 @@ public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseDapperSynchronizer(IDbConnectionFactory dbConnectionFactory)
+    protected BaseDapperSynchronizer(IDestinationDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }

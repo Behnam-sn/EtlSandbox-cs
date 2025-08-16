@@ -1,11 +1,15 @@
 using EtlSandbox.Application.Common.Commands;
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.Common.Resolvers;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Domain.Rentals;
 using EtlSandbox.Infrastructure.Common.ConfigureOptions;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Bases;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Destinations;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Sources;
 using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 using EtlSandbox.Infrastructure.Common.Resolvers;
@@ -28,6 +32,7 @@ internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
+        services.ConfigureOptions<ConnectionStringsSetup>();
         services.ConfigureOptions<GlobalSettingsSetup>();
         services.ConfigureOptions<InsertWorkerSettingsSetup<RentalToCustomerOrderFlatsInsertWorker>>();
         services.ConfigureOptions<SoftDeleteWorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
@@ -75,6 +80,10 @@ internal static class DependencyInjection
                 providerOptions.MigrationsAssembly(Infrastructure.Mars.AssemblyReference.Assembly);
             })
         );
+        
+        // Db Connection Factories
+        services.AddScoped<ISourceDbConnectionFactory, SourceMySqlConnectionFactory>();
+        services.AddScoped<IDestinationDbConnectionFactory, DestinationSqlServerConnectionFactory>();
 
         // Source Repositories
         services.AddScoped<ISourceRepository<Rental>>(sp =>
@@ -91,9 +100,9 @@ internal static class DependencyInjection
         });
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>>(_ =>
+        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
         {
-            var connectionFactory = new MySqlConnectionFactory(sourceConnectionString);
+            var connectionFactory = sp.GetRequiredService<ISourceDbConnectionFactory>();
             return new CustomerOrderFlatJupiterDapperExtractor(connectionFactory);
         });
 
@@ -104,11 +113,7 @@ internal static class DependencyInjection
         services.AddScoped<ILoader<CustomerOrderFlat>>(_ => new CustomerOrderFlatSqlServerBulkCopyLoader(destinationConnectionString));
 
         // Synchronizers
-        services.AddScoped<ISynchronizer<CustomerOrderFlat>>(_ =>
-        {
-            var connectionFactory = new SqlServerConnectionFactory(destinationConnectionString);
-            return new CustomerOrderFlatSqlServerDapperSynchronizer(connectionFactory);
-        });
+        services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
 
         // Resolvers
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));

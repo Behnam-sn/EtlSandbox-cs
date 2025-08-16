@@ -1,6 +1,7 @@
 ﻿using Dapper;
 
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 
 namespace EtlSandbox.Infrastructure.Common.Extractors;
 

@@ -1,6 +1,9 @@
 using EtlSandbox.Application.ClickHouseUtils;
+using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Bases;
+using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Sources;
 using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Mars;
 
@@ -14,6 +17,7 @@ internal static class DependencyInjection
 {
     internal static void AddConfigureOptions(this IServiceCollection services)
     {
+        services.ConfigureOptions<ConnectionStringsSetup>();
     }
 
     internal static void AddLogs(this IServiceCollection services)
@@ -47,11 +51,14 @@ internal static class DependencyInjection
                 providerOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             })
         );
+        
+        // Db Connection Factories
+        services.AddScoped<ISourceDbConnectionFactory, SourceSqlServerConnectionFactory>();
 
         // Repositories
-        services.AddScoped<IDatabaseRepository>(_ =>
+        services.AddScoped<IDatabaseRepository>(sp =>
         {
-            var connectionFactory = new SqlServerConnectionFactory(sourceConnectionString);
+            var connectionFactory = sp.GetRequiredService<ISourceDbConnectionFactory>();
             return new SqlServerDapperDatabaseRepository(connectionFactory);
         });
     }
