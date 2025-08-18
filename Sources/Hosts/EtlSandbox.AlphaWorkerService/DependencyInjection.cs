@@ -113,6 +113,7 @@ internal static class DependencyInjection
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatSqlServerDapperSynchronizer>();
 
         // Resolvers
+        services.AddScoped(typeof(IInsertWorkerBatchSizeResolver<,,>), typeof(InsertWorkerBatchSizeResolver<,,>));
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));
         services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
     }

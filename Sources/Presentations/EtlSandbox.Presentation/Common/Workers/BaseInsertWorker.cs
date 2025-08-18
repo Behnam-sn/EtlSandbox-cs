@@ -2,6 +2,7 @@
 using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Options;
 using EtlSandbox.Domain.Common.Options.WorkerSettings;
+using EtlSandbox.Domain.Common.Resolvers;
 
 using MediatR;
 
@@ -45,7 +46,9 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
             var globalSettings = globalSettingsOptions.Value;
 
             var startingPointId = workerSettings.StartingPointId ?? 0;
-            var batchSize = workerSettings.BatchSize ?? globalSettings.BatchSize;
+            // var batchSize = workerSettings.BatchSize ?? globalSettings.BatchSize;
+            var batchSizeResolver = serviceScope.ServiceProvider.GetRequiredService<IInsertWorkerBatchSizeResolver<TWorker, TSource, TDestination>>();
+            var batchSize = await batchSizeResolver.GetBatchSizeAsync();
             var delay = workerSettings.DelayInMilliSeconds ?? globalSettings.DelayInMilliSeconds;
 
             while (!stoppingToken.IsCancellationRequested)
