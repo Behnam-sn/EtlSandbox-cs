@@ -2,8 +2,6 @@ using EtlSandbox.Application.ClickHouseUtils;
 using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.ConfigureOptions;
-using EtlSandbox.Infrastructure.Common.DbConnectionFactories;
-using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Bases;
 using EtlSandbox.Infrastructure.Common.DbConnectionFactories.Sources;
 using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Mars;

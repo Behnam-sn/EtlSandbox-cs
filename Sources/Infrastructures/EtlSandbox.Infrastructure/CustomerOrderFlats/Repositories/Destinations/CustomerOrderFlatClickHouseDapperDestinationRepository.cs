@@ -1,5 +1,4 @@
-﻿using EtlSandbox.Domain.Common;
-using EtlSandbox.Domain.Common.DbConnectionFactories;
+﻿using EtlSandbox.Domain.Common.DbConnectionFactories;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 

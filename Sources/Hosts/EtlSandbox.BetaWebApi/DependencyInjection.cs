@@ -2,7 +2,6 @@ using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Extractors;
-using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories;
 using EtlSandbox.Infrastructure.CustomerOrderFlats.Repositories.Sources;
 using EtlSandbox.Infrastructure.Mars;
 

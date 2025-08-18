@@ -1,5 +1,4 @@
 ﻿using EtlSandbox.Domain.CustomerOrderFlats.Entities;
-using EtlSandbox.Infrastructure.Common.Repositories;
 using EtlSandbox.Infrastructure.Common.Repositories.Sources;
 
 using Microsoft.EntityFrameworkCore;
