@@ -12,11 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Common.Workers;
 
-public abstract class BaseInsertWorker : BackgroundService
-{
-}
-
-public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : BaseInsertWorker
+public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : BackgroundService
     where TWorker : BaseInsertWorker<TWorker, TSource, TDestination>
     where TSource : class
     where TDestination : class, IEntity
