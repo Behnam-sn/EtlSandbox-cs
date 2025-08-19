@@ -1,3 +1,4 @@
+using EtlSandbox.BetaWebApiService.Common;
 using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.CustomerOrderFlats.Entities;
@@ -6,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EtlSandbox.BetaWebApiService.Controllers;
 
-[Route("api/CustomerOrderFlats")]
-public sealed class CustomerOrderFlatsController : ControllerBase
+public sealed class CustomerOrderFlatsController : ControllerApi
 {
     private readonly IExtractor<CustomerOrderFlat> _extractor;
 
@@ -26,8 +26,8 @@ public sealed class CustomerOrderFlatsController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("GetLastItemId")]
-    public async Task<ActionResult<long>> GetLastItemIdAsync(CancellationToken cancellationToken = default)
+    [HttpGet("GetLastId")]
+    public async Task<ActionResult<long>> GetLastIdAsync(CancellationToken cancellationToken = default)
     {
         var item = await _sourceRepository.GetLastIdAsync(cancellationToken);
         return Ok(item);
