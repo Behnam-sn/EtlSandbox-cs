@@ -41,7 +41,7 @@ public sealed class InsertWorkerBatchSizeResolver<TWorker ,TSource, TDestination
         var maxBatchSize = _insertWorkerSettings.MaxBatchSize  ?? _globalSettings.MaxBatchSize;
 
         var sourceLastIdTask = _sourceRepository.GetLastItemIdAsync();
-        var destinationLastSourceIdTask = _destinationRepository.GetLastInsertedImportantIdAsync();
+        var destinationLastSourceIdTask = _destinationRepository.GetLastInsertedSourceIdAsync();
 
         await Task.WhenAll(sourceLastIdTask, destinationLastSourceIdTask);
 

@@ -13,7 +13,7 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private long? _lastInsertedItemImportantId;
+    private long? _lastInsertedItemSourceId;
 
     private long _startingPoint;
 
@@ -29,12 +29,12 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
         var sourceRepository = scope.ServiceProvider.GetRequiredService<ISourceRepository<TSource>>();
         var destinationRepository = scope.ServiceProvider.GetRequiredService<IDestinationRepository<TDestination>>();
 
-        if (_lastInsertedItemImportantId == null)
+        if (_lastInsertedItemSourceId == null)
         {
-            _lastInsertedItemImportantId = await destinationRepository.GetLastInsertedImportantIdAsync();
-            _startingPoint = _lastInsertedItemImportantId.Value < settingsStartingPoint
+            _lastInsertedItemSourceId = await destinationRepository.GetLastInsertedSourceIdAsync();
+            _startingPoint = _lastInsertedItemSourceId.Value < settingsStartingPoint
                 ? settingsStartingPoint
-                : _lastInsertedItemImportantId.Value;
+                : _lastInsertedItemSourceId.Value;
             return _startingPoint;
         }
 
@@ -46,7 +46,7 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
             return _startingPoint;
         }
 
-        _startingPoint = await destinationRepository.GetLastInsertedImportantIdAsync();
+        _startingPoint = await destinationRepository.GetLastInsertedSourceIdAsync();
 
         return _startingPoint;
     }

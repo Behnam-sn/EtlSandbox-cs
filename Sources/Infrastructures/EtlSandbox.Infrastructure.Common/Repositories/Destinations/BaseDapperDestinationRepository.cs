@@ -18,16 +18,16 @@ public abstract class BaseDapperDestinationRepository<T> : IDestinationRepositor
 
     protected abstract string TableName { get; }
 
-    protected abstract string GetLastInsertedImportantIdSql { get; }
+    protected abstract string GetLastInsertedSourceIdSql { get; }
 
     protected abstract string GetLastSoftDeletedItemIdSql { get; }
 
     protected abstract string GetLastItemIdSql { get; }
 
-    public async Task<long> GetLastInsertedImportantIdAsync()
+    public async Task<long> GetLastInsertedSourceIdAsync()
     {
         using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastInsertedImportantIdSql);
+        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastInsertedSourceIdSql);
         return result ?? 0;
     }
 

@@ -7,12 +7,12 @@ namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 public sealed class EfDestinationRepositoryV1<T>(DbContext dbContext) : BaseEfDestinationRepository<T>(dbContext)
     where T : class, IEntity
 {
-    public override async Task<long> GetLastInsertedImportantIdAsync()
+    public override async Task<long> GetLastInsertedSourceIdAsync()
     {
         var lastItem = await _dbSet
             .AsNoTracking()
             .OrderByDescending(item => item.Id)
             .FirstOrDefaultAsync();
-        return lastItem?.ImportantId ?? 0;
+        return lastItem?.SourceId ?? 0;
     }
 }

@@ -4,7 +4,7 @@ public interface IEntity
 {
     long Id { get; set; }
 
-    long ImportantId { get; }
+    long SourceId { get; }
 
     bool IsDeleted { get; set; }
 }

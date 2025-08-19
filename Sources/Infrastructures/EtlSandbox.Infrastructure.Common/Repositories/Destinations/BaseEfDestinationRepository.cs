@@ -15,7 +15,7 @@ public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
         _dbSet = dbContext.Set<T>();
     }
 
-    public abstract Task<long> GetLastInsertedImportantIdAsync();
+    public abstract Task<long> GetLastInsertedSourceIdAsync();
 
     public async Task<long> GetLastSoftDeletedItemIdAsync()
     {

@@ -7,7 +7,7 @@ public abstract class BaseClickHouseDapperDestinationRepository<T>(IDestinationD
     : BaseDapperDestinationRepository<T>(dbConnectionFactory)
     where T : class, IEntity
 {
-    protected override string GetLastInsertedImportantIdSql => $"SELECT max(Id) FROM {TableName}";
+    protected override string GetLastInsertedSourceIdSql => $"SELECT max(Id) FROM {TableName}";
 
     protected override string GetLastSoftDeletedItemIdSql => $"""
                                                               SELECT max(Id)

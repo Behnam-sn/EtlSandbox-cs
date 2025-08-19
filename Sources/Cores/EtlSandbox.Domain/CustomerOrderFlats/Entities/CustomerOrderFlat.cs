@@ -18,5 +18,5 @@ public sealed class CustomerOrderFlat : IEntity
 
     public bool IsDeleted { get; set; }
 
-    public long ImportantId => RentalId;
+    public long SourceId => RentalId;
 }
