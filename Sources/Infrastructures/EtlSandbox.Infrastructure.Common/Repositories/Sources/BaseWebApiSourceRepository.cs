@@ -22,7 +22,7 @@ public abstract class BaseWebApiSourceRepository<T> : ISourceRepository<T>
     {
         var item = await _restApiClient.GetAsync<long>(
             baseUrl: _baseUrl,
-            path: $"{Path}/GetLastItemId",
+            path: $"{Path}/GetLastId",
             cancellationToken: cancellationToken
         );
         return item;

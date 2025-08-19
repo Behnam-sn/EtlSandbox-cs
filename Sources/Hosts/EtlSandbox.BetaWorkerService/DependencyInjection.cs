@@ -79,6 +79,8 @@ internal static class DependencyInjection
             var restApiClient = sp.GetRequiredService<IRestApiClient>();
             return new CustomerOrderFlatWebApiSourceRepository(sourceConnectionString, restApiClient);
         });
+
+        // Destination Repositories
         services.AddScoped<IDestinationRepository<CustomerOrderFlat>>(sp =>
         {
             var dbContext = sp.GetRequiredService<NeptuneDbContext>();
@@ -106,6 +108,7 @@ internal static class DependencyInjection
         services.AddScoped<ISynchronizer<CustomerOrderFlat>, CustomerOrderFlatPostgreSqlDapperSynchronizer>();
 
         // Resolvers
+        services.AddScoped(typeof(IInsertWorkerBatchSizeResolver<,,>), typeof(InsertWorkerBatchSizeResolver<,,>));
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));
         services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
 
