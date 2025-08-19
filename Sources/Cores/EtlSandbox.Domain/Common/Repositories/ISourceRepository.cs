@@ -3,5 +3,5 @@
 public interface ISourceRepository<T>
     where T : class
 {
-    Task<long> GetLastItemIdAsync(CancellationToken cancellationToken = default);
+    Task<long> GetLastIdAsync(CancellationToken cancellationToken = default);
 }

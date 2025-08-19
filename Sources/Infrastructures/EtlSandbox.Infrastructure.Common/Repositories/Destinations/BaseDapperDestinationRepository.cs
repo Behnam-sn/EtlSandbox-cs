@@ -24,21 +24,21 @@ public abstract class BaseDapperDestinationRepository<T> : IDestinationRepositor
 
     protected abstract string GetLastItemIdSql { get; }
 
-    public async Task<long> GetLastInsertedSourceIdAsync()
+    public async Task<long> GetLastSourceIdAsync()
     {
         using var connection = _dbConnectionFactory.CreateConnection();
         var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastInsertedSourceIdSql);
         return result ?? 0;
     }
 
-    public async Task<long> GetLastSoftDeletedItemIdAsync()
+    public async Task<long> GetLastSoftDeletedIdAsync()
     {
         using var connection = _dbConnectionFactory.CreateConnection();
         var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastSoftDeletedItemIdSql);
         return result ?? 0;
     }
 
-    public async Task<long> GetLastItemIdAsync()
+    public async Task<long> GetLastIdAsync()
     {
         using var connection = _dbConnectionFactory.CreateConnection();
         var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastItemIdSql);

@@ -29,7 +29,7 @@ public sealed class CustomerOrderFlatsController : ControllerBase
     [HttpGet("GetLastItemId")]
     public async Task<ActionResult<long>> GetLastItemIdAsync(CancellationToken cancellationToken = default)
     {
-        var item = await _sourceRepository.GetLastItemIdAsync(cancellationToken);
+        var item = await _sourceRepository.GetLastIdAsync(cancellationToken);
         return Ok(item);
     }
 }

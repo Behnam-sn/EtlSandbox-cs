@@ -14,7 +14,7 @@ public sealed class RentalEfSourceRepository : ISourceRepository<Rental>
         _dbSet = dbContext.Set<Rental>();
     }
 
-    public async Task<long> GetLastItemIdAsync(CancellationToken cancellationToken = default)
+    public async Task<long> GetLastIdAsync(CancellationToken cancellationToken = default)
     {
         // Todo: change this into max
         var lastItem = await _dbSet

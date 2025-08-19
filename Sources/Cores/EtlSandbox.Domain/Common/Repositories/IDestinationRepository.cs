@@ -3,9 +3,9 @@
 public interface IDestinationRepository<T>
     where T : class, IEntity
 {
-    Task<long> GetLastInsertedSourceIdAsync();
+    Task<long> GetLastSourceIdAsync();
 
-    Task<long> GetLastSoftDeletedItemIdAsync();
+    Task<long> GetLastSoftDeletedIdAsync();
 
-    Task<long> GetLastItemIdAsync();
+    Task<long> GetLastIdAsync();
 }

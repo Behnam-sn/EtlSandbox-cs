@@ -11,7 +11,7 @@ public sealed class SoftDeleteStartingPointResolver<T> : ISoftDeleteStartingPoin
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private long? _lastSoftDeletedItemId;
+    private long? _lastSoftDeletedId;
 
     private long _startingPoint;
 
@@ -26,16 +26,16 @@ public sealed class SoftDeleteStartingPointResolver<T> : ISoftDeleteStartingPoin
 
         var destinationRepository = scope.ServiceProvider.GetRequiredService<IDestinationRepository<T>>();
 
-        if (_lastSoftDeletedItemId == null)
+        if (_lastSoftDeletedId == null)
         {
-            _lastSoftDeletedItemId = await destinationRepository.GetLastSoftDeletedItemIdAsync();
-            _startingPoint = _lastSoftDeletedItemId.Value;
+            _lastSoftDeletedId = await destinationRepository.GetLastSoftDeletedIdAsync();
+            _startingPoint = _lastSoftDeletedId.Value;
             return _startingPoint;
         }
 
-        var lastItemId = await destinationRepository.GetLastItemIdAsync();
+        var lastId = await destinationRepository.GetLastIdAsync();
 
-        if (_startingPoint + batchSize < lastItemId)
+        if (_startingPoint + batchSize < lastId)
         {
             _startingPoint += batchSize;
         }

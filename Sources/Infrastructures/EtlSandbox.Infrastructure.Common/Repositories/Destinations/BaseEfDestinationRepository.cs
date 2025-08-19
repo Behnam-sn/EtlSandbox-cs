@@ -15,9 +15,9 @@ public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
         _dbSet = dbContext.Set<T>();
     }
 
-    public abstract Task<long> GetLastInsertedSourceIdAsync();
+    public abstract Task<long> GetLastSourceIdAsync();
 
-    public async Task<long> GetLastSoftDeletedItemIdAsync()
+    public async Task<long> GetLastSoftDeletedIdAsync()
     {
         var lastItem = await _dbSet
             .AsNoTracking()
@@ -27,7 +27,7 @@ public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
         return lastItem?.Id ?? 0;
     }
 
-    public async Task<long> GetLastItemIdAsync()
+    public async Task<long> GetLastIdAsync()
     {
         var lastItem = await _dbSet
             .AsNoTracking()

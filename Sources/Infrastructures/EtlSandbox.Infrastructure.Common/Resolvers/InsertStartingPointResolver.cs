@@ -31,22 +31,22 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
 
         if (_lastInsertedItemSourceId == null)
         {
-            _lastInsertedItemSourceId = await destinationRepository.GetLastInsertedSourceIdAsync();
+            _lastInsertedItemSourceId = await destinationRepository.GetLastSourceIdAsync();
             _startingPoint = _lastInsertedItemSourceId.Value < settingsStartingPoint
                 ? settingsStartingPoint
                 : _lastInsertedItemSourceId.Value;
             return _startingPoint;
         }
 
-        var sourceLastItemId = await sourceRepository.GetLastItemIdAsync();
+        var sourceLastId = await sourceRepository.GetLastIdAsync();
 
-        if (_startingPoint + batchSize < sourceLastItemId)
+        if (_startingPoint + batchSize < sourceLastId)
         {
             _startingPoint += batchSize;
             return _startingPoint;
         }
 
-        _startingPoint = await destinationRepository.GetLastInsertedSourceIdAsync();
+        _startingPoint = await destinationRepository.GetLastSourceIdAsync();
 
         return _startingPoint;
     }
