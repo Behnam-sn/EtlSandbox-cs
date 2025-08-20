@@ -69,7 +69,7 @@ internal static class DependencyInjection
                 providerOptions.MigrationsAssembly(Infrastructure.Neptune.AssemblyReference.Assembly);
             })
         );
-        
+
         // Db Connection Factories
         services.AddScoped<IDestinationDbConnectionFactory, DestinationNpgsqlConnectionFactory>();
 
@@ -95,7 +95,7 @@ internal static class DependencyInjection
         });
 
         // Transformers
-        services.AddScoped<ITransformer<CustomerOrderFlat>, EmptyTransformer<CustomerOrderFlat>>();
+        services.AddScoped(typeof(ITransformer<>), typeof(EmptyTransformer<>));
 
         // Loaders
         services.AddScoped<ILoader<CustomerOrderFlat>>(sp =>
