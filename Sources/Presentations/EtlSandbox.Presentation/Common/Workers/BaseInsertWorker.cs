@@ -42,11 +42,7 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
                 return;
             }
 
-            var globalSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<GlobalSettings>>();
-            var globalSettings = globalSettingsOptions.Value;
-
             var startingPointId = workerSettings.StartingPointId ?? 0;
-            var delay = workerSettings.DelayInMilliSeconds ?? globalSettings.DelayInMilliSeconds;
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -54,6 +50,9 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
                 
                 var batchSizeResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerBatchSizeResolver<TWorker, TSource, TDestination>>();
                 var batchSize = await batchSizeResolver.GetBatchSizeAsync();
+                
+                var delayResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerDelayResolver<TWorker, TSource, TDestination>>();
+                var delay = await delayResolver.GetDelayAsync();    
                 
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
