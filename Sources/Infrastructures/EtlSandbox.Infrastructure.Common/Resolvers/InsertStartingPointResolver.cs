@@ -13,41 +13,35 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private long? _lastInsertedItemSourceId;
+    private bool _isFirstRun = true;
 
-    private long _startingPoint;
+    public long StartingPoint { get; set; }
 
     public InsertStartingPointResolver(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<long> GetStartingPointAsync(long settingsStartingPoint, int batchSize)
+    public async Task<long> GetStartingPointAsync(long settingsStartingPoint)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var sourceRepository = scope.ServiceProvider.GetRequiredService<ISourceRepository<TSource>>();
         var destinationRepository = scope.ServiceProvider.GetRequiredService<IDestinationRepository<TDestination>>();
 
-        if (_lastInsertedItemSourceId == null)
+        if (_isFirstRun)
         {
-            _lastInsertedItemSourceId = await destinationRepository.GetLastSourceIdAsync();
-            _startingPoint = _lastInsertedItemSourceId.Value < settingsStartingPoint
+            _isFirstRun = false;
+            var lastInsertedSourceId = await destinationRepository.GetLastSourceIdAsync();
+            StartingPoint = lastInsertedSourceId < settingsStartingPoint
                 ? settingsStartingPoint
-                : _lastInsertedItemSourceId.Value;
-            return _startingPoint;
+                : lastInsertedSourceId;
         }
 
-        var sourceLastId = await sourceRepository.GetLastIdAsync();
+        return StartingPoint;
+    }
 
-        if (_startingPoint + batchSize < sourceLastId)
-        {
-            _startingPoint += batchSize;
-            return _startingPoint;
-        }
-
-        _startingPoint = await destinationRepository.GetLastSourceIdAsync();
-
-        return _startingPoint;
+    public void SetStartingPoint(long startingPoint)
+    {
+        StartingPoint = startingPoint;
     }
 }

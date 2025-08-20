@@ -46,14 +46,15 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
             var globalSettings = globalSettingsOptions.Value;
 
             var startingPointId = workerSettings.StartingPointId ?? 0;
-            // var batchSize = workerSettings.BatchSize ?? globalSettings.BatchSize;
-            var batchSizeResolver = serviceScope.ServiceProvider.GetRequiredService<IInsertWorkerBatchSizeResolver<TWorker, TSource, TDestination>>();
-            var batchSize = await batchSizeResolver.GetBatchSizeAsync();
             var delay = workerSettings.DelayInMilliSeconds ?? globalSettings.DelayInMilliSeconds;
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();
+                
+                var batchSizeResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerBatchSizeResolver<TWorker, TSource, TDestination>>();
+                var batchSize = await batchSizeResolver.GetBatchSizeAsync();
+                
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                 var command = new InsertCommand<TSource, TDestination>(

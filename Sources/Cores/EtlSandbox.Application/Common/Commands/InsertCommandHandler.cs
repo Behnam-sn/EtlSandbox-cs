@@ -1,5 +1,6 @@
 ﻿using EtlSandbox.Application.Common.Abstractions.Messaging;
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.Common.Resolvers;
 
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,10 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 {
     private readonly ILogger _logger;
 
+    // Todo: Rename _insertStartingPointResolver to _startingPointResolver
     private readonly IInsertStartingPointResolver<TSource, TDestination> _insertStartingPointResolver;
+
+    private readonly ISourceRepository<TSource> _sourceRepository;
 
     private readonly IExtractor<TDestination> _extractor;
 
@@ -22,32 +26,29 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 
     public InsertCommandHandler(
         ILogger<InsertCommandHandler<TSource, TDestination>> logger,
-        IInsertStartingPointResolver<TSource,TDestination> insertStartingPointResolver,
+        IInsertStartingPointResolver<TSource, TDestination> insertStartingPointResolver,
         IExtractor<TDestination> extractor,
         ITransformer<TDestination> transformer,
-        ILoader<TDestination> loader)
+        ILoader<TDestination> loader, ISourceRepository<TSource> sourceRepository)
     {
         _logger = logger;
         _insertStartingPointResolver = insertStartingPointResolver;
         _extractor = extractor;
         _transformer = transformer;
         _loader = loader;
+        _sourceRepository = sourceRepository;
     }
 
     public async Task Handle(InsertCommand<TSource, TDestination> request, CancellationToken cancellationToken)
     {
-        var from = await _insertStartingPointResolver.GetStartingPointAsync(
-            settingsStartingPoint: request.StartingPointId,
-            batchSize: request.BatchSize
-            );
-        var to = from + request.BatchSize;
+        var sourceLastId = await _sourceRepository.GetLastIdAsync(cancellationToken);
+        var from = await _insertStartingPointResolver.GetStartingPointAsync(settingsStartingPoint: request.StartingPointId);
+        var to = from + request.BatchSize < sourceLastId
+            ? from + request.BatchSize
+            : sourceLastId;
 
         _logger.LogInformation("Extracting data from {From} to {To}", from, to);
-        var extractedItems = await _extractor.ExtractAsync(
-            from,
-            to,
-            cancellationToken
-        );
+        var extractedItems = await _extractor.ExtractAsync(from, to, cancellationToken);
         _logger.LogInformation("Extracted {Count} rows", extractedItems.Count);
 
         if (extractedItems.Count == 0)
@@ -62,5 +63,7 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
         _logger.LogInformation("Loading");
         await _loader.LoadAsync(transformedItems, cancellationToken);
         _logger.LogInformation("Loaded {Count} rows", extractedItems.Count);
+
+        _insertStartingPointResolver.SetStartingPoint(to);
     }
 }
