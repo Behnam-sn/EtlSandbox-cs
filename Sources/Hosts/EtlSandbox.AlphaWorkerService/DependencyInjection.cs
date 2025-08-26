@@ -116,6 +116,7 @@ internal static class DependencyInjection
         services.AddScoped(typeof(IInsertWorkerBatchSizeResolver<,,>), typeof(InsertWorkerBatchSizeResolver<,,>));
         services.AddScoped(typeof(IInsertWorkerDelayResolver<,,>), typeof(InsertWorkerDelayResolver<,,>));
         services.AddScoped(typeof(ISoftDeleteWorkerBatchSizeResolver<,>), typeof(SoftDeleteWorkerBatchSizeResolver<,>));
+        services.AddScoped(typeof(ISoftDeleteWorkerDelayResolver<,>), typeof(SoftDeleteWorkerDelayResolver<,>));
         services.AddSingleton(typeof(IInsertStartingPointResolver<,>), typeof(InsertStartingPointResolver<,>));
         services.AddSingleton(typeof(ISoftDeleteStartingPointResolver<>), typeof(SoftDeleteStartingPointResolver<>));
     }
