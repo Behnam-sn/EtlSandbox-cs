@@ -42,17 +42,15 @@ public abstract class BaseSoftDeleteWorker<TWorker, TSource> : BackgroundService
                 return;
             }
 
-            var globalSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<GlobalSettings>>();
-            var globalSettings = globalSettingsOptions.Value;
-            
-            var delay = workerSettings.DelayInMilliSeconds ?? globalSettings.DelayInMilliSeconds;
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();
                 
                 var batchSizeResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerBatchSizeResolver<TWorker, TSource>>();
                 var batchSize = await batchSizeResolver.GetBatchSizeAsync();
+                
+                var delayResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerDelayResolver<TWorker, TSource>>();
+                var delay = await delayResolver.GetDelayAsync();
                 
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 

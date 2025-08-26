@@ -52,7 +52,7 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
                 var batchSize = await batchSizeResolver.GetBatchSizeAsync();
                 
                 var delayResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerDelayResolver<TWorker, TSource, TDestination>>();
-                var delay = await delayResolver.GetDelayAsync();    
+                var delay = await delayResolver.GetDelayAsync();
                 
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
