@@ -3,5 +3,5 @@
 public interface ISoftDeleteStartingPointResolver<T>
     where T : class, IEntity
 {
-    Task<long> GetLastSoftDeletedIdAsync(int batchSize);
+    public long StartingPoint { get; set; }
 }

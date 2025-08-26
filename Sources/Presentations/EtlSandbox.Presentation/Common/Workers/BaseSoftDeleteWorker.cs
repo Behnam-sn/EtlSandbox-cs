@@ -2,6 +2,7 @@
 using EtlSandbox.Domain.Common;
 using EtlSandbox.Domain.Common.Options;
 using EtlSandbox.Domain.Common.Options.WorkerSettings;
+using EtlSandbox.Domain.Common.Resolvers;
 
 using MediatR;
 
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Common.Workers;
 
+// Todo: rename TSource to TDestination
 public abstract class BaseSoftDeleteWorker<TWorker, TSource> : BackgroundService
     where TWorker : BaseSoftDeleteWorker<TWorker, TSource>
     where TSource : class, IEntity
@@ -42,13 +44,16 @@ public abstract class BaseSoftDeleteWorker<TWorker, TSource> : BackgroundService
 
             var globalSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<GlobalSettings>>();
             var globalSettings = globalSettingsOptions.Value;
-
-            var batchSize = workerSettings.BatchSize ?? globalSettings.BatchSize;
+            
             var delay = workerSettings.DelayInMilliSeconds ?? globalSettings.DelayInMilliSeconds;
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();
+                
+                var batchSizeResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerBatchSizeResolver<TWorker, TSource>>();
+                var batchSize = await batchSizeResolver.GetBatchSizeAsync();
+                
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                 var command = new SoftDeleteCommand<TSource>(

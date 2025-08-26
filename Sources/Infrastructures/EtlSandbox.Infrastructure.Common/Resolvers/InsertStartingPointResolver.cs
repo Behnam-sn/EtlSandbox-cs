@@ -15,6 +15,7 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
 
     private bool _isFirstRun = true;
 
+    // Todo: change this prop to a field
     public long StartingPoint { get; set; }
 
     public InsertStartingPointResolver(IServiceProvider serviceProvider)

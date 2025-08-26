@@ -1,5 +1,6 @@
 ﻿using EtlSandbox.Application.Common.Abstractions.Messaging;
 using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.Repositories;
 using EtlSandbox.Domain.Common.Resolvers;
 
 using Microsoft.Extensions.Logging;
@@ -10,28 +11,38 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
     where T : class, IEntity
 {
     private readonly ILogger _logger;
+    
+    private IDestinationRepository<T>  _destinationRepository;
 
-    private readonly ISoftDeleteStartingPointResolver<T> _softDeleteStartingPointResolver;
+    private readonly ISoftDeleteStartingPointResolver<T> _startingPointResolver;
 
     private readonly ISynchronizer<T> _synchronizer;
 
-    public SoftDeleteCommandHandler(ILogger<SoftDeleteCommandHandler<T>> logger, ISoftDeleteStartingPointResolver<T> softDeleteStartingPointResolver, ISynchronizer<T> synchronizer)
+    public SoftDeleteCommandHandler(
+        ILogger<SoftDeleteCommandHandler<T>> logger,
+        IDestinationRepository<T> destinationRepository,
+        ISoftDeleteStartingPointResolver<T> startingPointResolver,
+        ISynchronizer<T> synchronizer
+    )
     {
         _logger = logger;
-        _softDeleteStartingPointResolver = softDeleteStartingPointResolver;
+        _destinationRepository = destinationRepository;
+        _startingPointResolver = startingPointResolver;
         _synchronizer = synchronizer;
     }
 
     public async Task Handle(SoftDeleteCommand<T> request, CancellationToken cancellationToken)
     {
-        var fromId = await _softDeleteStartingPointResolver.GetLastSoftDeletedIdAsync(request.BatchSize);
-        var toId = fromId + request.BatchSize;
+        var lastId = await _destinationRepository.GetLastIdAsync();
+        var from = _startingPointResolver.StartingPoint;
+        var to = from + request.BatchSize < lastId
+            ? from + request.BatchSize
+            : lastId;
 
         _logger.LogInformation("Soft deleting");
-        await _synchronizer.SoftDeleteObsoleteRowsAsync(
-            from: fromId,
-            to: toId
-        );
-        _logger.LogInformation("Soft deleted from {LastDeletedId} to {ToId}", fromId, toId);
+        await _synchronizer.SoftDeleteObsoleteRowsAsync(from, to);
+        _logger.LogInformation("Soft deleted from {LastDeletedId} to {ToId}", from, to);
+
+        _startingPointResolver.StartingPoint = to;
     }
 }
