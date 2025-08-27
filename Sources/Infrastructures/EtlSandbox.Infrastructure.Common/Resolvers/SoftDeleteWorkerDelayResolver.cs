@@ -44,6 +44,6 @@ public sealed class SoftDeleteWorkerDelayResolver<TWorker, TDestination> : ISoft
         var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync();
         var gap = lastId - startingPoint;
 
-        return gap < minBatchSize ? minDelay : maxDelay;
+        return gap < minBatchSize ? maxDelay : minDelay;
     }
 }

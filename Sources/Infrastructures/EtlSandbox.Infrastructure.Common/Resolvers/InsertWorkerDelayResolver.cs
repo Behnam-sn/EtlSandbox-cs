@@ -50,6 +50,6 @@ public sealed class InsertWorkerDelayResolver<TWorker, TSource, TDestination> : 
         var destinationLastSourceId = destinationLastSourceIdTask.Result;
         var gap = sourceLastId - destinationLastSourceId;
 
-        return gap < minBatchSize ? minDelay : maxDelay;
+        return gap < minBatchSize ? maxDelay : minDelay;
     }
 }
