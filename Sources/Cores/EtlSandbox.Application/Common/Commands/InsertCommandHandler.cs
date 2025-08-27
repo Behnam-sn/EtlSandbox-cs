@@ -41,6 +41,7 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
     public async Task Handle(InsertCommand<TSource, TDestination> request, CancellationToken cancellationToken)
     {
         var destinationTypeName = typeof(TDestination).Name;
+        // Todo: rename all last to max
         var sourceLastId = await _sourceRepository.GetMaxIdOrDefaultAsync(cancellationToken);
         var from = await _startingPointResolver.GetStartingPointAsync(settingsStartingPoint: request.StartingPointId);
         var to = from + request.BatchSize < sourceLastId
