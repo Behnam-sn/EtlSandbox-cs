@@ -13,8 +13,7 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 {
     private readonly ILogger _logger;
 
-    // Todo: Rename _insertStartingPointResolver to _startingPointResolver
-    private readonly IInsertStartingPointResolver<TSource, TDestination> _insertStartingPointResolver;
+    private readonly IInsertStartingPointResolver<TSource, TDestination> _startingPointResolver;
 
     private readonly ISourceRepository<TSource> _sourceRepository;
 
@@ -26,13 +25,13 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 
     public InsertCommandHandler(
         ILogger<InsertCommandHandler<TSource, TDestination>> logger,
-        IInsertStartingPointResolver<TSource, TDestination> insertStartingPointResolver,
+        IInsertStartingPointResolver<TSource, TDestination> startingPointResolver,
         IExtractor<TDestination> extractor,
         ITransformer<TDestination> transformer,
         ILoader<TDestination> loader, ISourceRepository<TSource> sourceRepository)
     {
         _logger = logger;
-        _insertStartingPointResolver = insertStartingPointResolver;
+        _startingPointResolver = startingPointResolver;
         _extractor = extractor;
         _transformer = transformer;
         _loader = loader;
@@ -43,7 +42,7 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
     {
         var destinationTypeName = typeof(TDestination).Name;
         var sourceLastId = await _sourceRepository.GetMaxIdOrDefaultAsync(cancellationToken);
-        var from = await _insertStartingPointResolver.GetStartingPointAsync(settingsStartingPoint: request.StartingPointId);
+        var from = await _startingPointResolver.GetStartingPointAsync(settingsStartingPoint: request.StartingPointId);
         var to = from + request.BatchSize < sourceLastId
             ? from + request.BatchSize
             : sourceLastId;
@@ -65,6 +64,6 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
         await _loader.LoadAsync(transformedItems, cancellationToken);
         _logger.LogInformation("Loaded {Count} {Type}", extractedItems.Count, destinationTypeName);
 
-        _insertStartingPointResolver.SetStartingPoint(to);
+        _startingPointResolver.SetStartingPoint(to);
     }
 }
