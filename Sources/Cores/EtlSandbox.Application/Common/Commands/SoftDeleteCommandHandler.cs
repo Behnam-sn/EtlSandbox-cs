@@ -40,6 +40,11 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
             ? from + request.BatchSize
             : lastId;
 
+        if (from >= to)
+        {
+            return;
+        }
+
         _logger.LogInformation("Soft deleting {Type}", destinationTypeName);
         await _synchronizer.SoftDeleteObsoleteRowsAsync(from, to);
         _logger.LogInformation("Soft deleted {Type} from {From} to {To}", destinationTypeName, from, to);
