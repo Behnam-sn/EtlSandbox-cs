@@ -47,6 +47,11 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
             ? from + request.BatchSize
             : sourceLastId;
 
+        if (from >= to)
+        {
+            return;
+        }
+
         _logger.LogInformation("Extracting {Type} from {From} to {To}", destinationTypeName, from, to);
         var extractedItems = await _extractor.ExtractAsync(from, to, cancellationToken);
         _logger.LogInformation("Extracted {Count} {Type}", extractedItems.Count, destinationTypeName);
