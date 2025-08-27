@@ -62,7 +62,8 @@ public abstract class BaseSoftDeleteWorker<TWorker, TDestination> : BackgroundSe
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Soft delete failed: {Message}", e.Message);
+            var destinationTypeName = typeof(TDestination).Name;
+            _logger.LogError(e, "{Type} soft delete failed: {Message}", destinationTypeName, e.Message);
         }
     }
 }
