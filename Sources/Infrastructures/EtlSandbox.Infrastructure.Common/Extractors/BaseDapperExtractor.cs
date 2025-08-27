@@ -10,6 +10,7 @@ public abstract class BaseDapperExtractor<T> : IExtractor<T>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
+    // Todo: Replace IDbConnectionFactory with ISourceDbConnectionFactory
     protected BaseDapperExtractor(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
