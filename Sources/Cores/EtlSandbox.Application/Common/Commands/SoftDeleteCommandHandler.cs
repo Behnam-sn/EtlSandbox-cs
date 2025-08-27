@@ -12,7 +12,7 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
 {
     private readonly ILogger _logger;
 
-    private IDestinationRepository<T> _destinationRepository;
+    private readonly IDestinationRepository<T> _destinationRepository;
 
     private readonly ISoftDeleteStartingPointResolver<T> _startingPointResolver;
 
