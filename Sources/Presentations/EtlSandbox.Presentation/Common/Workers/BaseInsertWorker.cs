@@ -66,7 +66,8 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Insert failed: {Message}", e.Message);
+            var destinationTypeName = typeof(TDestination).Name;
+            _logger.LogError(e, "{Type} insert failed: {Message}", destinationTypeName, e.Message);
         }
     }
 }
