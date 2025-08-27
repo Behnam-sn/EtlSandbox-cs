@@ -55,6 +55,8 @@ internal static class DependencyInjection
 
     internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        // Todo: Replace all comments with regions
+
         // Connection Strings
         var sourceConnectionString = configuration.GetConnectionString("Source") ??
             throw new InvalidOperationException("Connection string 'Source' not found.");
@@ -77,7 +79,7 @@ internal static class DependencyInjection
                 providerOptions.MigrationsAssembly(Infrastructure.Mars.AssemblyReference.Assembly);
             })
         );
-        
+
         // Db Connection Factories
         services.AddScoped<ISourceDbConnectionFactory, SourceMySqlConnectionFactory>();
         services.AddScoped<IDestinationDbConnectionFactory, DestinationSqlServerConnectionFactory>();
