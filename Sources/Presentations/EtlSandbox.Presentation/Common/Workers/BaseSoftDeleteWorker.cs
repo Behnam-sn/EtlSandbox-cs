@@ -12,16 +12,15 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Presentation.Common.Workers;
 
-// Todo: rename TSource to TDestination
-public abstract class BaseSoftDeleteWorker<TWorker, TSource> : BackgroundService
-    where TWorker : BaseSoftDeleteWorker<TWorker, TSource>
-    where TSource : class, IEntity
+public abstract class BaseSoftDeleteWorker<TWorker, TDestination> : BackgroundService
+    where TWorker : BaseSoftDeleteWorker<TWorker, TDestination>
+    where TDestination : class, IEntity
 {
     private readonly ILogger _logger;
 
     private readonly IServiceProvider _serviceProvider;
 
-    protected BaseSoftDeleteWorker(ILogger<BaseSoftDeleteWorker<TWorker, TSource>> logger, IServiceProvider serviceProvider)
+    protected BaseSoftDeleteWorker(ILogger<BaseSoftDeleteWorker<TWorker, TDestination>> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
@@ -45,15 +44,15 @@ public abstract class BaseSoftDeleteWorker<TWorker, TSource> : BackgroundService
             {
                 using var scope = _serviceProvider.CreateScope();
                 
-                var batchSizeResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerBatchSizeResolver<TWorker, TSource>>();
+                var batchSizeResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerBatchSizeResolver<TWorker, TDestination>>();
                 var batchSize = await batchSizeResolver.GetBatchSizeAsync();
                 
-                var delayResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerDelayResolver<TWorker, TSource>>();
+                var delayResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerDelayResolver<TWorker, TDestination>>();
                 var delay = await delayResolver.GetDelayAsync();
                 
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                var command = new SoftDeleteCommand<TSource>(
+                var command = new SoftDeleteCommand<TDestination>(
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
