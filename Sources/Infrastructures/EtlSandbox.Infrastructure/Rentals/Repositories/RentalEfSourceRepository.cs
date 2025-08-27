@@ -16,11 +16,7 @@ public sealed class RentalEfSourceRepository : ISourceRepository<Rental>
 
     public async Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
-        // Todo: change this into max
-        var lastItem = await _dbSet
-            .AsNoTracking()
-            .OrderByDescending(item => item.rental_id)
-            .FirstOrDefaultAsync(cancellationToken);
-        return lastItem?.rental_id ?? 0;
+        return await _dbSet
+            .MaxAsync(entity => (long?)entity.rental_id, cancellationToken) ?? 0;
     }
 }
