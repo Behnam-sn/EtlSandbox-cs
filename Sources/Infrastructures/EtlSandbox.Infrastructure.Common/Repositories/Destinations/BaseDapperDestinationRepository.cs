@@ -35,4 +35,9 @@ public abstract class BaseDapperDestinationRepository<T> : IDestinationRepositor
         var result = await connection.QuerySingleOrDefaultAsync<long?>(GetMaxIdSql);
         return result ?? 0;
     }
+
+    public Task SoftDeleteObsoleteRowsAsync(long from, long to, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -15,4 +15,9 @@ public sealed class EfDestinationRepositoryV2<T>(DbContext dbContext) : BaseEfDe
             .FirstOrDefaultAsync(cancellationToken);
         return lastItem?.Id ?? 0;
     }
+
+    public override Task SoftDeleteObsoleteRowsAsync(long from, long to, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }

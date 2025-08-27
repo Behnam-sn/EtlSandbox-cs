@@ -6,4 +6,6 @@ public interface IDestinationRepository<T>
     Task<long> GetMaxSourceIdOrDefaultAsync(CancellationToken cancellationToken = default);
 
     Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default);
+
+    Task SoftDeleteObsoleteRowsAsync(long from, long to, CancellationToken cancellationToken = default);
 }

@@ -22,4 +22,6 @@ public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
         return await _dbSet
             .MaxAsync(entity => (long?)entity.Id, cancellationToken) ?? 0;
     }
+
+    public abstract Task SoftDeleteObsoleteRowsAsync(long from, long to, CancellationToken cancellationToken = default);
 }
