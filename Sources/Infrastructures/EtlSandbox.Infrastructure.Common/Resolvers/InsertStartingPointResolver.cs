@@ -15,8 +15,7 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
 
     private bool _isFirstRun = true;
 
-    // Todo: change this prop to a field
-    public long StartingPoint { get; set; }
+    private long _startingPoint;
 
     public InsertStartingPointResolver(IServiceProvider serviceProvider)
     {
@@ -33,16 +32,16 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
         {
             _isFirstRun = false;
             var lastInsertedSourceId = await destinationRepository.GetMaxSourceIdOrDefaultAsync();
-            StartingPoint = lastInsertedSourceId < settingsStartingPoint
+            _startingPoint = lastInsertedSourceId < settingsStartingPoint
                 ? settingsStartingPoint
                 : lastInsertedSourceId;
         }
 
-        return StartingPoint;
+        return _startingPoint;
     }
 
     public void SetStartingPoint(long startingPoint)
     {
-        StartingPoint = startingPoint;
+        _startingPoint = startingPoint;
     }
 }
