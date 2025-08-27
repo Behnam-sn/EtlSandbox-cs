@@ -41,28 +41,29 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 
     public async Task Handle(InsertCommand<TSource, TDestination> request, CancellationToken cancellationToken)
     {
+        var destinationTypeName = typeof(TDestination).Name;
         var sourceLastId = await _sourceRepository.GetMaxIdOrDefaultAsync(cancellationToken);
         var from = await _insertStartingPointResolver.GetStartingPointAsync(settingsStartingPoint: request.StartingPointId);
         var to = from + request.BatchSize < sourceLastId
             ? from + request.BatchSize
             : sourceLastId;
 
-        _logger.LogInformation("Extracting data from {From} to {To}", from, to);
+        _logger.LogInformation("Extracting {Type} from {From} to {To}", destinationTypeName, from, to);
         var extractedItems = await _extractor.ExtractAsync(from, to, cancellationToken);
-        _logger.LogInformation("Extracted {Count} rows", extractedItems.Count);
+        _logger.LogInformation("Extracted {Count} {Type}", extractedItems.Count, destinationTypeName);
 
         if (extractedItems.Count == 0)
         {
             return;
         }
 
-        _logger.LogInformation("Transforming items");
+        _logger.LogInformation("Transforming {Type}", destinationTypeName);
         var transformedItems = extractedItems.AsParallel().Select(_transformer.Transform).ToList();
-        _logger.LogInformation("Transformed {Count} rows", transformedItems.Count);
+        _logger.LogInformation("Transformed {Count} {Type}", transformedItems.Count, destinationTypeName);
 
-        _logger.LogInformation("Loading");
+        _logger.LogInformation("Loading {Type}", destinationTypeName);
         await _loader.LoadAsync(transformedItems, cancellationToken);
-        _logger.LogInformation("Loaded {Count} rows", extractedItems.Count);
+        _logger.LogInformation("Loaded {Count} {Type}", extractedItems.Count, destinationTypeName);
 
         _insertStartingPointResolver.SetStartingPoint(to);
     }

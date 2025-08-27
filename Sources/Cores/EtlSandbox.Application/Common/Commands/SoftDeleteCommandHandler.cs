@@ -11,8 +11,8 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
     where T : class, IEntity
 {
     private readonly ILogger _logger;
-    
-    private IDestinationRepository<T>  _destinationRepository;
+
+    private IDestinationRepository<T> _destinationRepository;
 
     private readonly ISoftDeleteStartingPointResolver<T> _startingPointResolver;
 
@@ -33,15 +33,16 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
 
     public async Task Handle(SoftDeleteCommand<T> request, CancellationToken cancellationToken)
     {
+        var destinationTypeName = typeof(T).Name;
         var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync(cancellationToken);
         var from = _startingPointResolver.StartingPoint;
         var to = from + request.BatchSize < lastId
             ? from + request.BatchSize
             : lastId;
 
-        _logger.LogInformation("Soft deleting");
+        _logger.LogInformation("Soft deleting {Type}", destinationTypeName);
         await _synchronizer.SoftDeleteObsoleteRowsAsync(from, to);
-        _logger.LogInformation("Soft deleted from {LastDeletedId} to {ToId}", from, to);
+        _logger.LogInformation("Soft deleted {Type} from {From} to {To}", destinationTypeName, from, to);
 
         _startingPointResolver.StartingPoint = to;
     }
