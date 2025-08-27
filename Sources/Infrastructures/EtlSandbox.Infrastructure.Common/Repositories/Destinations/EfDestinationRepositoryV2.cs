@@ -7,12 +7,12 @@ namespace EtlSandbox.Infrastructure.Common.Repositories.Destinations;
 public sealed class EfDestinationRepositoryV2<T>(DbContext dbContext) : BaseEfDestinationRepository<T>(dbContext)
     where T : class, IEntity
 {
-    public override async Task<long> GetLastSourceIdAsync()
+    public override async Task<long> GetMaxSourceIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
         var lastItem = await _dbSet
             .AsNoTracking()
             .OrderByDescending(item => item.Id)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return lastItem?.Id ?? 0;
     }
 }

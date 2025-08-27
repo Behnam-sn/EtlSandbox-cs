@@ -3,9 +3,7 @@
 public interface IDestinationRepository<T>
     where T : class, IEntity
 {
-    Task<long> GetLastSourceIdAsync();
+    Task<long> GetMaxSourceIdOrDefaultAsync(CancellationToken cancellationToken = default);
 
-    Task<long> GetLastSoftDeletedIdAsync();
-
-    Task<long> GetLastIdAsync();
+    Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default);
 }

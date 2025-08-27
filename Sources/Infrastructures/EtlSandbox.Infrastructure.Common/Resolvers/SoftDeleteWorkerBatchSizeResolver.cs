@@ -41,7 +41,7 @@ public sealed class SoftDeleteWorkerBatchSizeResolver<TWorker, TDestination> : I
         var maxBatchSize = _softDeleteWorkerSettings.MaxBatchSize  ?? _globalSettings.MaxBatchSize;
 
         var startingPoint = _startingPointResolver.StartingPoint;
-        var lastId = await _destinationRepository.GetLastIdAsync();
+        var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync();
         var gap = lastId - startingPoint;
 
         return gap < minBatchSize ? minBatchSize : maxBatchSize;

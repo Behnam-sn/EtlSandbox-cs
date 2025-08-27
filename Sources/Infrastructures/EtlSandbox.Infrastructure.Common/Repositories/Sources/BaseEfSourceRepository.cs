@@ -15,14 +15,9 @@ public abstract class BaseEfSourceRepository<T> : ISourceRepository<T>
         _dbSet = dbContext.Set<T>();
     }
 
-    public async Task<long> GetLastIdAsync(CancellationToken cancellationToken = default)
+    public async Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
-        // Todo: change this into max
-        var lastItemId = await _dbSet
-            .AsNoTracking()
-            .OrderByDescending(item => item.Id)
-            .Select(item => (long?)item.Id)
-            .FirstOrDefaultAsync(cancellationToken);
-        return lastItemId ?? 0;
+        return await _dbSet
+            .MaxAsync(entity => (long?)entity.Id, cancellationToken) ?? 0;
     }
 }

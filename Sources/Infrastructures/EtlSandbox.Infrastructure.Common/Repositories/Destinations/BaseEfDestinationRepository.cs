@@ -15,24 +15,11 @@ public abstract class BaseEfDestinationRepository<T> : IDestinationRepository<T>
         _dbSet = dbContext.Set<T>();
     }
 
-    public abstract Task<long> GetLastSourceIdAsync();
+    public abstract Task<long> GetMaxSourceIdOrDefaultAsync(CancellationToken cancellationToken = default);
 
-    public async Task<long> GetLastSoftDeletedIdAsync()
+    public async Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
-        var lastItem = await _dbSet
-            .AsNoTracking()
-            .Where(item => item.IsDeleted == true)
-            .OrderByDescending(item => item.Id)
-            .FirstOrDefaultAsync();
-        return lastItem?.Id ?? 0;
-    }
-
-    public async Task<long> GetLastIdAsync()
-    {
-        var lastItem = await _dbSet
-            .AsNoTracking()
-            .OrderByDescending(item => item.Id)
-            .FirstOrDefaultAsync();
-        return lastItem?.Id ?? 0;
+        return await _dbSet
+            .MaxAsync(entity => (long?)entity.Id, cancellationToken) ?? 0;
     }
 }

@@ -18,30 +18,21 @@ public abstract class BaseDapperDestinationRepository<T> : IDestinationRepositor
 
     protected abstract string TableName { get; }
 
-    protected abstract string GetLastInsertedSourceIdSql { get; }
+    protected abstract string GetMaxSourceIdSql { get; }
 
-    protected abstract string GetLastSoftDeletedItemIdSql { get; }
+    protected abstract string GetMaxIdSql { get; }
 
-    protected abstract string GetLastItemIdSql { get; }
-
-    public async Task<long> GetLastSourceIdAsync()
+    public async Task<long> GetMaxSourceIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
         using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastInsertedSourceIdSql);
+        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetMaxSourceIdSql);
         return result ?? 0;
     }
 
-    public async Task<long> GetLastSoftDeletedIdAsync()
+    public async Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
         using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastSoftDeletedItemIdSql);
-        return result ?? 0;
-    }
-
-    public async Task<long> GetLastIdAsync()
-    {
-        using var connection = _dbConnectionFactory.CreateConnection();
-        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetLastItemIdSql);
+        var result = await connection.QuerySingleOrDefaultAsync<long?>(GetMaxIdSql);
         return result ?? 0;
     }
 }

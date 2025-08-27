@@ -32,7 +32,7 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
         if (_isFirstRun)
         {
             _isFirstRun = false;
-            var lastInsertedSourceId = await destinationRepository.GetLastSourceIdAsync();
+            var lastInsertedSourceId = await destinationRepository.GetMaxSourceIdOrDefaultAsync();
             StartingPoint = lastInsertedSourceId < settingsStartingPoint
                 ? settingsStartingPoint
                 : lastInsertedSourceId;

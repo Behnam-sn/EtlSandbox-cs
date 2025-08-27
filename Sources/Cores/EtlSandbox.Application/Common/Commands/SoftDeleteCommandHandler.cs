@@ -33,7 +33,7 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
 
     public async Task Handle(SoftDeleteCommand<T> request, CancellationToken cancellationToken)
     {
-        var lastId = await _destinationRepository.GetLastIdAsync();
+        var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync(cancellationToken);
         var from = _startingPointResolver.StartingPoint;
         var to = from + request.BatchSize < lastId
             ? from + request.BatchSize

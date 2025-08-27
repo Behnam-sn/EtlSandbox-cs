@@ -18,7 +18,7 @@ public abstract class BaseWebApiSourceRepository<T> : ISourceRepository<T>
 
     protected abstract string Path { get; }
 
-    public async Task<long> GetLastIdAsync(CancellationToken cancellationToken = default)
+    public async Task<long> GetMaxIdOrDefaultAsync(CancellationToken cancellationToken = default)
     {
         var item = await _restApiClient.GetAsync<long>(
             baseUrl: _baseUrl,

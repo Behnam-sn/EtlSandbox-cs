@@ -41,8 +41,8 @@ public sealed class InsertWorkerDelayResolver<TWorker, TSource, TDestination> : 
 
         var minBatchSize = _insertWorkerSettings.MinBatchSize ?? _globalSettings.MinBatchSize;
 
-        var sourceLastIdTask = _sourceRepository.GetLastIdAsync();
-        var destinationLastSourceIdTask = _destinationRepository.GetLastSourceIdAsync();
+        var sourceLastIdTask = _sourceRepository.GetMaxIdOrDefaultAsync();
+        var destinationLastSourceIdTask = _destinationRepository.GetMaxSourceIdOrDefaultAsync();
 
         await Task.WhenAll(sourceLastIdTask, destinationLastSourceIdTask);
 

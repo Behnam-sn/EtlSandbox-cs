@@ -41,7 +41,7 @@ public sealed class InsertCommandHandler<TSource, TDestination> : ICommandHandle
 
     public async Task Handle(InsertCommand<TSource, TDestination> request, CancellationToken cancellationToken)
     {
-        var sourceLastId = await _sourceRepository.GetLastIdAsync(cancellationToken);
+        var sourceLastId = await _sourceRepository.GetMaxIdOrDefaultAsync(cancellationToken);
         var from = await _insertStartingPointResolver.GetStartingPointAsync(settingsStartingPoint: request.StartingPointId);
         var to = from + request.BatchSize < sourceLastId
             ? from + request.BatchSize
