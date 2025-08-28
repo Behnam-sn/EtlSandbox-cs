@@ -7,22 +7,22 @@ using Microsoft.Extensions.Logging;
 
 namespace EtlSandbox.Application.Common.Commands;
 
-public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteCommand<T>>
-    where T : class, IEntity
+public sealed class SoftDeleteCommandHandler<TDestination> : ICommandHandler<SoftDeleteCommand<TDestination>>
+    where TDestination : class, IEntity
 {
     private readonly ILogger _logger;
 
-    private readonly IDestinationRepository<T> _destinationRepository;
+    private readonly IDestinationRepository<TDestination> _destinationRepository;
 
-    private readonly ISoftDeleteStartingPointResolver<T> _startingPointResolver;
+    private readonly ISoftDeleteStartingPointResolver<TDestination> _startingPointResolver;
 
-    private readonly ISynchronizer<T> _synchronizer;
+    private readonly ISynchronizer<TDestination> _synchronizer;
 
     public SoftDeleteCommandHandler(
-        ILogger<SoftDeleteCommandHandler<T>> logger,
-        IDestinationRepository<T> destinationRepository,
-        ISoftDeleteStartingPointResolver<T> startingPointResolver,
-        ISynchronizer<T> synchronizer
+        ILogger<SoftDeleteCommandHandler<TDestination>> logger,
+        IDestinationRepository<TDestination> destinationRepository,
+        ISoftDeleteStartingPointResolver<TDestination> startingPointResolver,
+        ISynchronizer<TDestination> synchronizer
     )
     {
         _logger = logger;
@@ -31,9 +31,9 @@ public sealed class SoftDeleteCommandHandler<T> : ICommandHandler<SoftDeleteComm
         _synchronizer = synchronizer;
     }
 
-    public async Task Handle(SoftDeleteCommand<T> request, CancellationToken cancellationToken)
+    public async Task Handle(SoftDeleteCommand<TDestination> request, CancellationToken cancellationToken)
     {
-        var destinationTypeName = typeof(T).Name;
+        var destinationTypeName = typeof(TDestination).Name;
         var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync(cancellationToken);
         var from = _startingPointResolver.StartingPoint;
         var to = from + request.BatchSize < lastId
