@@ -22,7 +22,7 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<long> GetStartingPointAsync(long settingsStartingPoint)
+    public async Task<long> GetStartingPointAsync(long defaultStartingPoint)
     {
         using var scope = _serviceProvider.CreateScope();
 
@@ -32,8 +32,8 @@ public sealed class InsertStartingPointResolver<TSource, TDestination>
         {
             _isFirstRun = false;
             var lastInsertedSourceId = await destinationRepository.GetMaxSourceIdOrDefaultAsync();
-            _startingPoint = lastInsertedSourceId < settingsStartingPoint
-                ? settingsStartingPoint
+            _startingPoint = lastInsertedSourceId < defaultStartingPoint
+                ? defaultStartingPoint
                 : lastInsertedSourceId;
         }
 
