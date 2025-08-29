@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 
 namespace EtlSandbox.Infrastructure.Common.Loaders;
 
+// Todo: Replace connectionString with ConnectionStringsOptions
 public abstract class BaseSqlBulkCopyLoader<T> : ILoader<T>
     where T : class, IEntity
 {

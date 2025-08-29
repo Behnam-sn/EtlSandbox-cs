@@ -5,6 +5,7 @@ using EtlSandbox.Domain.Common.DbConnectionFactories;
 
 namespace EtlSandbox.Infrastructure.Common.Loaders;
 
+// Todo: replace IDbConnectionFactory with IDestinationDbConnectionFactory
 public abstract class BaseDapperLoader<T> : ILoader<T>
     where T : class, IEntity
 {

@@ -6,6 +6,7 @@ using EtlSandbox.Domain.Common;
 
 namespace EtlSandbox.Infrastructure.Common.Loaders;
 
+// Todo: Replace connectionString with ConnectionStringsOptions
 public abstract class BaseClickHouseBulkCopyLoader<T> : ILoader<T>
     where T : class, IEntity
 {

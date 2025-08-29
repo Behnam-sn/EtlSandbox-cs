@@ -2,6 +2,7 @@
 
 namespace EtlSandbox.Infrastructure.Common.Extractors;
 
+// Todo: Replace baseUrl with ConnectionStringsOptions
 public abstract class BaseRestApiExtractor<T> : IExtractor<T>
     where T : class, IEntity
 {
