@@ -8,7 +8,7 @@ namespace EtlSandbox.Infrastructure.Common.Synchronizers;
 public abstract class BaseDapperSynchronizer<T> : ISynchronizer<T>
     where T : class, IEntity
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
+    private readonly IDestinationDbConnectionFactory _dbConnectionFactory;
 
     protected BaseDapperSynchronizer(IDestinationDbConnectionFactory dbConnectionFactory)
     {
