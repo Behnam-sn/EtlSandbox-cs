@@ -32,7 +32,7 @@ public abstract class BaseSoftDeleteWorker<TWorker, TDestination> : BackgroundSe
         {
             using var serviceScope = _serviceProvider.CreateScope();
 
-            var workerSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<SoftDeleteWorkerSettings<TWorker>>>();
+            var workerSettingsOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<WorkerSettings<TWorker>>>();
             var workerSettings = workerSettingsOptions.Value;
 
             if (!workerSettings.Enable)

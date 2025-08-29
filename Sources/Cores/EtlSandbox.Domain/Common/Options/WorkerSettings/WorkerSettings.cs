@@ -1,6 +1,6 @@
 ﻿namespace EtlSandbox.Domain.Common.Options.WorkerSettings;
 
-public abstract class BaseWorkerSettings<T>
+public class WorkerSettings<T>
 {
     public bool Enable { get; set; }
 

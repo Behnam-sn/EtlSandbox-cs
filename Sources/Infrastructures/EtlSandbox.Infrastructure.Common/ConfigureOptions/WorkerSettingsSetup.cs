@@ -6,17 +6,17 @@ using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Common.ConfigureOptions;
 
-public sealed class SoftDeleteWorkerSettingsSetup<T> : IConfigureOptions<SoftDeleteWorkerSettings<T>>
+public sealed class WorkerSettingsSetup<T> : IConfigureOptions<WorkerSettings<T>>
     where T : BackgroundService
 {
     private readonly IConfiguration _configuration;
 
-    public SoftDeleteWorkerSettingsSetup(IConfiguration configuration)
+    public WorkerSettingsSetup(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public void Configure(SoftDeleteWorkerSettings<T> options)
+    public void Configure(WorkerSettings<T> options)
     {
         _configuration
             .GetSection(typeof(T).Name + "Settings")

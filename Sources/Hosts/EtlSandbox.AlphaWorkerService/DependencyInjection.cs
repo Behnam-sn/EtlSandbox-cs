@@ -32,7 +32,7 @@ internal static class DependencyInjection
         services.ConfigureOptions<ConnectionStringsSetup>();
         services.ConfigureOptions<GlobalSettingsSetup>();
         services.ConfigureOptions<InsertWorkerSettingsSetup<RentalToCustomerOrderFlatsInsertWorker>>();
-        services.ConfigureOptions<SoftDeleteWorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
+        services.ConfigureOptions<WorkerSettingsSetup<CustomerOrderFlatsSoftDeleteWorker>>();
     }
 
     internal static void AddLogs(this IServiceCollection services)

@@ -15,7 +15,7 @@ public sealed class SoftDeleteWorkerBatchSizeResolver<TWorker, TDestination> : I
     
     private readonly GlobalSettings  _globalSettings;
     
-    private readonly SoftDeleteWorkerSettings<TWorker>  _softDeleteWorkerSettings;
+    private readonly WorkerSettings<TWorker>  _workerSettings;
     
     private readonly ISoftDeleteStartingPointResolver<TDestination> _startingPointResolver;
     
@@ -24,21 +24,21 @@ public sealed class SoftDeleteWorkerBatchSizeResolver<TWorker, TDestination> : I
     
     public SoftDeleteWorkerBatchSizeResolver(
         IOptions<GlobalSettings> globalSettingsOptions,
-        IOptions<SoftDeleteWorkerSettings<TWorker>> softDeleteWorkerSettingsOptions,
+        IOptions<WorkerSettings<TWorker>> workerSettingsOptions,
         ISoftDeleteStartingPointResolver<TDestination> startingPointResolver,
         IDestinationRepository<TDestination> destinationRepository
     )
     {
         _globalSettings = globalSettingsOptions.Value;
-        _softDeleteWorkerSettings = softDeleteWorkerSettingsOptions.Value;
+        _workerSettings = workerSettingsOptions.Value;
         _startingPointResolver = startingPointResolver;
         _destinationRepository = destinationRepository;
     }
     
     public async Task<int> GetBatchSizeAsync()
     {
-        var minBatchSize = _softDeleteWorkerSettings.MinBatchSize ?? _globalSettings.MinBatchSize;
-        var maxBatchSize = _softDeleteWorkerSettings.MaxBatchSize  ?? _globalSettings.MaxBatchSize;
+        var minBatchSize = _workerSettings.MinBatchSize ?? _globalSettings.MinBatchSize;
+        var maxBatchSize = _workerSettings.MaxBatchSize  ?? _globalSettings.MaxBatchSize;
 
         var startingPoint = _startingPointResolver.StartingPoint;
         var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync();

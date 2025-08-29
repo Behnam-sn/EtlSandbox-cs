@@ -14,7 +14,7 @@ public sealed class SoftDeleteWorkerDelayResolver<TWorker, TDestination> : ISoft
 {
     private readonly GlobalSettings  _globalSettings;
     
-    private readonly SoftDeleteWorkerSettings<TWorker>  _softDeleteWorkerSettings;
+    private readonly WorkerSettings<TWorker>  _workerSettings;
     
     private readonly ISoftDeleteStartingPointResolver<TDestination> _startingPointResolver;
     
@@ -22,23 +22,23 @@ public sealed class SoftDeleteWorkerDelayResolver<TWorker, TDestination> : ISoft
 
     public SoftDeleteWorkerDelayResolver(
         IOptions<GlobalSettings> globalSettingsOptions,
-        IOptions<SoftDeleteWorkerSettings<TWorker>> softDeleteWorkerSettingsOptions,
+        IOptions<WorkerSettings<TWorker>> workerSettingsOptions,
         ISoftDeleteStartingPointResolver<TDestination> startingPointResolver,
         IDestinationRepository<TDestination> destinationRepository
     )
     {
         _globalSettings = globalSettingsOptions.Value;
-        _softDeleteWorkerSettings = softDeleteWorkerSettingsOptions.Value;
+        _workerSettings = workerSettingsOptions.Value;
         _startingPointResolver = startingPointResolver;
         _destinationRepository = destinationRepository;
     }
     
     public async Task<int> GetDelayAsync()
     {
-        var minDelay = _softDeleteWorkerSettings.MinDelayInMilliSeconds ?? _globalSettings.MinDelayInMilliSeconds;
-        var maxDelay = _softDeleteWorkerSettings.MaxDelayInMilliSeconds ?? _globalSettings.MaxDelayInMilliSeconds;
+        var minDelay = _workerSettings.MinDelayInMilliSeconds ?? _globalSettings.MinDelayInMilliSeconds;
+        var maxDelay = _workerSettings.MaxDelayInMilliSeconds ?? _globalSettings.MaxDelayInMilliSeconds;
 
-        var minBatchSize = _softDeleteWorkerSettings.MinBatchSize ?? _globalSettings.MinBatchSize;
+        var minBatchSize = _workerSettings.MinBatchSize ?? _globalSettings.MinBatchSize;
 
         var startingPoint = _startingPointResolver.StartingPoint;
         var lastId = await _destinationRepository.GetMaxIdOrDefaultAsync();
