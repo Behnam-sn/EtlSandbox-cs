@@ -43,19 +43,18 @@ public abstract class BaseSoftDeleteWorker<TWorker, TDestination> : BackgroundSe
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();
-                
+
                 var batchSizeResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerBatchSizeResolver<TWorker, TDestination>>();
                 var batchSize = await batchSizeResolver.GetBatchSizeAsync();
-                
-                var delayResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerDelayResolver<TWorker, TDestination>>();
-                var delay = await delayResolver.GetDelayAsync();
-                
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
                 var command = new SoftDeleteCommand<TDestination>(
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
+
+                var delayResolver = scope.ServiceProvider.GetRequiredService<ISoftDeleteWorkerDelayResolver<TWorker, TDestination>>();
+                var delay = await delayResolver.GetDelayAsync();
 
                 await Task.Delay(delay, stoppingToken);
             }

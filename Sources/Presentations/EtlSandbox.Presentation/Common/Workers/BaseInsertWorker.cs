@@ -46,20 +46,19 @@ public abstract class BaseInsertWorker<TWorker, TSource, TDestination> : Backgro
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();
-                
+
                 var batchSizeResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerBatchSizeResolver<TWorker, TSource, TDestination>>();
                 var batchSize = await batchSizeResolver.GetBatchSizeAsync();
-                
-                var delayResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerDelayResolver<TWorker, TSource, TDestination>>();
-                var delay = await delayResolver.GetDelayAsync();
-                
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
                 var command = new InsertCommand<TSource, TDestination>(
                     StartingPointId: startingPointId,
                     BatchSize: batchSize
                 );
                 await mediator.Send(command, stoppingToken);
+
+                var delayResolver = scope.ServiceProvider.GetRequiredService<IInsertWorkerDelayResolver<TWorker, TSource, TDestination>>();
+                var delay = await delayResolver.GetDelayAsync();
 
                 await Task.Delay(delay, stoppingToken);
             }

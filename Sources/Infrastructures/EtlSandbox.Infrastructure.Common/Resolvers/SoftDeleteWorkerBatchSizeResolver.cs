@@ -12,7 +12,6 @@ public sealed class SoftDeleteWorkerBatchSizeResolver<TWorker, TDestination> : I
     where TWorker : class
     where TDestination : class, IEntity
 {
-    
     private readonly GlobalSettings  _globalSettings;
     
     private readonly WorkerSettings<TWorker>  _workerSettings;
