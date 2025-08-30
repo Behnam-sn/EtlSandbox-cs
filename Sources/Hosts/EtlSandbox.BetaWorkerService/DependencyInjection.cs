@@ -88,11 +88,7 @@ internal static class DependencyInjection
         });
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
-        {
-            var restApiClient = sp.GetRequiredService<IRestApiClient>();
-            return new CustomerOrderFlatRestApiExtractor(sourceConnectionString, restApiClient);
-        });
+        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatRestApiExtractor>();
 
         // Transformers
         services.AddScoped(typeof(ITransformer<>), typeof(EmptyTransformer<>));

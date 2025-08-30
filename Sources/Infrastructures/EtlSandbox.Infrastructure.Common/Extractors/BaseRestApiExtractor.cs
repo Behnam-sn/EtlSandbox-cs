@@ -1,18 +1,20 @@
 ﻿using EtlSandbox.Domain.Common;
+using EtlSandbox.Domain.Common.Options;
+
+using Microsoft.Extensions.Options;
 
 namespace EtlSandbox.Infrastructure.Common.Extractors;
 
-// Todo: Replace baseUrl with ConnectionStringsOptions
 public abstract class BaseRestApiExtractor<T> : IExtractor<T>
     where T : class, IEntity
 {
-    private readonly string _baseUrl;
+    private readonly ConnectionStrings _connectionStrings;
 
     private readonly IRestApiClient _restApiClient;
 
-    protected BaseRestApiExtractor(string baseUrl, IRestApiClient restApiClient)
+    protected BaseRestApiExtractor(IOptions<ConnectionStrings> options, IRestApiClient restApiClient)
     {
-        _baseUrl = baseUrl;
+        _connectionStrings = options.Value;
         _restApiClient = restApiClient;
     }
 
@@ -21,7 +23,7 @@ public abstract class BaseRestApiExtractor<T> : IExtractor<T>
     public async Task<List<T>> ExtractAsync(long from, long to, CancellationToken cancellationToken = default)
     {
         var items = await _restApiClient.GetAsync<List<T>>(
-            baseUrl: _baseUrl,
+            baseUrl: _connectionStrings.Source,
             path: Path,
             queryParams: new
             {
