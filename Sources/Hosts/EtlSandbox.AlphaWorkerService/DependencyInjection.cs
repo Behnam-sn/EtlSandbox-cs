@@ -99,11 +99,7 @@ internal static class DependencyInjection
         });
 
         // Extractors
-        services.AddScoped<IExtractor<CustomerOrderFlat>>(sp =>
-        {
-            var connectionFactory = sp.GetRequiredService<ISourceDbConnectionFactory>();
-            return new CustomerOrderFlatJupiterDapperExtractor(connectionFactory);
-        });
+        services.AddScoped<IExtractor<CustomerOrderFlat>, CustomerOrderFlatJupiterDapperExtractor>();
 
         // Transformers
         services.AddScoped<ITransformer<CustomerOrderFlat>, CustomerOrderFlatTransformer>();

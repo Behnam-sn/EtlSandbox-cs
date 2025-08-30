@@ -5,13 +5,12 @@ using EtlSandbox.Domain.Common.DbConnectionFactories;
 
 namespace EtlSandbox.Infrastructure.Common.Extractors;
 
-// Todo: Replace IDbConnectionFactory with ISourceDbConnectionFactory
 public abstract class BaseDapperExtractor<T> : IExtractor<T>
     where T : class, IEntity
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
+    private readonly ISourceDbConnectionFactory _dbConnectionFactory;
 
-    protected BaseDapperExtractor(IDbConnectionFactory dbConnectionFactory)
+    protected BaseDapperExtractor(ISourceDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }

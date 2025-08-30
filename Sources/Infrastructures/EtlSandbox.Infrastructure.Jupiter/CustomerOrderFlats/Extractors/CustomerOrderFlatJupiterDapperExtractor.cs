@@ -4,7 +4,7 @@ using EtlSandbox.Infrastructure.Common.Extractors;
 
 namespace EtlSandbox.Infrastructure.Jupiter.CustomerOrderFlats.Extractors;
 
-public sealed class CustomerOrderFlatJupiterDapperExtractor(IDbConnectionFactory dbConnectionFactory)
+public sealed class CustomerOrderFlatJupiterDapperExtractor(ISourceDbConnectionFactory dbConnectionFactory)
     : BaseDapperExtractor<CustomerOrderFlat>(dbConnectionFactory)
 {
     protected override string Sql => """
